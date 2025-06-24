@@ -1,0 +1,79 @@
+<!-- index.wxml -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="header">
+    <view class="header-left">
+      <image src="/image/1.png" class="back-icon"></image>
+    </view>
+    <view class="header-title">伴宠云诊</view>
+  </view>
+  
+  <!-- 搜索框 -->
+  <view class="search-box">
+    <image src="/image/2.png" class="search-icon" bindtap="handleSearch"></image>
+    <input 
+      placeholder="搜索宠物相关内容" 
+      placeholder-class="placeholder-style"
+      class="search-input"
+      bindconfirm="handleSearch"
+      value="{{ keyword }}"
+    />
+  </view>
+  
+  <!-- 功能区标题 -->
+  <view class="section-title">
+    <text class="title-text">宠物服务</text>
+    <text class="more-link">全部 ></text>
+  </view>
+  
+  <!-- 功能卡片区 -->
+  <view class="cards-container">
+    <!-- 健康分析卡片 -->
+    <view class="card health-card">
+      <image src="/image/3.png" class="card-icon"></image>
+      <text class="card-title">健康分析</text>
+    </view>
+    
+    <!-- 宠物智能陪伴卡片 -->
+    <view class="card">
+      <image src="/image/4.png" class="card-icon"></image>
+      <text class="card-title">智能陪伴</text>
+    </view>
+    
+    <!-- 宠物训练课程卡片 -->
+    <view class="card">
+      <image src="/image/5.png" class="card-icon"></image>
+      <text class="card-title">训练课程</text>
+    </view>
+    
+    <!-- 新增宠物美容卡片 -->
+    <view class="card">
+      <image src="/image/6.png" class="card-icon"></image>
+      <text class="card-title">美容服务</text>
+    </view>
+  </view>
+  
+  <!-- 热门推荐区域 -->
+  <view class="section-title">
+    <text class="title-text">热门推荐</text>
+    <text class="more-link">查看更多 ></text>
+  </view>
+
+  <view class="recommend-container">
+    <view class="recommend-card">
+      <image src="/image/7.png" class="recommend-image"></image>
+      <view class="recommend-info">
+        <text class="recommend-title">春季宠物护理指南</text>
+        <text class="recommend-desc">专家建议的春季健康管理方案</text>
+      </view>
+    </view>
+    
+    <view class="recommend-card">
+      <image src="/image/8.png" class="recommend-image"></image>
+      <view class="recommend-info">
+        <text class="recommend-title">新宠优惠套餐</text>
+        <text class="recommend-desc">首次体验洗护+驱虫8折</text>
+      </view>
+    </view>
+  </view>
+</view>
