@@ -19,7 +19,7 @@ Page({
       },
       success: (res) => {
         console.log('API返回数据:', res.data);
-        // 这里处理返回数据（如更新页面列表）
+        // 这里处理返回数据
         // this.setData({ results: res.data.items });
       },
       fail: (err) => {
