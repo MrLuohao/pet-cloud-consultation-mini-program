@@ -1,36 +1,51 @@
+// pages/index/index.js
 Page({
   data: {
-    keyword: "", // 存储输入框内容
+    keyword: ""
   },
 
-  // 处理搜索事件
-  handleSearch: function() {
-    const keyword = this.data.keyword.trim(); // 获取并清理输入值
-    if (!keyword) return; // 空值拦截
-    
-    // 调用API示例（实际URL替换为你的API）
-    wx.request({
-      url: 'https://your-api.com/search/pets',
-      method: 'GET',
-      data: {
-        q: keyword, // 携带搜索关键词参数
-        page: 1,
-        size: 10
-      },
-      success: (res) => {
-        console.log('API返回数据:', res.data);
-        // 这里处理返回数据
-        // this.setData({ results: res.data.items });
-      },
-      fail: (err) => {
-        console.error('API调用失败', err);
-        wx.showToast({ title: '搜索失败', icon: 'none' });
-      }
-    });
+  // 处理搜索
+  handleSearch() {
+    const keyword = this.data.keyword.trim();
+    if (!keyword) return;
+    // 搜索逻辑...
   },
 
-  // 实时同步输入值
-  inputChanged: function(e) {
+  // 输入变化
+  inputChanged(e) {
     this.setData({ keyword: e.detail.value });
+  },
+  
+  // 功能点击处理
+  handleFunctionTap(e) {
+    const target = e.currentTarget.dataset.target;
+    const app = getApp();
+    
+    // 定义跳转函数
+    const jumpFunction = () => {
+      switch(target) {
+        case 'health':
+          wx.navigateTo({ url: '/pages/health/health' });
+          break;
+        case 'companion':
+          wx.navigateTo({ url: '/pages/companion/companion' });
+          break;
+        case 'training':
+          wx.navigateTo({ url: '/pages/course/course' });
+          break;
+        case 'beauty':
+          wx.navigateTo({ url: '/pages/beauty/beauty' });
+          break;
+        case 'recommend1':
+          wx.navigateTo({ url: '/pages/recommend/detail?id=1' });
+          break;
+        case 'recommend2':
+          wx.navigateTo({ url: '/pages/recommend/detail?id=2' });
+          break;
+      }
+    };
+
+    // 检查登录状态
+    app.checkLogin(jumpFunction);
   }
 });

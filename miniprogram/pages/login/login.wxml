@@ -1,0 +1,16 @@
+<!-- pages/login/login.wxml -->
+<view class="login-container">
+  <!-- 顶部状态栏 - 实际小程序中会自动适配 -->
+  
+  <view class="login-box">
+    <view class="login-title">登录</view>
+    <view class="login-subtip">登录后可使用完整功能</view>
+    
+    <button 
+      class="login-btn"
+      bindtap="handleLogin"
+    >
+      微信一键登录
+    </button>
+  </view>
+</view>

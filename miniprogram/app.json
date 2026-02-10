@@ -4,11 +4,16 @@
     "pages/index/index",
     "pages/shop/shop",
     "pages/news/news",
-    "pages/user/user"
+    "pages/user/user",
+    "pages/login/login",
+    "pages/course/course",
+    "pages/beauty/beauty",
+    "pages/recommend/detail"
   ],
   "window": {
     "backgroundColor": "#eeeeee",
     "backgroundTextStyle": "light",
+    "navigationBarTitleText": "伴宠云诊",
     "navigationBarBackgroundColor": "#F6F6F6",
     "navigationBarTextStyle": "black",
     "homeButton": true,

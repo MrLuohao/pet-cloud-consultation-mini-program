@@ -1,4 +1,4 @@
-<!-- index.wxml -->
+<!-- pages/index/index.wxml -->
 <view class="container">
   <!-- 顶部导航栏 -->
   <view class="header">
@@ -16,6 +16,7 @@
       placeholder-class="placeholder-style"
       class="search-input"
       bindconfirm="handleSearch"
+      bindinput="inputChanged"
       value="{{ keyword }}"
     />
   </view>
@@ -29,25 +30,37 @@
   <!-- 功能卡片区 -->
   <view class="cards-container">
     <!-- 健康分析卡片 -->
-    <view class="card health-card">
+    <view 
+      class="card health-card" 
+      bindtap="handleFunctionTap" 
+      data-target="health">
       <image src="/image/3.png" class="card-icon"></image>
       <text class="card-title">健康分析</text>
     </view>
     
     <!-- 宠物智能陪伴卡片 -->
-    <view class="card">
+    <view 
+      class="card" 
+      bindtap="handleFunctionTap" 
+      data-target="companion">
       <image src="/image/4.png" class="card-icon"></image>
       <text class="card-title">智能陪伴</text>
     </view>
     
     <!-- 宠物训练课程卡片 -->
-    <view class="card">
+    <view 
+      class="card" 
+      bindtap="handleFunctionTap" 
+      data-target="training">
       <image src="/image/5.png" class="card-icon"></image>
       <text class="card-title">训练课程</text>
     </view>
     
     <!-- 新增宠物美容卡片 -->
-    <view class="card">
+    <view 
+      class="card" 
+      bindtap="handleFunctionTap" 
+      data-target="beauty">
       <image src="/image/6.png" class="card-icon"></image>
       <text class="card-title">美容服务</text>
     </view>
@@ -60,7 +73,10 @@
   </view>
 
   <view class="recommend-container">
-    <view class="recommend-card">
+    <view 
+      class="recommend-card" 
+      bindtap="handleFunctionTap" 
+      data-target="recommend1">
       <image src="/image/7.png" class="recommend-image"></image>
       <view class="recommend-info">
         <text class="recommend-title">春季宠物护理指南</text>
@@ -68,7 +84,10 @@
       </view>
     </view>
     
-    <view class="recommend-card">
+    <view 
+      class="recommend-card" 
+      bindtap="handleFunctionTap" 
+      data-target="recommend2">
       <image src="/image/8.png" class="recommend-image"></image>
       <view class="recommend-info">
         <text class="recommend-title">新宠优惠套餐</text>
