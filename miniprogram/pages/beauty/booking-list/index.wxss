@@ -1,0 +1,137 @@
+.page {
+  min-height: 100vh;
+  background: #f5f5f7;
+}
+
+.status-tabs {
+  background: #fff;
+  border-bottom: 1rpx solid #f0f0f0;
+  white-space: nowrap;
+}
+
+.tabs-inner {
+  display: inline-flex;
+  padding: 0 24rpx;
+}
+
+.tab-item {
+  display: inline-block;
+  padding: 24rpx 28rpx;
+  font-size: 28rpx;
+  color: #86868b;
+  border-bottom: 4rpx solid transparent;
+  white-space: nowrap;
+}
+
+.tab-item.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+  font-weight: 600;
+}
+
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 80rpx 0;
+}
+
+.loading-dot {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  border: 4rpx solid #f0f0f0;
+  border-top-color: #667eea;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.booking-list {
+  padding: 16rpx;
+}
+
+.booking-card {
+  background: #fff;
+  border-radius: 24rpx;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+}
+
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 28rpx;
+  border-bottom: 1rpx solid #f5f5f7;
+}
+
+.store-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.status-badge {
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.status-orange { background: #fff7ed; color: #f59e0b; }
+.status-blue   { background: #eff6ff; color: #3b82f6; }
+.status-green  { background: #f0fdf4; color: #10b981; }
+.status-gray   { background: #f5f5f7; color: #86868b; }
+
+.booking-body {
+  padding: 20rpx 28rpx;
+}
+
+.booking-row {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 10rpx;
+}
+
+.label {
+  font-size: 26rpx;
+  color: #86868b;
+  width: 60rpx;
+  flex-shrink: 0;
+}
+
+.value {
+  font-size: 26rpx;
+  color: #3c3c43;
+  flex: 1;
+}
+
+.booking-footer {
+  padding: 16rpx 28rpx 24rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-cancel {
+  border: 2rpx solid #ef4444;
+  color: #ef4444;
+  font-size: 26rpx;
+  padding: 10rpx 28rpx;
+  border-radius: 20rpx;
+}
+
+.empty-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0;
+  gap: 24rpx;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #86868b;
+}

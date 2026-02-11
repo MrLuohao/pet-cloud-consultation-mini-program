@@ -1,0 +1,30 @@
+<!--pages/pet/list.wxml-->
+<view class="pet-container">
+  <!-- 宠物列表 -->
+  <view class="pet-list">
+    <view class="pet-item" wx:for="{{petList}}" wx:key="id" bindtap="gotoDetail" data-id="{{item.id}}">
+      <view class="pet-avatar">{{item.name ? item.name.charAt(0) : '宠'}}</view>
+      <view class="pet-info">
+        <view class="pet-header">
+          <text class="pet-name">{{item.name}}</text>
+          <text class="pet-gender">{{item.genderDesc || '未知'}}</text>
+        </view>
+        <view class="pet-breed">{{item.typeDesc || ''}} · {{item.breed || '未知品种'}}</view>
+        <view class="pet-extra" wx:if="{{item.birthday || item.healthStatus}}">
+          <text wx:if="{{item.birthday}}">{{item.birthday}}出生</text>
+          <text wx:if="{{item.healthStatus}}" class="health-status">{{item.healthStatus}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{petList.length === 0}}">
+    <text class="empty-text">还没有添加宠物哦</text>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn" bindtap="addPet">
+    <text>+ 添加宠物</text>
+  </view>
+</view>

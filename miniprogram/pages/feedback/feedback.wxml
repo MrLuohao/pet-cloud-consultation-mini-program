@@ -1,0 +1,42 @@
+<view class="feedback-page">
+  <view class="card">
+    <view class="field">
+      <text class="label">反馈类型</text>
+      <picker mode="selector" range="{{categories}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view class="picker">{{categories[categoryIndex]}}</view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <text class="label">联系方式</text>
+      <input class="input" value="{{contact}}" bindinput="onContactInput" placeholder="手机号/微信号/邮箱" />
+    </view>
+
+    <view class="field">
+      <text class="label">问题描述</text>
+      <textarea class="textarea" maxlength="500" value="{{content}}" bindinput="onContentInput" placeholder="请描述你遇到的问题或建议" />
+    </view>
+
+    <view class="field">
+      <text class="label">截图（最多3张）</text>
+      <view class="shots">
+        <view class="shot" wx:for="{{screenshots}}" wx:key="*this">
+          <image src="{{item}}" mode="aspectFill" />
+          <text class="remove" data-index="{{index}}" bindtap="removeImage">×</text>
+        </view>
+        <view class="add-shot" wx:if="{{screenshots.length < 3}}" bindtap="chooseImage">+</view>
+      </view>
+    </view>
+
+    <button type="primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitFeedback">提交反馈</button>
+  </view>
+
+  <view class="card">
+    <view class="title">最近消息</view>
+    <view class="empty" wx:if="{{recentMessages.length === 0}}">暂无消息</view>
+    <view class="msg" wx:for="{{recentMessages}}" wx:key="id">
+      <text class="msg-title">{{item.title}}</text>
+      <text class="msg-content">{{item.content}}</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,63 @@
+<!-- pages/order/pay-result/index.wxml - 支付结果页 -->
+<view class="result-page">
+
+  <!-- 成功状态 -->
+  <view wx:if="{{status === 'success'}}" class="result-card success-card">
+    <view class="result-icon-wrap success-wrap">
+      <view class="result-icon success-icon">✓</view>
+    </view>
+    <view class="result-title">支付成功</view>
+    <view class="result-amount">
+      <text class="amount-label">实付金额</text>
+      <text class="amount-value">¥{{amount}}</text>
+    </view>
+
+    <!-- 订单摘要 -->
+    <view wx:if="{{order}}" class="order-summary">
+      <view class="summary-row">
+        <text class="summary-label">订单编号</text>
+        <text class="summary-value order-no">{{order.orderNo}}</text>
+      </view>
+      <view class="summary-row" wx:if="{{order.items && order.items.length > 0}}">
+        <text class="summary-label">商品</text>
+        <text class="summary-value">{{order.items[0].productName}}{{order.items.length > 1 ? ' 等' + order.items.length + '件' : ''}}</text>
+      </view>
+      <view class="summary-row" wx:if="{{order.receiverName}}">
+        <text class="summary-label">收货人</text>
+        <text class="summary-value">{{order.receiverName}} {{order.receiverPhone}}</text>
+      </view>
+    </view>
+    <view wx:elif="{{loading}}" class="summary-loading">
+      <text class="loading-text">加载订单信息...</text>
+    </view>
+
+    <view class="result-tip">感谢您的购买，商品将尽快安排发货 🎉</view>
+  </view>
+
+  <!-- 失败状态 -->
+  <view wx:elif="{{status === 'fail'}}" class="result-card fail-card">
+    <view class="result-icon-wrap fail-wrap">
+      <view class="result-icon fail-icon">✕</view>
+    </view>
+    <view class="result-title">支付未成功</view>
+    <view class="result-tip">请检查网络或余额后重新尝试</view>
+    <view class="fail-tips">
+      <text class="fail-tip-item">• 若已扣款，款项将在1-3个工作日内退回</text>
+      <text class="fail-tip-item">• 如有疑问请联系客服</text>
+    </view>
+  </view>
+
+  <!-- 后续操作 -->
+  <view class="action-section">
+    <block wx:if="{{status === 'success'}}">
+      <button class="btn-primary" bindtap="goToOrderDetail" wx:if="{{orderId}}">查看订单详情</button>
+      <button class="btn-secondary" bindtap="goToShop">继续购物</button>
+      <button class="btn-text" bindtap="goToHome">返回首页</button>
+    </block>
+    <block wx:elif="{{status === 'fail'}}">
+      <button class="btn-primary" bindtap="retryPay">重新支付</button>
+      <button class="btn-text" bindtap="goToHome">返回首页</button>
+    </block>
+  </view>
+
+</view>

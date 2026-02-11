@@ -1,0 +1,62 @@
+<!--pages/health/edit.wxml-->
+<view class="health-edit-container">
+  <view class="form-section">
+    <view class="form-item">
+      <text class="label">宠物</text>
+      <picker mode="selector" range="{{petList}}" range-key="name" bindchange="onPetChange">
+        <view class="picker">
+          {{selectedPet ? selectedPet.name : '请选择宠物'}}
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="label">记录类型</text>
+      <picker mode="selector" range="{{recordTypes}}" range-key="name" bindchange="onTypeChange">
+        <view class="picker">
+          {{selectedType ? selectedType.name : '请选择类型'}}
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="label">标题</text>
+      <input class="input" placeholder="如：疫苗接种、体检等" value="{{formData.title}}" bindinput="onInputChange" data-field="title" />
+    </view>
+
+    <view class="form-item">
+      <text class="label">记录日期</text>
+      <picker mode="date" value="{{formData.recordDate}}" bindchange="onRecordDateChange">
+        <view class="picker">{{formData.recordDate || '请选择日期'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="label">下次日期</text>
+      <picker mode="date" value="{{formData.nextDate}}" bindchange="onNextDateChange">
+        <view class="picker">{{formData.nextDate || '可选'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="label">医院名称</text>
+      <input class="input" placeholder="请输入医院名称" value="{{formData.hospitalName}}" bindinput="onInputChange" data-field="hospitalName" />
+    </view>
+
+    <view class="form-item">
+      <text class="label">医生姓名</text>
+      <input class="input" placeholder="请输入医生姓名" value="{{formData.doctorName}}" bindinput="onInputChange" data-field="doctorName" />
+    </view>
+
+    <view class="form-item-vertical">
+      <text class="label">详细内容</text>
+      <textarea class="textarea" placeholder="请输入详细内容" value="{{formData.content}}" bindinput="onInputChange" data-field="content"></textarea>
+    </view>
+  </view>
+
+  <!-- 删除按钮 -->
+  <button class="delete-btn" wx:if="{{recordId}}" bindtap="deleteRecord">删除档案</button>
+
+  <!-- 保存按钮 -->
+  <button class="save-btn" bindtap="saveRecord">保存</button>
+</view>

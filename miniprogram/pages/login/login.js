@@ -1,109 +1,153 @@
-// pages/login/login.js
+// pages/login/login.js - Apple 风格登录页逻辑
+const app = getApp();
+const { AuthAPI, AIAPI } = require('../../utils/api');
+
 Page({
   data: {
-    code: null
+    isLoading: false,
+    avatarUrl: '',
+    nickname: ''
+  },
+
+  onShow() {
+    // 如果已登录，直接返回上一页
+    if (app.globalData?.token) {
+      wx.navigateBack({
+        fail: () => {
+          wx.switchTab({ url: '/pages/index/index' })
+        }
+      })
+    }
+  },
+
+  // 选择头像
+  onChooseAvatar(e) {
+    const tempAvatarUrl = e.detail.avatarUrl
+    if (tempAvatarUrl) {
+      // 先显示临时头像
+      this.setData({ avatarUrl: tempAvatarUrl })
+    }
+  },
+
+  // 昵称输入
+  onNicknameInput(e) {
+    this.setData({ nickname: e.detail.value })
+  },
+
+  // 昵称输入完成
+  onNicknameBlur(e) {
+    this.setData({ nickname: e.detail.value })
   },
 
   // 微信登录
   handleLogin() {
-    // 1. 获取临时code
+    if (this.data.isLoading) return;
+
+    this.setData({ isLoading: true });
+
+    // 获取微信登录code
     wx.login({
       success: (loginRes) => {
         if (loginRes.code) {
-          this.setData({ code: loginRes.code });
-          
-          // 2. 获取用户信息
-          wx.getUserProfile({
-            desc: '获取你的昵称、头像信息',
-            success: (userRes) => {
-              // 3. 发送登录请求
-              this.sendLoginRequest(loginRes.code, userRes);
-            },
-            fail: (err) => {
-              console.error('获取用户信息失败', err);
-              wx.showToast({
-                title: '获取信息失败',
-                icon: 'none'
-              });
-            }
-          });
-        }
-      },
-      fail: (err) => {
-        console.error('登录失败', err);
-        wx.showToast({
-          title: '登录失败',
-          icon: 'none'
-        });
-      }
-    });
-  },
-
-  // 发送登录请求
-  sendLoginRequest(code, userProfile) {
-    const app = getApp();
-    
-    wx.request({
-      url: 'https://your-domain.com/api/login', // 替换为你的后端API地址
-      method: 'POST',
-      data: {
-        code: code,
-        rawData: userProfile.rawData,
-        signature: userProfile.signature,
-        encryptedData: userProfile.encryptedData,
-        iv: userProfile.iv
-      },
-      success: (res) => {
-        if (res.data && res.data.success) {
-          // 登录成功处理
-          this.handleLoginSuccess(res.data);
+          console.log('登录成功，code:', loginRes.code);
+          // 调用后端登录接口
+          this.callBackendLogin(loginRes.code);
         } else {
+          this.setData({ isLoading: false });
           wx.showToast({
-            title: res.data.message || '登录失败',
+            title: '获取登录凭证失败',
             icon: 'none'
           });
         }
       },
       fail: (err) => {
-        console.error('登录请求失败', err);
+        console.error('wx.login 失败', err);
+        this.setData({ isLoading: false });
         wx.showToast({
-          title: '网络错误',
+          title: '登录失败，请重试',
           icon: 'none'
         });
       }
     });
   },
 
+  // 调用后端登录接口
+  async callBackendLogin(code) {
+    try {
+      const { avatarUrl, nickname } = this.data
+
+      // 如果用户选择了头像，先上传到服务器
+      let uploadedAvatarUrl = ''
+      if (avatarUrl && (avatarUrl.startsWith('http://tmp') || avatarUrl.startsWith('wxfile://'))) {
+        try {
+          uploadedAvatarUrl = await AIAPI.uploadImage(avatarUrl)
+        } catch (e) {
+          console.error('头像上传失败:', e)
+          // 上传失败不影响登录
+        }
+      } else {
+        uploadedAvatarUrl = avatarUrl
+      }
+
+      const result = await AuthAPI.login(
+        code,
+        nickname || '宠物主人',
+        uploadedAvatarUrl || '',
+        0
+      );
+      console.log('后端登录成功:', result);
+      this.handleLoginSuccess(result, uploadedAvatarUrl, nickname);
+    } catch (error) {
+      console.error('后端登录失败:', error);
+      this.setData({ isLoading: false });
+      wx.showToast({
+        title: error.message || '登录失败，请检查服务器是否启动',
+        icon: 'none',
+        duration: 3000
+      });
+    }
+  },
+
   // 登录成功处理
-  handleLoginSuccess(data) {
+  handleLoginSuccess(data, avatarUrl, nickname) {
     const app = getApp();
-    
+
+    // 构建用户信息对象（优先使用用户选择的头像和昵称）
+    const userInfo = {
+      id: data.userId,
+      nickname: nickname || data.nickname || '宠物主人',
+      avatarUrl: avatarUrl || data.avatarUrl || '',
+      isVip: data.isVip || false,
+      vipLevel: data.vipLevel || 'VIP',
+      vipExpireDate: data.vipExpireDate || '',
+      savingAmount: data.savingAmount || '0.00'
+    };
+
     // 1. 存储登录凭证
     wx.setStorageSync('token', data.token);
-    wx.setStorageSync('userInfo', data.userInfo);
-    
+    wx.setStorageSync('userId', data.userId);
+    wx.setStorageSync('userInfo', userInfo);
+
     // 2. 更新全局状态
     app.globalData.token = data.token;
-    app.globalData.userInfo = data.userInfo;
-    
-    // 3. 获取并执行回调
-    const callback = wx.getStorageSync('loginCallback');
-    
-    if (callback) {
-      try {
-        const callbackFn = new Function(`return ${callback}`)();
-        wx.navigateBack({
-          success: () => {
-            // 延迟执行确保页面已渲染
-            setTimeout(callbackFn, 300);
-          }
-        });
-      } catch (e) {
-        console.error('执行回调失败', e);
-        wx.switchTab({ url: '/pages/index/index' });
-      }
-    } else {
-      wx.switchTab({ url: '/pages/index/index' });
-    }
+    app.globalData.userId = data.userId;
+    app.globalData.userInfo = userInfo;
+
+    // 3. 显示成功提示
+    wx.showToast({
+      title: data.isNewUser ? '注册成功' : '登录成功',
+      icon: 'success',
+      duration: 1500
+    });
+
+    // 4. 延迟后返回上一页
+    setTimeout(() => {
+      wx.navigateBack({
+        fail: () => {
+          // 如果返回失败，跳转首页
+          wx.switchTab({ url: '/pages/index/index' })
+        }
+      })
+    }, 1500);
   }
 });

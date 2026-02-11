@@ -1,0 +1,156 @@
+/* pages/consultation/list.wxss */
+.consultation-list-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* Tab栏 */
+.tab-bar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  padding: 0 30rpx;
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.06);
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 32rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.tab-item.active {
+  color: #1D1D1F;
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 6rpx;
+  background: linear-gradient(135deg, #6D32FF 0%, #A855F7 100%);
+  border-radius: 3rpx;
+}
+
+/* 咨询列表 */
+.consultation-list {
+  padding: 20rpx 30rpx;
+}
+
+.consultation-item {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.item-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.doctor-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.doctor-info {
+  flex: 1;
+}
+
+.doctor-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.consult-type {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.status {
+  font-size: 24rpx;
+  padding: 5rpx 15rpx;
+  border-radius: 20rpx;
+}
+
+.status-0 {
+  background: #fff3e0;
+  color: #ff9800;
+}
+
+.status-1 {
+  background: #e3f2fd;
+  color: #2196f3;
+}
+
+.status-2 {
+  background: #e8f5e9;
+  color: #4caf50;
+}
+
+.status-3 {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.pet-info {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.description {
+  font-size: 26rpx;
+  color: #333;
+  margin-bottom: 15rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fee {
+  font-size: 28rpx;
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  padding-top: 200rpx;
+  text-align: center;
+}
+
+.empty-text {
+  color: #999;
+  font-size: 28rpx;
+}

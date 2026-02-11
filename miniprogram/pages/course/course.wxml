@@ -1,2 +1,44 @@
-<!--pages/course/course.wxml-->
-<text>pages/course/course.wxml</text>
+<!-- pages/course/course.wxml - 训练课程页面 -->
+<view class="page">
+  <!-- 主内容区 -->
+  <scroll-view class="main-content" scroll-y enable-back-to-top>
+    <!-- Banner -->
+    <view class="course-banner slide-up">
+      <view class="banner-content">
+        <text class="banner-tag">专业训练</text>
+        <text class="banner-title">让您的爱宠更懂事</text>
+        <text class="banner-desc">科学训练方法，培养良好生活习惯</text>
+      </view>
+    </view>
+
+    <!-- 课程列表 -->
+    <view class="course-list slide-up" style="animation-delay: 0.1s">
+      <view
+        class="course-card apple-card"
+        wx:for="{{courses}}"
+        wx:key="id"
+        bindtap="onCourseTap"
+        data-course="{{item}}"
+        hover-class="course-card-hover"
+      >
+        <view class="course-image course-image-{{item.color}}">
+          <text class="course-emoji">{{item.emoji}}</text>
+        </view>
+        <view class="course-info">
+          <text class="course-name">{{item.name}}</text>
+          <view class="course-meta">
+            <text class="course-lessons">{{item.lessons}}节课程</text>
+            <text class="course-students">{{item.students}}人学习</text>
+          </view>
+          <view class="course-footer">
+            <text class="course-price">{{item.price}}</text>
+            <text class="course-tag">{{item.tag}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部安全区 -->
+    <view class="safe-area-bottom"></view>
+  </scroll-view>
+</view>

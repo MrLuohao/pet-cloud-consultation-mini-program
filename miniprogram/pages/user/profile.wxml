@@ -1,0 +1,100 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════════
+  ║  个人资料编辑 | Profile Edit                                                      ║
+  ║  Design: Purple • Blue • Pink • White                                            ║
+  ╚══════════════════════════════════════════════════════════════════════════════
+-->
+<view class="profile-page">
+  <!-- 头像区域 -->
+  <view class="avatar-section">
+    <view class="avatar-wrapper" bindtap="onChooseAvatar">
+      <image
+        wx:if="{{userInfo.avatarUrl}}"
+        class="avatar-img"
+        src="{{userInfo.avatarUrl}}"
+        mode="aspectFill"
+      />
+      <view wx:else class="avatar-placeholder">
+        <text class="avatar-emoji">🐱</text>
+      </view>
+      <view class="avatar-edit-icon">
+        <text>📷</text>
+      </view>
+    </view>
+    <text class="avatar-tip">点击更换头像</text>
+  </view>
+
+  <!-- 表单区域 -->
+  <view class="form-section">
+    <!-- 昵称 -->
+    <view class="form-item">
+      <text class="form-label">昵称</text>
+      <input
+        class="form-input"
+        type="text"
+        placeholder="请输入昵称"
+        maxlength="20"
+        value="{{userInfo.nickname}}"
+        bindinput="onNicknameInput"
+      />
+    </view>
+
+    <!-- 性别 -->
+    <view class="form-item" bindtap="onGenderTap">
+      <text class="form-label">性别</text>
+      <view class="form-picker">
+        <text class="picker-value">{{genderText}}</text>
+        <text class="picker-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 性别选择器弹窗 -->
+  <view class="gender-picker-mask" wx:if="{{showGenderPicker}}" bindtap="onCloseGenderPicker">
+    <view class="gender-picker-popup" catchtap="">
+      <view class="picker-header">
+        <text class="picker-title">选择性别</text>
+      </view>
+      <view class="picker-options">
+        <view
+          class="picker-option {{userInfo.gender === 0 ? 'active' : ''}}"
+          bindtap="onSelectGender"
+          data-gender="0"
+        >
+          <text class="option-icon">🤫</text>
+          <text class="option-text">保密</text>
+          <text class="option-check" wx:if="{{userInfo.gender === 0}}">✓</text>
+        </view>
+        <view
+          class="picker-option {{userInfo.gender === 1 ? 'active' : ''}}"
+          bindtap="onSelectGender"
+          data-gender="1"
+        >
+          <text class="option-icon">👨</text>
+          <text class="option-text">男</text>
+          <text class="option-check" wx:if="{{userInfo.gender === 1}}">✓</text>
+        </view>
+        <view
+          class="picker-option {{userInfo.gender === 2 ? 'active' : ''}}"
+          bindtap="onSelectGender"
+          data-gender="2"
+        >
+          <text class="option-icon">👩</text>
+          <text class="option-text">女</text>
+          <text class="option-check" wx:if="{{userInfo.gender === 2}}">✓</text>
+        </view>
+      </view>
+      <view class="picker-cancel" bindtap="onCloseGenderPicker">
+        <text>取消</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="save-section">
+    <button class="save-btn {{canSave ? '' : 'disabled'}}" bindtap="onSave" disabled="{{!canSave || saving}}">
+      <text wx:if="{{saving}}">保存中...</text>
+      <text wx:else>保存</text>
+    </button>
+  </view>
+</view>

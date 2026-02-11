@@ -1,0 +1,135 @@
+<!-- pages/shop/subscription/index.wxml - 订阅套餐（Story 5.2）-->
+<view class="sub-page">
+
+  <!-- 顶部标签切换 -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{activeTab === 0 ? 'tab-active' : ''}}"
+      bindtap="onTabSwitch" data-tab="0"
+    >订阅套餐</view>
+    <view
+      class="tab-item {{activeTab === 1 ? 'tab-active' : ''}}"
+      bindtap="onTabSwitch" data-tab="1"
+    >我的订阅</view>
+  </view>
+
+  <!-- Tab 0: 购买套餐 -->
+  <view wx:if="{{activeTab === 0}}" class="buy-tab">
+
+    <!-- 套餐卡片 -->
+    <view class="plans-section">
+      <view
+        wx:for="{{plans}}" wx:key="id"
+        class="plan-card {{selectedPlan === index ? 'plan-selected' : ''}}"
+        bindtap="onPlanSelect" data-index="{{index}}"
+      >
+        <view class="plan-header">
+          <text class="plan-icon">{{item.icon}}</text>
+          <view class="plan-title-wrap">
+            <view class="plan-name-row">
+              <text class="plan-name">{{item.name}}</text>
+              <text class="plan-tag tag-{{item.tagColor}}">{{item.tag}}</text>
+            </view>
+            <text class="plan-desc">{{item.desc}}</text>
+          </view>
+          <view class="plan-price-wrap">
+            <text class="plan-price">¥{{item.price}}</text>
+            <text class="plan-unit">/{{item.period}}</text>
+            <text class="plan-original">¥{{item.originalPrice}}</text>
+          </view>
+        </view>
+        <view class="plan-features">
+          <text wx:for="{{item.features}}" wx:key="*this" wx:for-item="feat" class="feature-item">✓ {{feat}}</text>
+        </view>
+        <view wx:if="{{selectedPlan === index}}" class="selected-badge">已选</view>
+      </view>
+    </view>
+
+    <!-- 选择宠物 -->
+    <view class="section-card">
+      <view class="section-title">选择宠物</view>
+      <scroll-view scroll-x class="pet-scroll">
+        <view
+          wx:for="{{pets}}" wx:key="id"
+          class="pet-chip {{selectedPetId === item.id ? 'chip-selected' : ''}}"
+          bindtap="onPetSelect" data-id="{{item.id}}"
+        >
+          <image class="chip-avatar" src="{{item.avatar || '/images/default-pet.png'}}" mode="aspectFill"/>
+          <text class="chip-name">{{item.name}}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 配送频次 -->
+    <view class="section-card">
+      <view class="section-title">配送频次</view>
+      <view class="freq-row">
+        <view
+          wx:for="{{frequencies}}" wx:key="*this" wx:for-item="freq"
+          class="freq-btn {{selectedFreq === index ? 'freq-selected' : ''}}"
+          bindtap="onFreqSelect" data-index="{{index}}"
+        >{{freq}}</view>
+      </view>
+    </view>
+
+    <!-- 订阅说明 -->
+    <view class="notice-card">
+      <text class="notice-title">📋 订阅说明</text>
+      <text class="notice-item">• 首次订阅后1-3个工作日内完成首次配送</text>
+      <text class="notice-item">• 配送日期前48小时可免费修改或暂停订单</text>
+      <text class="notice-item">• 随时可以在"我的订阅"中管理或取消</text>
+      <text class="notice-item">• 连续订阅享额外9折优惠</text>
+    </view>
+
+    <!-- 订阅按钮 -->
+    <view class="submit-area">
+      <view class="price-preview">
+        <text class="preview-label">本期订阅</text>
+        <text class="preview-price">¥{{plans[selectedPlan].price}}/{{frequencies[selectedFreq]}}</text>
+      </view>
+      <button
+        class="subscribe-btn {{subscribing ? 'btn-disabled' : ''}}"
+        bindtap="onSubscribe"
+        disabled="{{subscribing}}"
+      >{{subscribing ? '处理中...' : '立即订阅'}}</button>
+    </view>
+  </view>
+
+  <!-- Tab 1: 我的订阅 -->
+  <view wx:elif="{{activeTab === 1}}" class="my-subs-tab">
+    <view wx:if="{{mySubs.length === 0}}" class="empty-state">
+      <text class="empty-icon">📦</text>
+      <text class="empty-text">暂无订阅</text>
+      <text class="empty-sub">选择心仪套餐，开启定期宠物关怀</text>
+      <button class="go-buy-btn" bindtap="onTabSwitch" data-tab="0">去选套餐</button>
+    </view>
+    <view wx:else class="sub-list">
+      <view wx:for="{{mySubs}}" wx:key="id" class="sub-card">
+        <view class="sub-card-header">
+          <text class="sub-plan-name">{{item.planType}}</text>
+          <text class="sub-status status-{{statusColors[item.status] || 'gray'}}">
+            {{statusLabels[item.status] || item.status}}
+          </text>
+        </view>
+        <view class="sub-info-row">
+          <text class="sub-info-label">配送频次</text>
+          <text class="sub-info-value">{{item.frequency}}</text>
+        </view>
+        <view class="sub-info-row" wx:if="{{item.nextDeliveryDate}}">
+          <text class="sub-info-label">下次配送</text>
+          <text class="sub-info-value">{{item.nextDeliveryDate}}</text>
+        </view>
+        <view class="sub-info-row" wx:if="{{item.petName}}">
+          <text class="sub-info-label">宠物</text>
+          <text class="sub-info-value">{{item.petName}}</text>
+        </view>
+        <view class="sub-actions">
+          <button wx:if="{{item.status === 'active'}}" class="action-btn btn-pause" bindtap="onPause" data-id="{{item.id}}">暂停</button>
+          <button wx:if="{{item.status === 'paused'}}" class="action-btn btn-resume" bindtap="onResume" data-id="{{item.id}}">恢复</button>
+          <button wx:if="{{item.status !== 'cancelled'}}" class="action-btn btn-cancel" bindtap="onCancel" data-id="{{item.id}}">取消订阅</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+</view>

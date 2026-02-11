@@ -1,0 +1,160 @@
+/* pages/consultation/doctor-list.wxss */
+.doctor-list-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* 科室筛选 */
+.department-scroll {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 20rpx 30rpx;
+  padding-top: calc(20rpx + constant(safe-area-inset-top));
+  padding-top: calc(20rpx + env(safe-area-inset-top));
+  white-space: nowrap;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.06);
+}
+
+.department-item {
+  display: inline-block;
+  padding: 16rpx 36rpx;
+  margin-right: 16rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: #f5f5f5;
+  transition: all 0.2s ease;
+}
+
+.department-item.active {
+  background: linear-gradient(135deg, #6D32FF 0%, #A855F7 100%);
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(109, 50, 255, 0.25);
+}
+
+/* 医生列表 */
+.doctor-list {
+  padding: 20rpx 30rpx;
+}
+
+.doctor-item {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+}
+
+.doctor-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  margin-right: 25rpx;
+}
+
+.doctor-avatar-wrapper {
+  width: 120rpx;
+  height: 120rpx;
+  margin-right: 25rpx;
+  flex-shrink: 0;
+}
+
+.doctor-avatar-img {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+}
+
+.doctor-avatar-text {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6D32FF 0%, #A855F7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 40rpx;
+  font-weight: 600;
+}
+
+.doctor-info {
+  flex: 1;
+}
+
+.doctor-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.doctor-name {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+  margin-right: 15rpx;
+}
+
+.doctor-title {
+  font-size: 24rpx;
+  color: #999;
+  background: #f5f5f5;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.doctor-hospital {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.doctor-tags {
+  margin-bottom: 10rpx;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 22rpx;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  margin-right: 10rpx;
+}
+
+.doctor-stats {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.rating {
+  font-size: 24rpx;
+  color: #ff9800;
+  margin-right: 20rpx;
+}
+
+.count {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.doctor-fee {
+  font-size: 28rpx;
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+/* 空状态 */
+.empty-state {
+  padding-top: 200rpx;
+  text-align: center;
+}
+
+.empty-text {
+  color: #999;
+  font-size: 28rpx;
+}

@@ -1,0 +1,79 @@
+<!--pages/collection/list.wxml-->
+<view class="collection-container">
+  <!-- 顶部操作栏 -->
+  <view class="header-bar">
+    <view class="header-left">
+      <text class="count-text">共{{collectionList.length}}件商品</text>
+    </view>
+    <view class="header-right">
+      <text class="edit-btn" bindtap="toggleEditMode">{{isEditMode ? '完成' : '管理'}}</text>
+    </view>
+  </view>
+
+  <!-- 收藏列表 -->
+  <view class="collection-list" wx:if="{{collectionList.length > 0}}">
+    <view class="collection-item" wx:for="{{collectionList}}" wx:key="id">
+      <!-- 编辑模式选择框 -->
+      <view class="select-box" wx:if="{{isEditMode}}" bindtap="toggleSelect" data-id="{{item.id}}">
+        <view class="checkbox {{item.selected ? 'checked' : ''}}">
+          <text wx:if="{{item.selected}}">✓</text>
+        </view>
+      </view>
+
+      <!-- 商品信息 -->
+      <view class="product-content" bindtap="gotoProduct" data-productid="{{item.productId}}">
+        <view class="product-image">
+          <image src="{{item.productImage || '/image/product-placeholder.png'}}" mode="aspectFill"></image>
+        </view>
+
+        <view class="product-info">
+          <text class="product-name">{{item.productName}}</text>
+
+          <view class="product-price">
+            <text class="price-symbol">¥</text>
+            <text class="price-int">{{item.priceInt}}</text>
+            <text class="price-decimal">.{{item.priceDecimal}}</text>
+          </view>
+
+          <view class="product-actions" wx:if="{{!isEditMode}}">
+            <view class="action-btn cart-btn" catchtap="addToCart" data-productid="{{item.productId}}">
+              <text>加入购物车</text>
+            </view>
+            <view class="action-btn delete-btn" catchtap="deleteItem" data-id="{{item.id}}" data-productid="{{item.productId}}">
+              <text>取消收藏</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{collectionList.length === 0}}">
+    <text class="empty-icon">💝</text>
+    <text class="empty-title">收藏夹是空的</text>
+    <text class="empty-desc">去逛逛，发现喜欢的商品吧</text>
+    <view class="goto-shop-btn" bindtap="gotoShop">
+      <text>去逛逛</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏（编辑模式） -->
+  <view class="bottom-bar" wx:if="{{isEditMode && collectionList.length > 0}}">
+    <view class="select-all" bindtap="toggleSelectAll">
+      <view class="checkbox {{allSelected ? 'checked' : ''}}">
+        <text wx:if="{{allSelected}}">✓</text>
+      </view>
+      <text>全选</text>
+    </view>
+
+    <view class="bottom-actions">
+      <view class="batch-btn add-cart-btn" bindtap="batchAddToCart">
+        <text>加入购物车</text>
+      </view>
+      <view class="batch-btn delete-all-btn" bindtap="batchDelete">
+        <text>删除({{selectedIds.length}})</text>
+      </view>
+    </view>
+  </view>
+</view>

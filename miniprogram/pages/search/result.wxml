@@ -1,0 +1,51 @@
+<!--pages/search/result.wxml-->
+<view class="search-container">
+  <!-- 搜索框 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" placeholder="搜索商品" value="{{keyword}}" bindinput="onInput" confirm-type="search" bindconfirm="doSearch" focus="{{inputFocus}}" cursor-spacing="20" />
+      <text class="clear-btn" wx:if="{{keyword}}" bindtap="clearKeyword">×</text>
+    </view>
+  </view>
+
+  <!-- 热门搜索 -->
+  <view class="hot-section" wx:if="{{!keyword && hotKeywords.length > 0}}">
+    <view class="section-title">热门搜索</view>
+    <view class="hot-keywords">
+      <text class="keyword-item" wx:for="{{hotKeywords}}" wx:key="*this" bindtap="searchHot" data-keyword="{{item}}">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 搜索中提示 -->
+  <view class="searching-tip" wx:if="{{keyword && isSearching}}">
+    <view class="searching-spinner"></view>
+    <text class="searching-text">搜索中...</text>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view class="result-section" wx:if="{{keyword && !isSearching && productList.length > 0}}">
+    <view class="result-header">
+      <text class="result-count">找到{{productList.length}}个相关商品</text>
+    </view>
+    <view class="product-list">
+      <view class="product-item" wx:for="{{productList}}" wx:key="id" bindtap="gotoProduct" data-id="{{item.id}}">
+        <image class="product-cover" src="{{item.coverUrl}}" mode="aspectFill" binderror="onImageError" data-index="{{index}}"></image>
+        <view class="product-info">
+          <text class="product-name">{{item.name}}</text>
+          <text class="product-summary">{{item.summary}}</text>
+          <view class="product-footer">
+            <text class="product-price">¥{{item.price}}</text>
+            <text class="product-sales">已售{{item.sales}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{keyword && !isSearching && productList.length === 0}}">
+    <text class="empty-icon">🔍</text>
+    <text class="empty-text">没有找到相关商品</text>
+  </view>
+</view>

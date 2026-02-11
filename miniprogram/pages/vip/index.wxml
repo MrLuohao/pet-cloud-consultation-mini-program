@@ -1,0 +1,181 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════════
+  ║  VIP 会员中心 | VIP Membership Center                                        ║
+  ║  Design: Premium • Elegant • Purple-Gold                                     ║
+  ║  Inspired by: JD PLUS, Meituan VIP, NetEase Premium                          ║
+  ╚══════════════════════════════════════════════════════════════════════════════
+-->
+<view class="vip-page">
+  <scroll-view class="main-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+
+    <!-- Hero VIP Card -->
+    <view class="hero-card animate-fade-in-up">
+      <view class="hero-bg">
+        <view class="hero-gradient"></view>
+        <view class="hero-orb hero-orb-1"></view>
+        <view class="hero-orb hero-orb-2"></view>
+        <view class="hero-mesh"></view>
+      </view>
+
+      <view class="hero-content">
+        <!-- 顶部状态行 -->
+        <view class="hero-top-row">
+          <view class="vip-badge-wrap">
+            <text class="vip-crown">👑</text>
+            <text class="vip-badge-text">{{isVip ? 'VIP会员' : '普通用户'}}</text>
+          </view>
+          <view class="vip-level-tag" wx:if="{{isVip}}">
+            <text>{{vipLevelName}}</text>
+          </view>
+        </view>
+
+        <!-- 用户信息 -->
+        <view class="hero-user-row">
+          <view class="hero-avatar-wrap">
+            <image wx:if="{{userInfo.avatarUrl}}" class="hero-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+            <text wx:else class="hero-avatar-emoji">🐱</text>
+          </view>
+          <view class="hero-user-info">
+            <text class="hero-user-name">{{userInfo.nickname || '宠物主人'}}</text>
+            <text class="hero-user-desc" wx:if="{{isVip}}">到期时间：{{vipExpireDate}}</text>
+            <text class="hero-user-desc" wx:else>开通会员，享受专属特权</text>
+          </view>
+        </view>
+
+        <!-- 会员亮点 -->
+        <view class="hero-tags">
+          <view class="hero-tag">专属折扣</view>
+          <view class="hero-tag">优先客服</view>
+          <view class="hero-tag">问诊优先</view>
+        </view>
+
+        <!-- 会员状态 -->
+        <view class="hero-metrics">
+          <view class="hero-metric">
+            <text class="metric-value">{{savingAmount}}</text>
+            <text class="metric-label">已省(元)</text>
+          </view>
+          <view class="hero-metric-divider"></view>
+          <view class="hero-metric">
+            <text class="metric-value">{{isVip ? '有效' : '未开通'}}</text>
+            <text class="metric-label">{{isVip ? '会员状态' : '立即开通'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 套餐选择 -->
+    <view class="section plan-section animate-fade-in-up" style="animation-delay: 0.1s">
+      <view class="section-header">
+        <text class="section-title">选择套餐</text>
+        <text class="section-sub">开通即享全部权益</text>
+      </view>
+
+      <scroll-view class="plan-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view class="plan-list">
+          <view
+            class="plan-card {{selectedPlan === index ? 'plan-active' : ''}} {{item.recommend ? 'plan-recommend' : ''}}"
+            wx:for="{{plans}}"
+            wx:key="id"
+            bindtap="onPlanSelect"
+            data-index="{{index}}"
+          >
+            <view class="plan-tag" wx:if="{{item.recommend}}">
+              <text>推荐</text>
+            </view>
+            <text class="plan-name">{{item.name}}</text>
+            <view class="plan-price-row">
+              <text class="plan-currency">¥</text>
+              <text class="plan-price">{{item.price}}</text>
+            </view>
+            <text class="plan-original" wx:if="{{item.originalPrice}}">¥{{item.originalPrice}}</text>
+            <text class="plan-unit">{{item.unit}}</text>
+            <view class="plan-save" wx:if="{{item.saveText}}">
+              <text>{{item.saveText}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 会员权益 -->
+    <view class="section benefits-section animate-fade-in-up" style="animation-delay: 0.15s">
+      <view class="section-header">
+        <text class="section-title">会员专属权益</text>
+        <text class="section-sub">{{isVip ? '您已享有以下权益' : '开通后立即生效'}}</text>
+      </view>
+
+      <view class="benefits-grid">
+        <view class="benefit-card" wx:for="{{benefits}}" wx:key="id">
+          <view class="benefit-icon-wrap benefit-{{item.color}}">
+            <text class="benefit-icon">{{item.icon}}</text>
+          </view>
+          <text class="benefit-name">{{item.name}}</text>
+          <text class="benefit-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 会员说明 -->
+    <view class="section faq-section animate-fade-in-up" style="animation-delay: 0.2s">
+      <view class="section-header">
+        <text class="section-title">会员说明</text>
+      </view>
+      <view class="faq-list">
+        <view class="faq-item" wx:for="{{faqs}}" wx:key="index">
+          <text class="faq-q">{{item.q}}</text>
+          <text class="faq-a">{{item.a}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部安全区占位 -->
+    <view style="height: 180rpx;"></view>
+  </scroll-view>
+
+  <!-- 底部固定操作栏 -->
+  <view class="bottom-bar safe-area-bottom">
+    <view class="bottom-info">
+      <text class="bottom-label">{{plans[selectedPlan].name}}</text>
+      <view class="bottom-price-row">
+        <text class="bottom-currency">¥</text>
+        <text class="bottom-price">{{plans[selectedPlan].price}}</text>
+      </view>
+    </view>
+    <view class="bottom-btn" bindtap="onSubscribe">
+      <text>{{isVip ? '立即续费' : '立即开通'}}</text>
+    </view>
+  </view>
+</view>
+
+<!-- 模拟支付遮罩 -->
+<view class="pay-overlay" wx:if="{{showPayPanel}}" bindtap="hidePayPanel"></view>
+
+<!-- 模拟支付底部面板 -->
+<view class="pay-panel {{showPayPanel ? 'pay-panel-show' : ''}}">
+  <view class="pay-panel-handle"></view>
+  <view class="pay-panel-title">{{isVip ? '续费确认' : '开通会员'}}</view>
+
+  <view class="pay-plan-info">
+    <text class="pay-plan-name">{{plans[selectedPlan].name}}</text>
+    <text class="pay-plan-unit">（{{plans[selectedPlan].unit}}）</text>
+  </view>
+
+  <view class="pay-amount-wrap">
+    <text class="pay-currency">¥</text>
+    <text class="pay-amount-num">{{plans[selectedPlan].price}}</text>
+  </view>
+
+  <view class="pay-method-row">
+    <view class="pay-method-left">
+      <text class="pay-method-icon">💚</text>
+      <text class="pay-method-name">微信支付</text>
+    </view>
+    <view class="pay-method-check">✓</view>
+  </view>
+
+  <view class="pay-divider"></view>
+
+  <button class="pay-confirm-btn" loading="{{subscribing}}" bindtap="confirmVipPay">确认支付</button>
+  <view class="pay-cancel-text" bindtap="hidePayPanel">取消</view>
+</view>

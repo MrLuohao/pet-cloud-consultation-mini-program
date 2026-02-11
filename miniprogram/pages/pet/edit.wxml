@@ -1,0 +1,350 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════
+  ║  宠物编辑页 | Pet Edit - Card Wizard                       ║
+  ║  Design: Step-by-step • Card-based • Interactive           ║
+  ╚══════════════════════════════════════════════════════════════
+-->
+<view class="page">
+  <!-- 背景装饰层 -->
+  <view class="page-bg">
+    <view class="bg-gradient"></view>
+    <view class="bg-orb orb-1"></view>
+    <view class="bg-orb orb-2"></view>
+    <view class="bg-orb orb-3"></view>
+  </view>
+
+  <!-- 步骤指示器 -->
+  <view class="step-indicator">
+    <view class="step-dots">
+      <view class="step-line-bg">
+        <view class="step-line-fill" style="width: {{currentStep / (totalSteps - 1) * 100}}%"></view>
+      </view>
+      <view
+        wx:for="{{['选择类型', '基本信息', '个性档案']}}"
+        wx:key="index"
+        class="step-dot-wrap {{currentStep >= index ? 'done' : ''}} {{currentStep === index ? 'current' : ''}}"
+        bindtap="goToStep"
+        data-step="{{index}}"
+      >
+        <view class="step-dot">
+          <text wx:if="{{currentStep > index}}">✓</text>
+          <text wx:else>{{index + 1}}</text>
+        </view>
+        <text class="step-label">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <scroll-view
+    class="content-scroll"
+    scroll-y
+    enhanced
+    show-scrollbar="{{false}}"
+  >
+    <!-- ========== Step 1: Type & Name ========== -->
+    <view class="step-card {{currentStep === 0 ? 'step-visible' : 'step-hidden'}}">
+      <view class="wizard-card glass-card-pro animate-fade-in-up">
+        <view class="wc-header">
+          <text class="wc-emoji">✨</text>
+          <text class="wc-title">TA是什么小可爱？</text>
+          <text class="wc-sub">选择宠物类型，开始记录TA的故事</text>
+        </view>
+
+        <!-- 宠物类型卡片 -->
+        <view class="type-grid">
+          <view
+            wx:for="{{petTypes}}"
+            wx:key="value"
+            class="type-card type-{{index}} {{formData.type === item.value ? 'type-selected' : ''}} card-shine"
+            bindtap="onSelectType"
+            data-type="{{item.value}}"
+            hover-class="type-card-hover"
+          >
+            <view class="type-card-inner">
+              <text class="type-emoji">{{item.emoji}}</text>
+              <text class="type-name">{{item.name}}</text>
+              <text class="type-desc">{{item.desc}}</text>
+            </view>
+            <view class="type-check-badge" wx:if="{{formData.type === item.value}}">
+              <text>✓</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 名字输入 -->
+        <view class="field-group">
+          <text class="field-label">给TA起个名字</text>
+          <view class="field-input-wrap">
+            <text class="field-icon">🏷️</text>
+            <input
+              class="field-input"
+              placeholder="例如：旺财、咪咪..."
+              value="{{formData.name}}"
+              bindinput="onNameInput"
+              maxlength="20"
+            />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ========== Step 2: Basic Info ========== -->
+    <view class="step-card {{currentStep === 1 ? 'step-visible' : 'step-hidden'}}">
+      <view class="wizard-card glass-card-pro animate-fade-in-up">
+        <view class="wc-header">
+          <text class="wc-emoji">📝</text>
+          <text class="wc-title">TA的基本信息</text>
+          <text class="wc-sub">让我们更了解{{formData.name || 'TA'}}</text>
+        </view>
+
+        <!-- 性别选择 - 现代分段控制器 -->
+        <view class="field-group">
+          <text class="field-label">性别</text>
+          <view class="gender-segment">
+            <view
+              wx:for="{{genders}}"
+              wx:key="value"
+              class="gender-segment-item {{formData.gender === item.value ? 'gender-segment-active gender-segment-' + item.color : ''}}"
+              bindtap="onSelectGender"
+              data-gender="{{item.value}}"
+            >
+              <text class="gender-segment-icon">{{item.icon}}</text>
+              <text class="gender-segment-name">{{item.name}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 品种 - 增强的输入体验 -->
+        <view class="field-group">
+          <text class="field-label">品种</text>
+          <view class="breed-input-card">
+            <view class="breed-input-row">
+              <text class="field-icon">🐕</text>
+              <input
+                class="field-input"
+                placeholder="搜索品种..."
+                value="{{formData.breed}}"
+                bindinput="onBreedInput"
+              />
+            </view>
+          </view>
+          <!-- 品种卡片轮播 - 重新设计 -->
+          <view class="breed-gallery" wx:if="{{breedSuggestions.length > 0}}">
+            <view class="breed-gallery-header">
+              <text class="breed-gallery-title">推荐品种</text>
+              <text class="breed-gallery-hint">左右滑动选择</text>
+            </view>
+            <swiper
+              class="breed-swiper-new"
+              current="{{breedSwiperIndex}}"
+              bindchange="onBreedSwiperChange"
+              bindtransition="onBreedSwiperTransition"
+              bindanimationfinish="onBreedSwiperAnimationFinish"
+              previous-margin="60rpx"
+              next-margin="60rpx"
+              circular
+            >
+              <swiper-item
+                wx:for="{{breedSuggestions}}"
+                wx:key="name"
+              >
+                <view
+                  class="breed-card-new {{formData.breed === item.name ? 'breed-card-new-active' : ''}} {{breedSwiperIndex === index ? 'breed-card-center' : ''}}"
+                  style="filter: blur({{breedCardBlur[index] || 0}}px); opacity: {{breedCardOpacity[index] || 1}};"
+                  bindtap="onSelectBreed"
+                  data-breed="{{item.name}}"
+                >
+                  <image class="breed-card-new-image" src="{{item.image}}" mode="aspectFill"></image>
+                  <view class="breed-card-new-label">
+                    <text class="breed-card-new-name">{{item.name}}</text>
+                  </view>
+                </view>
+              </swiper-item>
+            </swiper>
+          </view>
+        </view>
+
+        <!-- 生日和年龄 - 信息卡片 -->
+        <view class="field-group">
+          <text class="field-label">生日</text>
+          <picker mode="date" value="{{formData.birthday}}" end="{{today}}" bindchange="onBirthdayChange">
+            <view class="birthday-card">
+              <view class="birthday-main">
+                <view class="birthday-icon-wrap">
+                  <text class="birthday-icon">🎂</text>
+                </view>
+                <view class="birthday-info">
+                  <text class="birthday-date">{{formData.birthday || '选择生日'}}</text>
+                  <text class="birthday-hint" wx:if="{{!formData.birthday}}">点击设置TA的生日</text>
+                </view>
+              </view>
+              <view class="birthday-age" wx:if="{{calculatedAge}}">
+                <text class="age-label">年龄</text>
+                <text class="age-value">{{calculatedAge}}</text>
+              </view>
+              <text class="birthday-arrow">›</text>
+            </view>
+          </picker>
+        </view>
+
+        <!-- 体重 - 滑块+输入组合 -->
+        <view class="field-group">
+          <text class="field-label">体重</text>
+          <view class="weight-input-card">
+            <view class="weight-input-row">
+              <text class="field-icon">⚖️</text>
+              <input
+                class="field-input"
+                type="digit"
+                placeholder="输入体重"
+                value="{{formData.weight}}"
+                bindinput="onWeightInput"
+              />
+              <view class="weight-unit">kg</view>
+            </view>
+            <view class="weight-quick-select">
+              <view class="weight-quick-btn" bindtap="onQuickWeight" data-weight="5">
+                <text>5kg</text>
+              </view>
+              <view class="weight-quick-btn" bindtap="onQuickWeight" data-weight="10">
+                <text>10kg</text>
+              </view>
+              <view class="weight-quick-btn" bindtap="onQuickWeight" data-weight="15">
+                <text>15kg</text>
+              </view>
+              <view class="weight-quick-btn" bindtap="onQuickWeight" data-weight="20">
+                <text>20kg</text>
+              </view>
+              <view class="weight-quick-btn" bindtap="onQuickWeight" data-weight="30">
+                <text>30kg</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ========== Step 3: Profile ========== -->
+    <view class="step-card {{currentStep === 2 ? 'step-visible' : 'step-hidden'}}">
+      <view class="wizard-card glass-card-pro animate-fade-in-up">
+        <view class="wc-header">
+          <text class="wc-emoji">🌟</text>
+          <text class="wc-title">TA的个性档案</text>
+          <text class="wc-sub">让{{formData.name || 'TA'}}更加独特</text>
+        </view>
+
+        <!-- 头像上传 -->
+        <view class="avatar-section" bindtap="changeAvatar">
+          <view class="avatar-outer-ring"></view>
+          <view class="avatar-inner">
+            <image
+              wx:if="{{formData.avatarUrl}}"
+              class="avatar-img"
+              src="{{formData.avatarUrl}}"
+              mode="aspectFill"
+            />
+            <view wx:else class="avatar-default">
+              <text class="avatar-default-emoji">
+                {{formData.type === 1 ? '🐕' : formData.type === 2 ? '🐱' : '🐾'}}
+              </text>
+            </view>
+            <view class="avatar-camera-badge">
+              <text>📷</text>
+            </view>
+          </view>
+          <text class="avatar-hint">点击上传头像</text>
+        </view>
+
+        <!-- 性格标签 -->
+        <view class="field-group">
+          <view class="field-label-row">
+            <text class="field-label">性格标签</text>
+            <text class="field-hint">（已选 {{selectedTags.length}}/5）</text>
+          </view>
+          <view class="tag-grid">
+            <view
+              wx:for="{{personalityTags}}"
+              wx:key="*this"
+              class="ptag {{item.selected ? 'ptag-active' : ''}}"
+              bindtap="onToggleTag"
+              data-index="{{index}}"
+            >
+              <text>{{item.name}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 健康状况 -->
+        <view class="field-group">
+          <text class="field-label">健康状况</text>
+          <view class="field-input-wrap">
+            <text class="field-icon">💚</text>
+            <input
+              class="field-input"
+              placeholder="例如：健康、需要注意体重..."
+              value="{{formData.healthStatus}}"
+              bindinput="onHealthInput"
+            />
+          </view>
+        </view>
+
+        <!-- 座右铭 -->
+        <view class="field-group">
+          <text class="field-label">座右铭</text>
+          <view class="field-textarea-wrap">
+            <textarea
+              class="field-textarea"
+              placeholder="给TA写一句有趣的话吧..."
+              value="{{formData.motto}}"
+              bindinput="onMottoInput"
+              maxlength="50"
+              auto-height
+            />
+            <text class="char-count">{{formData.motto.length || 0}}/50</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 删除按钮（编辑模式） -->
+      <view class="delete-section" wx:if="{{isEdit}}">
+        <view class="delete-btn" bindtap="deletePet" hover-class="delete-btn-hover">
+          <text>删除宠物</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部间距，防止内容被底部按钮遮挡 -->
+    <view class="scroll-bottom-space"></view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="bottom-bar-glass"></view>
+    <view class="bottom-bar-inner">
+      <view
+        class="btn-prev {{currentStep === 0 ? 'btn-hide' : ''}}"
+        bindtap="prevStep"
+        hover-class="btn-prev-hover"
+      >
+        <text>‹ 上一步</text>
+      </view>
+      <view
+        wx:if="{{currentStep < totalSteps - 1}}"
+        class="btn-next"
+        bindtap="nextStep"
+        hover-class="btn-next-hover"
+      >
+        <text>下一步 ›</text>
+      </view>
+      <view
+        wx:else
+        class="btn-save"
+        bindtap="savePet"
+        hover-class="btn-save-hover"
+      >
+        <text>{{isEdit ? '保存修改' : '完成添加'}}</text>
+      </view>
+    </view>
+  </view>
+</view>

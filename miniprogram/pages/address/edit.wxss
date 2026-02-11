@@ -1,0 +1,97 @@
+/* pages/address/edit.wxss */
+.edit-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20rpx;
+}
+
+.form-section {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.form-item {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  display: flex;
+  align-items: center;
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.label {
+  width: 150rpx;
+  font-size: 28rpx;
+  color: #333;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
+
+.input {
+  flex: 1;
+  font-size: 28rpx;
+  height: 48rpx;
+  line-height: 48rpx;
+  background: transparent;
+  padding: 0 0 0 10rpx;
+  margin: 0;
+  min-width: 0;
+}
+
+.input::placeholder {
+  color: #999;
+}
+
+.textarea {
+  flex: 1;
+  height: 150rpx;
+  font-size: 28rpx;
+  line-height: 1.5;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+.textarea::placeholder {
+  color: #999;
+}
+
+.picker {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  height: 48rpx;
+  line-height: 48rpx;
+}
+
+.picker-placeholder {
+  color: #999;
+}
+
+.textarea-item {
+  align-items: flex-start;
+}
+
+.textarea-item .label {
+  padding-top: 6rpx;
+}
+
+.switch-item {
+  justify-content: space-between;
+}
+
+.save-btn {
+  margin: 40rpx 30rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 30rpx;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+}
+
+.save-btn::after {
+  border: none;
+}

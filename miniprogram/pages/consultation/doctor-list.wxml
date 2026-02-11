@@ -1,0 +1,42 @@
+<!--pages/consultation/doctor-list.wxml-->
+<view class="doctor-list-container">
+  <!-- 科室筛选 -->
+  <scroll-view class="department-scroll" scroll-x="{{true}}">
+    <view class="department-item {{selectedDepartment === '' ? 'active' : ''}}" bindtap="selectDepartment" data-department="">
+      全部
+    </view>
+    <view class="department-item {{selectedDepartment === item ? 'active' : ''}}" wx:for="{{departments}}" wx:key="*this" bindtap="selectDepartment" data-department="{{item}}">
+      {{item}}
+    </view>
+  </scroll-view>
+
+  <!-- 医生列表 -->
+  <view class="doctor-list">
+    <view class="doctor-item" wx:for="{{doctorList}}" wx:key="id" bindtap="gotoDetail" data-id="{{item.id}}">
+      <view class="doctor-avatar-wrapper">
+        <image wx:if="{{item.avatar}}" class="doctor-avatar-img" src="{{item.avatar}}" mode="aspectFill"></image>
+        <view wx:else class="doctor-avatar-text">{{item.name ? item.name.charAt(0) : '医'}}</view>
+      </view>
+      <view class="doctor-info">
+        <view class="doctor-header">
+          <text class="doctor-name">{{item.name}}</text>
+          <text class="doctor-title">{{item.title}}</text>
+        </view>
+        <view class="doctor-hospital">{{item.hospitalName}}</view>
+        <view class="doctor-tags">
+          <text class="tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+        </view>
+        <view class="doctor-stats">
+          <text class="rating">★ {{item.rating}}</text>
+          <text class="count">{{item.consultationCount}}次咨询</text>
+        </view>
+        <view class="doctor-fee">¥{{item.consultationFee}}/次</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{doctorList.length === 0}}">
+    <text class="empty-text">暂无医生</text>
+  </view>
+</view>

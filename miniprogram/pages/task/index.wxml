@@ -1,0 +1,40 @@
+<view class="task-page">
+  <view class="points-card">
+    <text class="points-title">当前积分</text>
+    <text class="points-value">{{points.total || 0}}</text>
+    <text class="points-sub">累计获得 {{points.totalEarned || 0}} 积分</text>
+  </view>
+
+  <view class="section">
+    <view class="section-title">今日任务</view>
+    <view wx:if="{{tasks.length === 0}}" class="empty">暂无任务</view>
+    <view wx:for="{{tasks}}" wx:key="id" class="task-item">
+      <view class="task-main">
+        <text class="task-name">{{item.name}}</text>
+        <text class="task-desc">{{item.desc || ''}}</text>
+      </view>
+      <view class="task-side">
+        <text class="task-points">+{{item.points || 0}}</text>
+        <button
+          size="mini"
+          type="{{item.completed ? 'default' : 'primary'}}"
+          disabled="{{item.completed}}"
+          data-id="{{item.id}}"
+          bindtap="onCompleteTask"
+        >{{item.completed ? '已完成' : '完成'}}</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">积分记录</view>
+    <view wx:if="{{history.length === 0}}" class="empty">暂无记录</view>
+    <view wx:for="{{history}}" wx:key="id" class="history-item">
+      <view class="history-left">
+        <text class="history-title">{{item.reason || item.remark || '积分变动'}}</text>
+        <text class="history-time">{{item.createTime || item.time || ''}}</text>
+      </view>
+      <text class="history-points">{{item.points > 0 ? '+' : ''}}{{item.points || 0}}</text>
+    </view>
+  </view>
+</view>

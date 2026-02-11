@@ -1,1 +1,243 @@
-<!--pages/user/user.wxml-->
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════════
+  ║  用户中心 | User Center                                                          ║
+  ║  Design: Warm • Premium • Pet-Friendly                                          ║
+  ║  Inspired by: Xiaohongshu, Meituan, Taobao                                       ║
+  ╚══════════════════════════════════════════════════════════════════════════════
+-->
+<view class="user-page">
+  <!-- 主滚动区 -->
+  <scroll-view class="main-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+
+    <!-- Hero Profile Section -->
+    <view class="hero-section animate-fade-in-up">
+      <!-- 背景装饰 -->
+      <view class="hero-bg">
+        <view class="hero-gradient"></view>
+        <view class="hero-pattern"></view>
+        <view class="hero-glow"></view>
+      </view>
+
+      <!-- 用户信息 -->
+      <view class="hero-content">
+        <view class="profile-row" bindtap="onProfileTap">
+          <!-- 头像区域 -->
+          <view class="avatar-wrapper">
+            <view class="avatar-ring"></view>
+            <view class="avatar-glow"></view>
+            <image
+              wx:if="{{userInfo.avatar}}"
+              class="avatar-img"
+              src="{{userInfo.avatar}}"
+              mode="aspectFill"
+            />
+            <text wx:else class="avatar-emoji">🐱</text>
+            <!-- VIP 标识 -->
+            <view class="avatar-vip" wx:if="{{isVip}}">
+              <text>VIP</text>
+            </view>
+          </view>
+
+          <!-- 用户信息 -->
+          <view class="user-info" wx:if="{{isLoggedIn}}">
+            <view class="user-name-row">
+              <text class="user-name">{{userInfo.name || '宠物达人'}}</text>
+              <view class="user-level" wx:if="{{userLevel}}">
+                <text>Lv.{{userLevel}}</text>
+              </view>
+            </view>
+            <text class="user-id">ID: {{userInfo.id || '888888'}}</text>
+          </view>
+          <view class="user-info" wx:else>
+            <text class="user-name">点击登录/注册</text>
+            <text class="user-id">解锁更多精彩功能</text>
+          </view>
+
+          <!-- 编辑按钮 -->
+          <view class="edit-btn" wx:if="{{isLoggedIn}}">
+            <text class="edit-icon">✏️</text>
+          </view>
+        </view>
+
+        <!-- 数据统计行 -->
+        <view class="stats-row">
+          <view class="stat-item" bindtap="onPointsTap">
+            <text class="stat-value">{{userPoints}}</text>
+            <text class="stat-label">积分</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item" bindtap="onCouponTap">
+            <text class="stat-value">{{userCoupons}}</text>
+            <text class="stat-label">优惠券</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item" bindtap="onPetTap">
+            <text class="stat-value">{{userPets}}</text>
+            <text class="stat-label">宠物</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Quick Actions Row -->
+    <view class="quick-actions animate-fade-in-up" style="animation-delay: 0.1s">
+      <!-- VIP 会员卡片 -->
+      <view class="action-card vip-card" bindtap="onVipTap">
+        <view class="vip-card-bg"></view>
+        <view class="vip-card-glow"></view>
+        <view class="vip-card-top">
+          <view class="vip-icon-badge">
+            <text>👑</text>
+          </view>
+          <view class="vip-chip">{{isVip ? '已开通' : '限时体验'}}</view>
+        </view>
+        <view class="vip-card-content">
+          <text class="vip-card-title">{{isVip ? '会员中心' : '开通会员'}}</text>
+          <text class="vip-card-sub">专属权益 · 轻松开通</text>
+        </view>
+        <view class="vip-card-footer">
+          <text class="vip-card-cta">{{isVip ? '进入权益' : '立即开通'}}</text>
+          <text class="vip-card-arrow">›</text>
+        </view>
+      </view>
+
+      <!-- 积分卡片 -->
+      <view class="action-card points-card" bindtap="onPointsTap">
+        <view class="card-icon points-icon">
+          <text>⭐</text>
+        </view>
+        <view class="card-content">
+          <text class="card-value">{{userPoints}}</text>
+          <text class="card-label">我的积分</text>
+        </view>
+        <text class="card-arrow">›</text>
+      </view>
+
+      <!-- 优惠券卡片 -->
+      <view class="action-card coupon-card" bindtap="onCouponTap">
+        <view class="card-icon coupon-icon">
+          <text>🎫</text>
+        </view>
+        <view class="card-content">
+          <text class="card-value">{{userCoupons}}张</text>
+          <text class="card-label">可用优惠券</text>
+        </view>
+        <text class="card-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- My Orders Section -->
+    <view class="section orders-section animate-fade-in-up" style="animation-delay: 0.15s">
+      <view class="section-header">
+        <text class="section-title">我的订单</text>
+        <view class="section-more" bindtap="onOrderAll">
+          <text>全部订单</text>
+          <text class="arrow">›</text>
+        </view>
+      </view>
+
+      <view class="orders-grid">
+        <view
+          class="order-item"
+          wx:for="{{orders}}"
+          wx:key="type"
+          bindtap="onOrderTap"
+          data-type="{{item.type}}"
+          hover-class="order-item-hover"
+        >
+          <view class="order-icon-wrap order-{{item.color}}">
+            <text class="order-icon">{{item.icon}}</text>
+          </view>
+          <text class="order-label">{{item.name}}</text>
+          <view class="order-badge" wx:if="{{item.count > 0}}">
+            <text>{{item.count > 99 ? '99+' : item.count}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- My Services Section -->
+    <view class="section services-section animate-fade-in-up" style="animation-delay: 0.2s">
+      <view class="section-header">
+        <text class="section-title">我的服务</text>
+      </view>
+
+      <view class="services-grid">
+        <view
+          class="service-item"
+          wx:for="{{services}}"
+          wx:key="id"
+          bindtap="onServiceTap"
+          data-type="{{item.type}}"
+          hover-class="service-item-hover"
+        >
+          <view class="service-icon-wrap service-{{item.color}}">
+            <text class="service-icon">{{item.icon}}</text>
+          </view>
+          <text class="service-label">{{item.name}}</text>
+          <view class="service-badge" wx:if="{{item.extra}}">
+            <text>{{item.extra}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- My Pets Section -->
+    <view class="section pets-section animate-fade-in-up" style="animation-delay: 0.25s" wx:if="{{isLoggedIn}}">
+      <view class="section-header">
+        <text class="section-title">我的宠物</text>
+        <view class="section-more" bindtap="onPetTap">
+          <text>管理</text>
+          <text class="arrow">›</text>
+        </view>
+      </view>
+
+      <scroll-view class="pets-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view class="pets-list">
+          <!-- 宠物卡片 -->
+          <view
+            class="pet-card"
+            wx:for="{{pets}}"
+            wx:key="id"
+            bindtap="onPetDetail"
+            data-id="{{item.id}}"
+            hover-class="pet-card-hover"
+          >
+            <image
+              wx:if="{{item.avatarUrl}}"
+              class="pet-avatar"
+              src="{{item.avatarUrl}}"
+              mode="aspectFill"
+            />
+            <view wx:else class="pet-avatar pet-avatar-default">
+              <text>{{item.type === 1 ? '🐕' : item.type === 2 ? '🐱' : '🐾'}}</text>
+            </view>
+            <text class="pet-name">{{item.name}}</text>
+            <text class="pet-breed">{{item.breed || '未知品种'}}</text>
+          </view>
+
+          <!-- 添加宠物卡片 -->
+          <view class="pet-card pet-add-card" bindtap="onAddPet" hover-class="pet-card-hover">
+            <view class="pet-add-icon">
+              <text>+</text>
+            </view>
+            <text class="pet-name">添加宠物</text>
+            <text class="pet-breed">记录爱宠信息</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- Settings Entry -->
+    <view class="settings-entry animate-fade-in-up" style="animation-delay: 0.3s" bindtap="goToSettings">
+      <view class="settings-icon">
+        <text>⚙️</text>
+      </view>
+      <text class="settings-label">设置</text>
+      <text class="settings-arrow">›</text>
+    </view>
+
+    <!-- 底部安全区 -->
+    <view class="tabbar-safe"></view>
+  </scroll-view>
+</view>

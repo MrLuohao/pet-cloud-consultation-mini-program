@@ -1,66 +1,71 @@
-// pages/course/course.js
+// pages/course/course.js - 训练课程逻辑
+const { CourseAPI } = require('../../utils/api');
+
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-
+    courses: [],
+    loading: false
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
-
+  onLoad() {
+    this.loadCourses();
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
+  // 加载课程列表
+  async loadCourses() {
+    this.setData({ loading: true });
+    try {
+      const courses = await CourseAPI.getList();
+      const formattedCourses = (courses || []).map((course, index) => ({
+        id: course.id,
+        name: course.title,
+        lessons: course.lessonCount || 0,
+        students: this.formatNumber(course.studentCount || 0),
+        price: course.price > 0 ? `¥${course.price}` : '免费',
+        tag: course.tag || '',
+        emoji: this.getCourseEmoji(index),
+        color: this.getCourseColor(index)
+      }));
+      this.setData({ courses: formattedCourses, loading: false });
+    } catch (error) {
+      console.error('加载课程失败:', error);
+      this.setData({ courses: [], loading: false });
+      wx.showToast({ title: '暂无课程，请稍后再来', icon: 'none' });
+    }
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
+  // 格式化数字
+  formatNumber(num) {
+    if (num >= 10000) {
+      return (num / 10000).toFixed(1) + '万';
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'k';
+    }
+    return num.toString();
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
+  // 获取课程emoji
+  getCourseEmoji(index) {
+    const emojis = ['🐕', '🦮', '🐱', '🎾', '🎓', '🏆'];
+    return emojis[index % emojis.length];
   },
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
+  // 获取课程颜色
+  getCourseColor(index) {
+    const colors = ['pink', 'blue', 'green', 'yellow'];
+    return colors[index % colors.length];
   },
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
+  // 返回
+  onBack() {
+    wx.navigateBack();
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
+  // 课程点击 → 跳转详情页
+  onCourseTap(e) {
+    const course = e.currentTarget.dataset.course;
+    wx.navigateTo({
+      url: `/pages/course/detail/index?id=${course.id}`
+    });
   }
-})
+});

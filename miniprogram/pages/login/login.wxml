@@ -1,16 +1,75 @@
-<!-- pages/login/login.wxml -->
-<view class="login-container">
-  <!-- 顶部状态栏 - 实际小程序中会自动适配 -->
-  
-  <view class="login-box">
-    <view class="login-title">登录</view>
-    <view class="login-subtip">登录后可使用完整功能</view>
-    
-    <button 
-      class="login-btn"
-      bindtap="handleLogin"
-    >
-      微信一键登录
-    </button>
+<!-- pages/login/login.wxml - Apple 风格登录页 -->
+<view class="page">
+  <!-- 登录容器 -->
+  <view class="login-container">
+    <!-- Logo 区域 -->
+    <view class="logo-section fade-in">
+      <view class="logo-wrapper">
+        <text class="logo-emoji">🐕</text>
+      </view>
+      <text class="app-name">伴宠云诊</text>
+      <text class="app-slogan">专业宠物健康服务平台</text>
+    </view>
+
+    <!-- 登录表单区域 -->
+    <view class="login-section slide-up">
+      <view class="login-title">欢迎使用</view>
+      <view class="login-subtitle">请完善您的个人信息</view>
+
+      <!-- 用户信息输入区域 -->
+      <view class="user-info-section">
+        <!-- 头像选择 -->
+        <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <view class="avatar-wrapper">
+            <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill"></image>
+            <view wx:else class="avatar-placeholder">
+              <text class="avatar-emoji">🐾</text>
+            </view>
+          </view>
+          <view class="avatar-edit-icon">
+            <text>📷</text>
+          </view>
+        </button>
+        <text class="avatar-tip">点击选择头像</text>
+
+        <!-- 昵称输入 -->
+        <view class="nickname-input-wrap">
+          <input
+            type="nickname"
+            class="nickname-input"
+            placeholder="请输入昵称"
+            value="{{nickname}}"
+            bindinput="onNicknameInput"
+            bindblur="onNicknameBlur"
+          />
+        </view>
+      </view>
+
+      <!-- 登录按钮 -->
+      <button
+        class="login-btn apple-btn-primary {{isLoading ? 'loading' : ''}}"
+        bindtap="handleLogin"
+        hover-class="login-btn-hover"
+        disabled="{{isLoading}}"
+      >
+        <text class="btn-icon">💬</text>
+        <text class="btn-text">{{isLoading ? '登录中...' : '微信一键登录'}}</text>
+      </button>
+
+      <!-- 用户协议 -->
+      <view class="agreement">
+        <text class="agreement-text">登录即表示同意</text>
+        <text class="agreement-link">《用户协议》</text>
+        <text class="agreement-text">和</text>
+        <text class="agreement-link">《隐私政策》</text>
+      </view>
+    </view>
+
+    <!-- 底部装饰 -->
+    <view class="bottom-decoration">
+      <view class="decoration-circle circle-1"></view>
+      <view class="decoration-circle circle-2"></view>
+      <view class="decoration-circle circle-3"></view>
+    </view>
   </view>
 </view>

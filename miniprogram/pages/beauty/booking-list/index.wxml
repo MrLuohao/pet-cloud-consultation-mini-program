@@ -1,0 +1,52 @@
+<view class="page">
+  <!-- 状态筛选 -->
+  <scroll-view class="status-tabs" scroll-x>
+    <view class="tabs-inner">
+      <view
+        wx:for="{{statusTabs}}"
+        wx:key="key"
+        class="tab-item {{activeStatus === item.key ? 'active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onStatusChange"
+      >{{item.label}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <view class="loading-dot"></view>
+  </view>
+
+  <!-- 预约列表 -->
+  <view wx:elif="{{bookings.length > 0}}" class="booking-list">
+    <view wx:for="{{bookings}}" wx:key="id" class="booking-card" data-id="{{item.id}}" bindtap="goToDetail">
+      <view class="booking-header">
+        <text class="store-name">{{item.storeName}}</text>
+        <text class="status-badge status-{{item.statusColor}}">{{item.statusText}}</text>
+      </view>
+      <view class="booking-body">
+        <view class="booking-row">
+          <text class="label">宠物</text>
+          <text class="value">{{item.petName || '未填写'}}</text>
+        </view>
+        <view class="booking-row">
+          <text class="label">日期</text>
+          <text class="value">{{item.bookingDate}} {{item.bookingTime}}</text>
+        </view>
+        <view class="booking-row">
+          <text class="label">服务</text>
+          <text class="value">{{item.services || '未填写'}}</text>
+        </view>
+      </view>
+      <view wx:if="{{item.status === 0}}" class="booking-footer">
+        <view class="btn-cancel" catchtap="cancelBooking" data-id="{{item.id}}">取消预约</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:else class="empty-wrap">
+    <text class="empty-icon">📋</text>
+    <text class="empty-text">暂无预约记录</text>
+  </view>
+</view>

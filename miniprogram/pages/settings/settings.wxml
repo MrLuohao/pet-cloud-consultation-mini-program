@@ -1,0 +1,25 @@
+<view class="settings-page">
+  <view class="card">
+    <view class="row" bindtap="goProfile">
+      <text>个人资料</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="row" bindtap="goProfile">
+      <text>{{userInfo.nickname || '未设置昵称'}}</text>
+      <text class="muted">编辑资料</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="title">后端地址（开发调试）</view>
+    <input class="input" value="{{apiHost}}" bindinput="onApiHostInput" placeholder="例如 10.0.12.147" />
+    <view class="btn-row">
+      <button size="mini" bindtap="saveApiHost">保存</button>
+      <button size="mini" bindtap="resetApiHost">恢复默认</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <button class="danger" bindtap="logout">退出登录</button>
+  </view>
+</view>

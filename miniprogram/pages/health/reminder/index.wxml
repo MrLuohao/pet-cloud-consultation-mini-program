@@ -1,0 +1,87 @@
+<view class="page">
+  <!-- 加载 -->
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <view class="loading-dot"></view>
+  </view>
+
+  <block wx:else>
+    <!-- 提醒列表 -->
+    <view class="reminder-list" wx:if="{{reminders.length > 0}}">
+      <view class="reminder-card {{item.isOverdue ? 'overdue' : ''}} {{item.isToday ? 'today' : ''}} {{item.isDone ? 'done' : ''}}"
+            wx:for="{{reminders}}" wx:key="id">
+        <view class="card-left">
+          <text class="type-icon">{{item.typeInfo.icon}}</text>
+        </view>
+        <view class="card-body">
+          <view class="card-title-row">
+            <text class="card-title">{{item.title}}</text>
+            <text wx:if="{{item.isOverdue && !item.isDone}}" class="status-tag overdue-tag">已过期</text>
+            <text wx:elif="{{item.isToday && !item.isDone}}" class="status-tag today-tag">今天</text>
+            <text wx:elif="{{item.isDone}}" class="status-tag done-tag">已完成</text>
+          </view>
+          <text class="card-pet">{{item.petName}} · {{item.typeInfo.label}}</text>
+          <text class="card-date">📅 {{item.remindDate}}</text>
+          <text class="card-note" wx:if="{{item.note}}">{{item.note}}</text>
+        </view>
+        <view class="card-actions">
+          <view class="action-btn done-btn" wx:if="{{!item.isDone}}" bindtap="onMarkDone" data-id="{{item.id}}">✓</view>
+          <view class="action-btn del-btn" bindtap="onDelete" data-id="{{item.id}}">✕</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-wrap" wx:else>
+      <text class="empty-icon">🔔</text>
+      <text class="empty-text">暂无健康提醒</text>
+      <text class="empty-sub">添加提醒，及时掌握宠物健康计划</text>
+    </view>
+  </block>
+
+  <!-- 添加按钮 -->
+  <view class="fab" bindtap="onShowAdd">+</view>
+
+  <!-- 添加弹窗 -->
+  <view class="modal-mask" wx:if="{{showAddModal}}" bindtap="onHideAdd"></view>
+  <view class="add-modal" wx:if="{{showAddModal}}">
+    <text class="modal-title">添加健康提醒</text>
+
+    <view class="form-item">
+      <text class="form-label">宠物</text>
+      <picker mode="selector" range="{{pets}}" range-key="name" bindchange="onPetChange">
+        <view class="picker-value">{{form.petName || '请选择宠物'}} ▾</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">类型</text>
+      <picker mode="selector" range="{{reminderTypes}}" range-key="label" bindchange="onTypeChange">
+        <view class="picker-value">
+          {{reminderTypes[0].label}} ▾
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">标题</text>
+      <input class="form-input" placeholder="提醒标题" bindinput="onTitleInput" value="{{form.title}}"/>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">日期</text>
+      <picker mode="date" value="{{form.remindDate}}" bindchange="onDateChange">
+        <view class="picker-value">{{form.remindDate || '请选择日期'}} ▾</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">备注</text>
+      <input class="form-input" placeholder="备注（可选）" bindinput="onNoteInput" value="{{form.note}}"/>
+    </view>
+
+    <view class="modal-btns">
+      <button class="btn-cancel" bindtap="onHideAdd">取消</button>
+      <button class="btn-submit" bindtap="onAddReminder">添加</button>
+    </view>
+  </view>
+</view>

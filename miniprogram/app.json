@@ -8,20 +8,64 @@
     "pages/login/login",
     "pages/course/course",
     "pages/beauty/beauty",
-    "pages/recommend/detail"
+    "pages/recommend/detail",
+    "pages/chat/chat",
+    "pages/diagnosis/diagnosis",
+    "pages/cart/cart",
+    "pages/product/detail",
+    "pages/order/confirm",
+    "pages/order/detail",
+    "pages/user/profile",
+    "pages/coupon/center",
+    "pages/coupon/my",
+    "pages/pet/list",
+    "pages/pet/edit",
+    "pages/address/list",
+    "pages/address/edit",
+    "pages/consultation/doctor-list",
+    "pages/consultation/doctor-detail",
+    "pages/consultation/create",
+    "pages/consultation/chat",
+    "pages/consultation/list",
+    "pages/health/list",
+    "pages/health/edit",
+    "pages/search/result",
+    "pages/collection/list",
+    "pages/task/index",
+    "pages/vip/index",
+    "pages/settings/settings",
+    "pages/feedback/feedback",
+    "pages/product/reviews",
+    "pages/order/pending-review",
+    "pages/order/review",
+    "pages/news/all-messages/index",
+    "pages/beauty/detail/index",
+    "pages/beauty/booking/index",
+    "pages/beauty/booking-list/index",
+    "pages/course/detail/index",
+    "pages/course/player/index",
+    "pages/health/reminder/index",
+    "pages/pet/timeline/index",
+    "pages/order/pay-result/index",
+    "pages/insurance/index",
+    "pages/beauty/booking-detail/index",
+    "pages/consultation/urgent/index",
+    "pages/shop/subscription/index",
+    "pages/community/index"
   ],
   "window": {
-    "backgroundColor": "#eeeeee",
-    "backgroundTextStyle": "light",
+    "backgroundColor": "#FFFFFF",
+    "backgroundTextStyle": "dark",
     "navigationBarTitleText": "伴宠云诊",
-    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarBackgroundColor": "#FFFFFF",
     "navigationBarTextStyle": "black",
-    "homeButton": true,
-    "pageOrientation": "auto"
+    "homeButton": false
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#000080",
+    "color": "#86868B",
+    "selectedColor": "#667eea",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/index/index",
@@ -49,16 +93,9 @@
       }
     ]
   },
-  "debug": true,
-  "requiredBackgroundModes":
-   ["audio", "location"],
-  "requiredPrivateInfos":
-   [
-    "getLocation",
-    "onLocationChange",
-    "startLocationUpdateBackground",
-    "chooseAddress"
-  ],
+  "debug": false,
+  "requiredBackgroundModes": ["audio", "location"],
+  "requiredPrivateInfos": ["getLocation", "onLocationChange", "startLocationUpdateBackground", "chooseAddress"],
   "resizable": true,
   "permission": {
     "scope.userLocation": {

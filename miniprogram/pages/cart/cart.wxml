@@ -1,0 +1,462 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════════
+  ║  购物车页面 | Cart Page
+  ║  Design: Warm Pet-Friendly • Feature-Rich • Industry Best Practice
+  ╚══════════════════════════════════════════════════════════════════════════════
+-->
+<view class="cart-page">
+  <!-- 顶部导航栏 -->
+  <view class="cart-header">
+    <view class="header-left">
+      <text class="header-title">购物车</text>
+      <view class="cart-count-badge" wx:if="{{cartList.length > 0}}">
+        <text>{{cartList.length}}</text>
+      </view>
+    </view>
+    <view class="header-actions">
+      <view class="action-btn" bindtap="clearInvalid" wx:if="{{invalidList.length > 0}}">
+        <text>清理失效</text>
+      </view>
+      <view class="action-btn primary" bindtap="toggleEditMode">
+        <text>{{isEditMode ? '完成' : '管理'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空购物车状态 -->
+  <view class="empty-cart" wx:if="{{cartList.length === 0 && invalidList.length === 0}}">
+    <view class="empty-illustration">
+      <view class="empty-cart-icon">
+        <text class="cart-body">🛒</text>
+        <view class="empty-sparkles">
+          <text class="sparkle s1">✨</text>
+          <text class="sparkle s2">✨</text>
+        </view>
+      </view>
+      <view class="empty-pet">
+        <text>🐱</text>
+      </view>
+    </view>
+    <text class="empty-title">购物车空空如也</text>
+    <text class="empty-desc">快去挑选心仪的宠物好物吧~</text>
+    <view class="empty-actions">
+      <button class="goto-shop-btn" bindtap="gotoShop">
+        <text>去逛逛</text>
+      </button>
+      <button class="goto-collect-btn" bindtap="gotoCollect">
+        <text>看看收藏</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 购物车主内容 -->
+  <scroll-view
+    class="cart-content"
+    scroll-y
+    enhanced
+    show-scrollbar="{{false}}"
+    wx:if="{{cartList.length > 0 || invalidList.length > 0}}"
+  >
+    <!-- 满减凑单提示条 -->
+    <view class="promo-banner" wx:if="{{promoInfo.hasPromo}}" bindtap="gotoPromoProducts">
+      <view class="promo-icon-wrap">
+        <text class="promo-icon">🎁</text>
+      </view>
+      <view class="promo-content">
+        <view class="promo-text" wx:if="{{promoInfo.achieved}}">
+          <text class="promo-highlight">恭喜！</text>
+          <text>已满{{promoInfo.threshold}}元，立减{{promoInfo.discount}}元</text>
+        </view>
+        <view class="promo-text" wx:else>
+          <text>再买</text>
+          <text class="promo-highlight">¥{{promoInfo.gap}}</text>
+          <text>可减{{promoInfo.discount}}元，</text>
+          <text class="promo-link">去凑单</text>
+        </view>
+        <view class="promo-progress">
+          <view class="progress-bar">
+            <view class="progress-fill" style="width: {{promoInfo.progress}}%"></view>
+          </view>
+        </view>
+      </view>
+      <view class="promo-arrow">
+        <text>›</text>
+      </view>
+    </view>
+
+    <!-- 限时优惠提醒 -->
+    <view class="flash-reminder" wx:if="{{flashSaleCount > 0}}">
+      <view class="flash-icon">⚡</view>
+      <view class="flash-text">
+        <text>{{flashSaleCount}}件商品正在限时优惠中</text>
+      </view>
+      <view class="flash-countdown" wx:if="{{flashCountdown}}">
+        <text class="countdown-label">剩余</text>
+        <text class="countdown-time">{{flashCountdown}}</text>
+      </view>
+    </view>
+
+    <!-- 有效商品列表 -->
+    <view class="cart-section" wx:if="{{groupedCartList.length > 0}}">
+      <!-- 店铺分组 -->
+      <view class="shop-group" wx:for="{{groupedCartList}}" wx:key="shopId">
+        <!-- 店铺头部 -->
+        <view class="shop-header">
+          <view class="shop-select" bindtap="toggleShopSelect" data-shopid="{{item.shopId}}">
+            <view class="checkbox {{item.allSelected ? 'checked' : ''}}">
+              <text wx:if="{{item.allSelected}}">✓</text>
+            </view>
+          </view>
+          <view class="shop-info" bindtap="gotoShopDetail" data-shopid="{{item.shopId}}">
+            <view class="shop-badge">自营</view>
+            <text class="shop-name">{{item.shopName}}</text>
+            <text class="shop-arrow">›</text>
+          </view>
+          <view class="shop-service">
+            <text class="service-tag">包邮</text>
+            <text class="service-tag" wx:if="{{item.couponCount > 0}}">券</text>
+          </view>
+        </view>
+
+        <!-- 店铺优惠券提示 -->
+        <view class="shop-coupon-bar" wx:if="{{item.couponInfo}}" bindtap="showCouponPicker">
+          <text class="coupon-icon">🎫</text>
+          <text class="coupon-text">{{item.couponInfo}}</text>
+          <text class="coupon-action">去使用</text>
+        </view>
+
+        <!-- 商品列表 -->
+        <view class="product-list">
+          <view
+            class="product-card {{product.selected ? 'selected' : ''}} {{product.isFlashSale ? 'flash-sale' : ''}}"
+            wx:for="{{item.products}}"
+            wx:for-item="product"
+            wx:key="id"
+          >
+            <!-- 限时优惠角标 -->
+            <view class="flash-badge" wx:if="{{product.isFlashSale}}">
+              <text>⚡限时</text>
+            </view>
+
+            <!-- 降价标识 -->
+            <view class="price-drop-badge" wx:if="{{product.priceDrop > 0}}">
+              <text>↓{{product.priceDrop}}</text>
+            </view>
+
+            <!-- 选择框 -->
+            <view class="product-checkbox" bindtap="toggleSelect" data-id="{{product.id}}">
+              <view class="checkbox {{product.selected ? 'checked' : ''}}">
+                <text wx:if="{{product.selected}}">✓</text>
+              </view>
+            </view>
+
+            <!-- 商品图片区 -->
+            <view class="product-image-wrapper" bindtap="gotoProduct" data-id="{{product.productId}}">
+              <image
+                class="product-image"
+                src="{{product.coverUrl}}"
+                mode="aspectFill"
+                lazy-load
+              />
+              <!-- 商品角标 -->
+              <view class="image-badge {{product.badgeType}}" wx:if="{{product.badge}}">
+                <text>{{product.badge}}</text>
+              </view>
+              <!-- 库存状态 -->
+              <view class="stock-overlay" wx:if="{{product.stockStatus === 'low'}}">
+                <text>仅剩{{product.stock}}件</text>
+              </view>
+            </view>
+
+            <!-- 商品信息区 -->
+            <view class="product-info">
+              <!-- 商品名称 -->
+              <view class="product-title-row" bindtap="gotoProduct" data-id="{{product.productId}}">
+                <view class="product-labels">
+                  <text class="label-tag category" wx:if="{{product.categoryName}}">{{product.categoryName}}</text>
+                  <text class="label-tag hot" wx:if="{{product.isHot}}">爆</text>
+                  <text class="label-tag new" wx:if="{{product.isNew}}">新</text>
+                  <text class="label-tag sale" wx:if="{{product.isOnSale}}">促</text>
+                </view>
+                <text class="product-name">{{product.name || product.productName}}</text>
+              </view>
+
+              <!-- 规格选择 -->
+              <view class="spec-selector" bindtap="showSpecPicker" data-product="{{product}}">
+                <text class="spec-text">{{product.spec || '默认规格'}}</text>
+                <text class="spec-arrow">›</text>
+              </view>
+
+              <!-- 服务标签 -->
+              <view class="service-tags">
+                <text class="service-item" wx:if="{{product.freeShipping}}">包邮</text>
+                <text class="service-item" wx:if="{{product.guarantee}}">正品</text>
+                <text class="service-item" wx:if="{{product.returnPolicy}}">7天退换</text>
+              </view>
+
+              <!-- 销量和评分 -->
+              <view class="product-meta">
+                <view class="meta-item rating" wx:if="{{product.rating}}">
+                  <text class="rating-star">★</text>
+                  <text class="rating-value">{{product.rating}}</text>
+                </view>
+                <view class="meta-item sales" wx:if="{{product.salesCount}}">
+                  <text>月销{{product.salesCount}}</text>
+                </view>
+                <view class="meta-item delivery" wx:if="{{product.deliveryTime}}">
+                  <text>{{product.deliveryTime}}</text>
+                </view>
+              </view>
+
+              <!-- 价格和数量行 -->
+              <view class="price-qty-row">
+                <view class="price-section">
+                  <text class="price-symbol">¥</text>
+                  <text class="price-integer">{{product.priceInt}}</text>
+                  <text class="price-decimal">.{{product.priceDecimal}}</text>
+                  <text class="original-price" wx:if="{{product.originalPrice > product.price}}">
+                    ¥{{product.originalPrice}}
+                  </text>
+                </view>
+                <!-- 数量控制 -->
+                <view class="quantity-control">
+                  <view
+                    class="qty-btn minus {{product.quantity <= 1 ? 'disabled' : ''}}"
+                    bindtap="decreaseQuantity"
+                    data-id="{{product.id}}"
+                  >
+                    <text>−</text>
+                  </view>
+                  <input
+                    class="qty-input"
+                    type="number"
+                    value="{{product.quantity}}"
+                    bindinput="onQuantityInput"
+                    bindblur="onQuantityBlur"
+                    data-id="{{product.id}}"
+                  />
+                  <view
+                    class="qty-btn plus {{product.quantity >= product.stock ? 'disabled' : ''}}"
+                    bindtap="increaseQuantity"
+                    data-id="{{product.id}}"
+                  >
+                    <text>+</text>
+                  </view>
+                </view>
+              </view>
+
+              <!-- 优惠信息 -->
+              <view class="promo-tags" wx:if="{{product.promoTags && product.promoTags.length > 0}}">
+                <view class="promo-tag" wx:for="{{product.promoTags}}" wx:for-item="tag" wx:key="*this">
+                  <text>{{tag}}</text>
+                </view>
+              </view>
+            </view>
+
+            <!-- 快捷操作区（编辑模式） -->
+            <view class="quick-actions {{isEditMode ? 'show' : ''}}">
+              <view class="action-item" catchtap="moveToCollect" data-id="{{product.id}}">
+                <text class="action-icon">♡</text>
+                <text class="action-text">移入收藏</text>
+              </view>
+              <view class="action-item" catchtap="findSimilar" data-id="{{product.productId}}">
+                <text class="action-icon">🔍</text>
+                <text class="action-text">找相似</text>
+              </view>
+              <view class="action-item delete" catchtap="deleteItem" data-id="{{product.id}}">
+                <text class="action-icon">🗑</text>
+                <text class="action-text">删除</text>
+              </view>
+            </view>
+
+            <!-- 左滑删除提示 -->
+            <view class="swipe-hint" wx:if="{{!isEditMode && product.showSwipeHint}}">
+              <text>← 左滑可删除</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 店铺小计 -->
+        <view class="shop-subtotal" wx:if="{{item.selectedCount > 0}}">
+          <text class="subtotal-label">已选{{item.selectedCount}}件</text>
+          <text class="subtotal-divider">|</text>
+          <text class="subtotal-label">小计:</text>
+          <text class="subtotal-price">¥{{item.subtotal}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 失效商品区域 -->
+    <view class="invalid-section" wx:if="{{invalidList.length > 0}}">
+      <view class="invalid-header">
+        <view class="invalid-title">
+          <text class="invalid-icon">⚠️</text>
+          <text>失效商品 ({{invalidList.length}})</text>
+        </view>
+        <view class="invalid-clear" bindtap="clearInvalid">
+          <text>清空</text>
+        </view>
+      </view>
+      <view class="invalid-list">
+        <view class="invalid-item" wx:for="{{invalidList}}" wx:key="id">
+          <view class="invalid-image">
+            <image src="{{item.coverUrl}}" mode="aspectFill" />
+            <view class="invalid-mask">
+              <text>{{item.invalidReason}}</text>
+            </view>
+          </view>
+          <view class="invalid-info">
+            <text class="invalid-name">{{item.name}}</text>
+            <text class="invalid-spec">{{item.spec}}</text>
+          </view>
+          <view class="invalid-actions">
+            <view class="find-similar-btn" bindtap="findSimilar" data-id="{{item.productId}}">
+              <text>找相似</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 为你推荐 -->
+    <view class="recommend-section">
+      <view class="section-header">
+        <view class="section-title">
+          <text class="title-icon">💡</text>
+          <text class="title-text">根据购物车推荐</text>
+        </view>
+        <view class="section-more" bindtap="gotoRecommend">
+          <text>更多</text>
+          <text class="more-arrow">›</text>
+        </view>
+      </view>
+      <scroll-view class="recommend-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view class="recommend-list">
+          <view
+            class="recommend-card"
+            wx:for="{{recommendList}}"
+            wx:key="id"
+            bindtap="gotoProduct"
+            data-id="{{item.id}}"
+          >
+            <view class="recommend-image-wrap">
+              <image class="recommend-image" src="{{item.coverUrl}}" mode="aspectFill" />
+              <view class="recommend-badge" wx:if="{{item.badge}}">{{item.badge}}</view>
+            </view>
+            <view class="recommend-info">
+              <text class="recommend-name">{{item.name}}</text>
+              <view class="recommend-price-row">
+                <text class="recommend-price">¥{{item.price}}</text>
+                <text class="recommend-sales">{{item.salesText}}</text>
+              </view>
+            </view>
+            <view class="add-cart-btn" catchtap="quickAddCart" data-product="{{item}}">
+              <text>+</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 底部安全区占位 -->
+    <view class="bottom-safe-area"></view>
+  </scroll-view>
+
+  <!-- 底部结算栏 -->
+  <view class="checkout-bar" wx:if="{{cartList.length > 0}}">
+    <!-- 优惠券入口 -->
+    <view class="coupon-entry" bindtap="showCouponPicker">
+      <text class="coupon-entry-icon">🎫</text>
+      <block wx:if="{{selectedCoupon}}">
+        <text class="coupon-entry-text coupon-selected">{{selectedCoupon.couponName}}</text>
+        <text class="coupon-discount">-¥{{couponDiscount}}</text>
+        <text class="coupon-entry-clear" catchtap="clearCoupon">×</text>
+      </block>
+      <block wx:elif="{{availableCouponCount > 0}}">
+        <text class="coupon-entry-text">{{availableCouponCount}}张可用</text>
+        <text class="coupon-entry-arrow">›</text>
+      </block>
+      <block wx:else>
+        <text class="coupon-entry-text no-coupon">暂无可用优惠券</text>
+      </block>
+    </view>
+
+    <!-- 主结算区 -->
+    <view class="checkout-main">
+      <!-- 全选 -->
+      <view class="select-all-wrap" bindtap="toggleSelectAll">
+        <view class="checkbox {{allSelected ? 'checked' : ''}}">
+          <text wx:if="{{allSelected}}">✓</text>
+        </view>
+        <text class="select-text">全选</text>
+      </view>
+
+      <!-- 价格信息 -->
+      <view class="checkout-price-area">
+        <view class="price-detail-row">
+          <text class="total-label">合计:</text>
+          <view class="total-price-wrap">
+            <text class="currency">¥</text>
+            <text class="total-price">{{totalPrice}}</text>
+          </view>
+        </view>
+        <view class="price-extra-row">
+          <text class="shipping-info" wx:if="{{estimatedShipping > 0}}">含运费¥{{estimatedShipping}}</text>
+          <text class="shipping-info" wx:else>免运费</text>
+          <view class="save-info" wx:if="{{totalSaved > 0}}">
+            <text>已省¥{{totalSaved}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 结算按钮 -->
+      <view
+        class="checkout-btn {{selectedCount === 0 ? 'disabled' : ''}}"
+        bindtap="checkout"
+      >
+        <text class="checkout-btn-text">结算({{selectedCount}})</text>
+        <view class="checkout-btn-sub" wx:if="{{selectedCount > 0 && estimatedDelivery}}">
+          <text>{{estimatedDelivery}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 规格选择弹窗 -->
+  <view class="spec-popup {{showSpecPopup ? 'show' : ''}}" catchtap="hideSpecPopup">
+    <view class="spec-popup-content" catchtap="preventBubble">
+      <view class="spec-popup-header">
+        <image class="spec-product-image" src="{{currentProduct.coverUrl}}" mode="aspectFill" />
+        <view class="spec-product-info">
+          <text class="spec-product-price">¥{{currentProduct.price}}</text>
+          <text class="spec-product-stock">库存: {{currentProduct.stock}}</text>
+          <text class="spec-selected">已选: {{currentProduct.spec || '请选择规格'}}</text>
+        </view>
+        <view class="spec-close-btn" bindtap="hideSpecPopup">
+          <text>×</text>
+        </view>
+      </view>
+      <scroll-view class="spec-popup-body" scroll-y>
+        <view class="spec-group" wx:for="{{currentProduct.specGroups}}" wx:key="name">
+          <text class="spec-group-name">{{item.name}}</text>
+          <view class="spec-options">
+            <view
+              class="spec-option {{option.selected ? 'selected' : ''}} {{option.disabled ? 'disabled' : ''}}"
+              wx:for="{{item.options}}"
+              wx:for-item="option"
+              wx:key="value"
+              bindtap="selectSpec"
+              data-group="{{item.name}}"
+              data-value="{{option.value}}"
+            >
+              <text>{{option.value}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="spec-popup-footer">
+        <button class="spec-confirm-btn" bindtap="confirmSpec">确定</button>
+      </view>
+    </view>
+  </view>
+</view>

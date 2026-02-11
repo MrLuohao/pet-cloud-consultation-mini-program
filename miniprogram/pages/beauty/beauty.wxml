@@ -1,2 +1,52 @@
-<!--pages/beauty/beauty.wxml-->
-<text>pages/beauty/beauty.wxml</text>
+<!-- pages/beauty/beauty.wxml - 美容服务页面 -->
+<view class="page">
+  <!-- 主内容区 -->
+  <scroll-view class="main-content" scroll-y enable-back-to-top>
+    <!-- Banner -->
+    <view class="beauty-banner slide-up">
+      <view class="banner-content">
+        <text class="banner-tag">专业美容</text>
+        <text class="banner-title">给爱宠最好的呵护</text>
+        <text class="banner-desc">专业护理，让宠物更健康更美丽</text>
+      </view>
+    </view>
+
+    <!-- 门店列表 -->
+    <view class="store-section slide-up" style="animation-delay: 0.1s">
+      <view class="section-header">
+        <text class="section-title">附近门店</text>
+      </view>
+      <view class="store-list">
+        <view
+          class="store-card apple-card"
+          wx:for="{{stores}}"
+          wx:key="id"
+          bindtap="onStoreTap"
+          data-store="{{item}}"
+          hover-class="store-card-hover"
+        >
+          <view class="store-image store-image-{{item.color}}">
+            <text class="store-emoji">{{item.emoji}}</text>
+          </view>
+          <view class="store-info">
+            <text class="store-name">{{item.name}}</text>
+            <view class="store-meta">
+              <text class="store-rating">⭐ {{item.rating}}</text>
+              <text class="store-distance">{{item.distance}}</text>
+            </view>
+            <text class="store-address">{{item.address}}</text>
+            <view class="store-tags">
+              <text class="store-tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+            </view>
+          </view>
+          <view class="store-action">
+            <text class="book-btn">预约</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部安全区 -->
+    <view class="safe-area-bottom"></view>
+  </scroll-view>
+</view>

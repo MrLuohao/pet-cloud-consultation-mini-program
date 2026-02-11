@@ -1,0 +1,230 @@
+/* pages/consultation/doctor-detail.wxss */
+.doctor-detail-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 120rpx;
+}
+
+/* 透明返回按钮 - 适配灵动岛 */
+.back-btn {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 80rpx;
+  height: 100rpx;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 15rpx;
+  /* 适配灵动岛和刘海屏 */
+  padding-top: calc(20rpx + constant(safe-area-inset-top));
+  padding-top: calc(20rpx + env(safe-area-inset-top));
+}
+
+.back-icon {
+  font-size: 60rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 200;
+  line-height: 1;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+/* 医生卡片 */
+.doctor-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40rpx 30rpx;
+  padding-top: calc(40rpx + constant(safe-area-inset-top));
+  padding-top: calc(40rpx + env(safe-area-inset-top));
+}
+
+.doctor-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.doctor-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  margin-right: 25rpx;
+}
+
+.doctor-avatar-wrapper {
+  width: 120rpx;
+  height: 120rpx;
+  margin-right: 25rpx;
+  flex-shrink: 0;
+}
+
+.doctor-avatar-img {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.doctor-avatar-text {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 40rpx;
+  font-weight: 600;
+}
+
+.doctor-basic {
+  flex: 1;
+}
+
+.doctor-name {
+  display: block;
+  font-size: 36rpx;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.doctor-title {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.2);
+  padding: 5rpx 15rpx;
+  border-radius: 20rpx;
+  margin-bottom: 10rpx;
+}
+
+.doctor-rating {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.doctor-rating .star {
+  color: #ffd700;
+  margin-right: 5rpx;
+}
+
+.doctor-rating .count {
+  margin-left: 10rpx;
+  font-size: 22rpx;
+}
+
+.doctor-hospital {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 详细信息区域 */
+.detail-section {
+  background: #fff;
+  padding: 30rpx;
+  margin: 20rpx 30rpx;
+  border-radius: 16rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 15rpx;
+}
+
+.detail-text {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 24rpx;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  margin-right: 15rpx;
+  margin-bottom: 10rpx;
+}
+
+/* 咨询方式 */
+.consult-type-section {
+  background: #fff;
+  padding: 30rpx;
+  margin: 20rpx 30rpx;
+  border-radius: 16rpx;
+  display: flex;
+}
+
+.type-item {
+  flex: 1;
+  padding: 25rpx;
+  border: 2rpx solid #f5f5f5;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  margin-right: 20rpx;
+}
+
+.type-item:last-child {
+  margin-right: 0;
+}
+
+.type-icon {
+  font-size: 50rpx;
+  margin-right: 15rpx;
+}
+
+.type-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.type-name {
+  font-size: 26rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.type-price {
+  font-size: 28rpx;
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+/* 底部按钮 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 20rpx 30rpx;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.consult-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 30rpx;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+}
+
+.consult-btn::after {
+  border: none;
+}

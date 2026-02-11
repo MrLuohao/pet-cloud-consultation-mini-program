@@ -1,2 +1,138 @@
-<!--pages/recommend/detail.wxml-->
-<text>pages/recommend/detail.wxml</text>
+<!-- pages/recommend/detail.wxml - 推荐详情页 -->
+<view class="page">
+  <!-- 加载中状态 -->
+  <view class="loading-container" wx:if="{{isLoading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 加载失败状态 -->
+  <view class="error-container" wx:elif="{{loadError}}">
+    <text class="error-icon">😔</text>
+    <text class="error-text">文章加载失败</text>
+    <view class="error-btn" bindtap="onBack">返回</view>
+  </view>
+
+  <!-- 主内容区 -->
+  <scroll-view class="main-content" scroll-y enable-back-to-top wx:elif="{{article}}">
+    <!-- 文章头部 -->
+    <view class="article-header slide-up">
+      <view class="article-cover article-cover-{{article.color}}">
+        <image wx:if="{{article.coverUrl}}" class="cover-image" src="{{article.coverUrl}}" mode="aspectFill"></image>
+        <text wx:else class="cover-emoji">{{article.emoji}}</text>
+      </view>
+      <view class="article-info">
+        <view class="article-tag">{{article.tag}}</view>
+        <text class="article-title">{{article.title}}</text>
+        <view class="article-meta">
+          <text class="article-date">{{article.date}}</text>
+          <text class="article-views">{{article.views}}阅读</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 文章内容 -->
+    <view class="article-content slide-up" style="animation-delay: 0.1s">
+      <text class="content-text">{{article.content}}</text>
+    </view>
+
+    <!-- 评论区 -->
+    <view class="comments-section slide-up" style="animation-delay: 0.2s">
+      <view class="comments-header">
+        <text class="comments-title">评论 ({{article.comments}})</text>
+      </view>
+
+      <!-- 评论列表 -->
+      <view class="comments-list" wx:if="{{comments.length > 0}}">
+        <view class="comment-item" wx:for="{{comments}}" wx:key="id">
+          <view class="comment-main">
+          <view class="comment-avatar-wrapper">
+            <image wx:if="{{item.userAvatar}}" class="comment-avatar" src="{{item.userAvatar}}" mode="aspectFill"></image>
+            <view wx:else class="comment-avatar-placeholder">{{item.userNickname[0] || '用'}}</view>
+          </view>
+          <view class="comment-body">
+              <view class="comment-header">
+                <text class="comment-nickname">{{item.userNickname}}</text>
+                <text class="comment-time">{{item.createTimeStr}}</text>
+              </view>
+              <text class="comment-content">{{item.content}}</text>
+              <view class="comment-actions">
+                <text class="comment-reply-btn" data-comment-id="{{item.id}}" data-user-id="{{item.userId}}" data-nickname="{{item.userNickname}}" bindtap="onReplyComment">回复</text>
+                <text class="comment-delete-btn" wx:if="{{item.isOwner}}" data-comment-id="{{item.id}}" bindtap="onDeleteComment">删除</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 回复列表 -->
+          <view class="replies-list" wx:if="{{item.replies && item.replies.length > 0}}">
+            <view class="reply-item" wx:for="{{item.replies}}" wx:for-item="reply" wx:key="id">
+              <view class="reply-avatar-wrapper">
+                <image wx:if="{{reply.userAvatar}}" class="reply-avatar" src="{{reply.userAvatar}}" mode="aspectFill"></image>
+                <view wx:else class="reply-avatar-placeholder">{{reply.userNickname[0] || '用'}}</view>
+              </view>
+              <view class="reply-body">
+                <view class="reply-header">
+                  <text class="reply-nickname">{{reply.userNickname}}</text>
+                  <text class="reply-to" wx:if="{{reply.replyToNickname}}">回复 {{reply.replyToNickname}}</text>
+                  <text class="reply-time">{{reply.createTimeStr}}</text>
+                </view>
+                <text class="reply-content">{{reply.content}}</text>
+                <view class="reply-actions">
+                  <text class="reply-btn" data-comment-id="{{item.id}}" data-user-id="{{reply.userId}}" data-nickname="{{reply.userNickname}}" bindtap="onReplyComment">回复</text>
+                  <text class="reply-delete-btn" wx:if="{{reply.isOwner}}" data-comment-id="{{reply.id}}" bindtap="onDeleteComment">删除</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 暂无评论 -->
+      <view class="no-comments" wx:else>
+        <text class="no-comments-icon">💬</text>
+        <text class="no-comments-text">暂无评论，快来抢沙发吧~</text>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 固定底部操作栏 -->
+  <view class="bottom-action-bar" wx:if="{{article}}">
+    <view class="action-item {{article.liked ? 'active' : ''}}" bindtap="onLike">
+      <text class="action-icon">{{article.liked ? '♥' : '♡'}}</text>
+      <text class="action-label">{{article.likes}}</text>
+    </view>
+    <view class="action-item" bindtap="onComment">
+      <text class="action-icon">💬</text>
+      <text class="action-label">{{article.comments}}</text>
+    </view>
+    <view class="action-item {{article.collected ? 'active' : ''}}" bindtap="onCollect">
+      <text class="action-icon">{{article.collected ? '★' : '☆'}}</text>
+      <text class="action-label">{{article.collections}}</text>
+    </view>
+    <view class="action-divider"></view>
+    <view class="action-btn" bindtap="onShare">
+      <text>分享</text>
+    </view>
+  </view>
+
+  <!-- 评论输入框（弹出层） -->
+  <view class="comment-input-mask" wx:if="{{showCommentInput}}" bindtap="onCancelComment"></view>
+  <view class="comment-input-panel {{showCommentInput ? 'show' : ''}}">
+    <view class="comment-input-header">
+      <text class="comment-input-title">{{replyTo ? '回复 ' + replyTo.nickname : '发表评论'}}</text>
+      <text class="comment-input-close" bindtap="onCancelComment">取消</text>
+    </view>
+    <view class="comment-input-body">
+      <textarea class="comment-textarea" placeholder="{{replyTo ? '回复 ' + replyTo.nickname + '...' : '说点什么吧...'}}" value="{{commentText}}" bindinput="onCommentInput" maxlength="500" auto-focus></textarea>
+      <view class="comment-input-footer">
+        <text class="comment-char-count">{{commentText.length}}/500</text>
+        <button class="comment-submit-btn {{commentText.length > 0 ? 'active' : ''}}" disabled="{{isSubmitting || commentText.length === 0}}" bindtap="onSubmitComment">
+          {{isSubmitting ? '发送中...' : '发送'}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

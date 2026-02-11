@@ -1,0 +1,456 @@
+/* pages/chat/chat.wxss - AI聊天页面样式 */
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #F8F9FC 0%, #F5F5F7 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==================== 聊天内容区 ==================== */
+.chat-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: calc(160rpx + constant(safe-area-inset-bottom));
+  bottom: calc(160rpx + env(safe-area-inset-bottom));
+  overflow: hidden;
+}
+
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+  padding: 32rpx 24rpx 100rpx;
+}
+
+.chat-item {
+  display: flex;
+  gap: 16rpx;
+  max-width: 100%;
+}
+
+.chat-item-ai {
+  flex-direction: row;
+}
+
+.chat-item-user {
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.chat-avatar {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 8rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatar-icon {
+  font-size: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #10A37F;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.chat-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  max-width: 100%;
+}
+
+.chat-item-ai .chat-content {
+  align-items: flex-start;
+}
+
+.chat-item-user .chat-content {
+  align-items: flex-end;
+}
+
+.message-bubble {
+  background: #EEF6FC;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  position: relative;
+}
+
+.message-bubble-user {
+  background: #E1F0FF;
+}
+
+.message-text {
+  font-size: 28rpx;
+  line-height: 1.7;
+  color: #1D1D1F;
+  word-break: break-all;
+  white-space: pre-wrap;
+  letter-spacing: 0.01em;
+}
+
+.message-bubble-user .message-text {
+  color: #1D1D1F;
+}
+
+.message-time {
+  font-size: 22rpx;
+  color: #86868B;
+  padding: 0 8rpx;
+}
+
+/* ==================== 快捷操作 ==================== */
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.quick-btn {
+  background: #FFFFFF;
+  border-radius: 8rpx;
+  padding: 14rpx 20rpx;
+  font-size: 24rpx;
+  color: #374151;
+  border: 1px solid #D1D5DB;
+  transition: all 0.15s ease;
+}
+
+.quick-btn:active {
+  background: #F3F4F6;
+  border-color: #9CA3AF;
+}
+
+/* ==================== 打字动画 ==================== */
+.typing-indicator {
+  display: flex;
+  gap: 8rpx;
+  padding: 12rpx 0;
+  align-items: center;
+}
+
+.typing-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #6B7280;
+  animation: typing 1.4s infinite;
+  opacity: 0.6;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-10rpx);
+    opacity: 1;
+  }
+}
+
+/* ==================== 模型选择器 ==================== */
+.model-selector {
+  position: fixed;
+  bottom: calc(160rpx + constant(safe-area-inset-bottom));
+  bottom: calc(160rpx + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8rpx;
+  padding: 4rpx;
+  z-index: 100;
+}
+
+/* 键盘弹出时模型选择器的位置 */
+.model-selector.keyboard-up {
+  bottom: calc(20rpx + constant(safe-area-inset-bottom));
+  bottom: calc(20rpx + env(safe-area-inset-bottom));
+}
+
+.model-item {
+  padding: 12rpx 24rpx;
+  border-radius: 6rpx;
+  font-size: 24rpx;
+  color: #6B7280;
+  transition: all 0.15s ease;
+  font-weight: 500;
+}
+
+.model-item:active {
+  background: #F3F4F6;
+}
+
+.model-item.active {
+  background: #10A37F;
+  color: #FFFFFF;
+}
+
+.model-name {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ==================== 输入区 ==================== */
+.input-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border-top: 1px solid #E5E7EB;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  z-index: 100;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background: #F7F7F8;
+  border-radius: 12rpx;
+  padding: 12rpx 16rpx;
+  border: 1px solid transparent;
+}
+
+.input-wrapper:focus-within {
+  background: #FFFFFF;
+  border-color: #10A37F;
+}
+
+.input-area {
+  flex: 1;
+  max-height: 200rpx;
+  min-height: 36rpx;
+  font-size: 28rpx;
+  line-height: 1.5;
+  color: #1D1D1F;
+  padding: 0;
+  margin: 0;
+}
+
+.input-actions {
+  display: flex;
+  align-items: center;
+}
+
+.send-btn {
+  width: 80rpx;
+  height: 60rpx;
+  border-radius: 8rpx;
+  background: #E5E7EB;
+  color: #9CA3AF;
+  font-size: 24rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.send-btn.active {
+  background: #10A37F;
+  color: #FFFFFF;
+}
+
+.send-btn:active {
+  transform: scale(0.94);
+}
+
+.send-btn[disabled] {
+  opacity: 0.5;
+}
+
+/* ==================== 消息入场动画 ==================== */
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-item {
+  animation: messageSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==================== AI消息气泡样式 ==================== */
+.ai-bubble {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  max-width: 100%;
+}
+
+/* ==================== Markdown内容样式 - Codex简洁风格 ==================== */
+.markdown-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  font-size: 28rpx;
+  color: #374151;
+  line-height: 1.75;
+}
+
+/* 标题样式 */
+.md-heading {
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.md-heading-1 {
+  font-size: 32rpx;
+}
+
+.md-heading-2 {
+  font-size: 30rpx;
+}
+
+.md-heading-3 {
+  font-size: 28rpx;
+}
+
+/* 段落样式 */
+.md-paragraph {
+  font-size: 28rpx;
+  line-height: 1.75;
+  color: #374151;
+}
+
+/* 加粗文本 */
+.md-bold {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* 列表项样式 - Codex简洁风格 */
+.md-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  padding: 0;
+  background: transparent;
+  margin: 0;
+}
+
+.md-list-marker {
+  flex-shrink: 0;
+  min-width: 32rpx;
+  height: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background: transparent;
+  border-radius: 0;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #6B7280;
+  padding-top: 2rpx;
+}
+
+.md-bullet {
+  font-size: 28rpx;
+  color: #6B7280;
+}
+
+.md-list-content {
+  flex: 1;
+  font-size: 28rpx;
+  line-height: 1.75;
+  color: #374151;
+  padding-top: 0;
+}
+
+.md-list-content .md-bold {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* ==================== 滚动快捷按钮 ==================== */
+.scroll-actions {
+  position: fixed;
+  right: 24rpx;
+  bottom: 320rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  z-index: 90;
+}
+
+.scroll-btn {
+  width: 72rpx;
+  height: 72rpx;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.12);
+  font-size: 32rpx;
+  color: #374151;
+  transition: all 0.2s ease;
+}
+
+.scroll-btn:active {
+  transform: scale(0.9);
+  background: #F3F4F6;
+}
+
+.scroll-to-top {
+  color: #6B7280;
+}
+
+.scroll-to-bottom {
+  color: #10A37F;
+  background: rgba(16, 163, 127, 0.1);
+}
+
+.scroll-to-bottom:active {
+  background: rgba(16, 163, 127, 0.2);
+}

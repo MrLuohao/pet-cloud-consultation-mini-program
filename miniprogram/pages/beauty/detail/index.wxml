@@ -1,0 +1,60 @@
+<view class="page">
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <view class="loading-dot"></view>
+  </view>
+
+  <block wx:elif="{{store}}">
+    <!-- 门店封面 -->
+    <view class="store-cover">
+      <image wx:if="{{store.coverUrl}}" src="{{store.coverUrl}}" class="cover-img" mode="aspectFill"/>
+      <view wx:else class="cover-placeholder">🛁</view>
+    </view>
+
+    <!-- 门店信息 -->
+    <view class="store-info card">
+      <view class="store-header">
+        <text class="store-name">{{store.name}}</text>
+        <view class="rating-badge">
+          <text class="rating-star">⭐</text>
+          <text class="rating-num">{{store.rating}}</text>
+        </view>
+      </view>
+      <view class="store-meta">
+        <text class="meta-item">📍 {{store.address}}</text>
+        <text class="meta-item">⏰ {{store.businessHours}}</text>
+        <text class="meta-item">📞 {{store.phone}}</text>
+      </view>
+      <view class="tags-wrap">
+        <text wx:for="{{store.tagsArr}}" wx:key="index" class="tag">{{item}}</text>
+      </view>
+      <view class="action-row">
+        <view class="btn-call" bindtap="callPhone">📞 致电门店</view>
+      </view>
+    </view>
+
+    <!-- 服务项目 -->
+    <view class="section-title">服务项目</view>
+    <view wx:if="{{services.length > 0}}" class="services-list">
+      <view wx:for="{{services}}" wx:key="id" class="service-item card">
+        <view class="service-info">
+          <text class="service-name">{{item.name}}</text>
+          <text class="service-desc">{{item.description}}</text>
+          <view class="service-meta">
+            <text wx:if="{{item.suitableWeight}}" class="service-tag">{{item.suitableWeight}}</text>
+            <text wx:if="{{item.duration}}" class="service-tag">{{item.duration}}分钟</text>
+          </view>
+        </view>
+        <text class="service-price">¥{{item.price}}</text>
+      </view>
+    </view>
+    <view wx:else class="empty-services">
+      <text>暂无服务项目信息</text>
+    </view>
+  </block>
+
+  <!-- 底部预约按钮 -->
+  <view class="bottom-bar">
+    <view class="btn-booking" bindtap="goToBooking">立即预约</view>
+  </view>
+</view>

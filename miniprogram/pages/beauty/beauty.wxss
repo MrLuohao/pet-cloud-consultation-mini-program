@@ -1,1 +1,194 @@
-/* pages/beauty/beauty.wxss */
+/* pages/beauty/beauty.wxss - 美容服务样式 */
+
+.page {
+  min-height: 100vh;
+  background: #F9F9F9;
+}
+
+/* ==================== 主内容区 ==================== */
+.main-content {
+  height: 100vh;
+}
+
+/* ==================== Banner ==================== */
+.beauty-banner {
+  margin: 16rpx 32rpx;
+  padding: 40rpx 32rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 28rpx;
+}
+
+.banner-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.banner-tag {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 8rpx 16rpx;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10rpx);
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: #FFFFFF;
+  margin-bottom: 16rpx;
+}
+
+.banner-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.2;
+  margin-bottom: 12rpx;
+}
+
+.banner-desc {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ==================== 门店区域 ==================== */
+.store-section {
+  padding: 0 32rpx 32rpx;
+}
+
+.section-header {
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1D1D1F;
+}
+
+.store-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.store-card {
+  position: relative;
+  display: flex;
+  padding: 20rpx;
+  margin-bottom: 16rpx;
+}
+
+.store-card-hover {
+  transform: scale(0.98);
+}
+
+.store-image {
+  width: 160rpx;
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.store-image-pink {
+  background: linear-gradient(135deg, #FFE5E5 0%, #FFD1D1 100%);
+}
+
+.store-image-blue {
+  background: linear-gradient(135deg, #E5E9FF 0%, #D1D9FF 100%);
+}
+
+.store-image-green {
+  background: linear-gradient(135deg, #E5FFFA 0%, #D1FFF5 100%);
+}
+
+.store-emoji {
+  font-size: 64rpx;
+}
+
+.store-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 4rpx 0;
+}
+
+.store-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1D1D1F;
+  margin-bottom: 8rpx;
+}
+
+.store-meta {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.store-rating {
+  font-size: 22rpx;
+  color: #FF9500;
+  margin-right: 16rpx;
+}
+
+.store-distance {
+  font-size: 22rpx;
+  color: #86868B;
+}
+
+.store-address {
+  font-size: 24rpx;
+  color: #86868B;
+  margin-bottom: 12rpx;
+}
+
+.store-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.store-tag {
+  padding: 6rpx 12rpx;
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  font-size: 20rpx;
+  border-radius: 8rpx;
+}
+
+.store-action {
+  position: absolute;
+  right: 20rpx;
+  bottom: 20rpx;
+}
+
+.book-btn {
+  padding: 12rpx 24rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 500;
+  border-radius: 40rpx;
+}
+
+/* ==================== 动画 ==================== */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.4s ease;
+}
+
+.safe-area-bottom {
+  height: constant(safe-area-inset-bottom);
+  height: env(safe-area-inset-bottom);
+}

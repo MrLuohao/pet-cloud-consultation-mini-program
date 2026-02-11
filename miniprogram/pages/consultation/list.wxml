@@ -1,0 +1,47 @@
+<!--pages/consultation/list.wxml-->
+<view class="consultation-list-container">
+  <!-- 顶部Tab -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === '' ? 'active' : ''}}" bindtap="switchTab" data-tab="">
+      全部
+    </view>
+    <view class="tab-item {{activeTab === '0' ? 'active' : ''}}" bindtap="switchTab" data-tab="0">
+      待接单
+    </view>
+    <view class="tab-item {{activeTab === '1' ? 'active' : ''}}" bindtap="switchTab" data-tab="1">
+      进行中
+    </view>
+    <view class="tab-item {{activeTab === '2' ? 'active' : ''}}" bindtap="switchTab" data-tab="2">
+      已完成
+    </view>
+  </view>
+
+  <!-- 咨询列表 -->
+  <view class="consultation-list">
+    <view class="consultation-item" wx:for="{{consultationList}}" wx:key="id" bindtap="gotoChat" data-id="{{item.id}}">
+      <view class="item-header">
+        <view class="doctor-avatar">{{item.doctorName ? item.doctorName.charAt(0) : '医'}}</view>
+        <view class="doctor-info">
+          <text class="doctor-name">{{item.doctorName}}</text>
+          <view class="consult-type">{{item.typeDesc}}</view>
+        </view>
+        <view class="status status-{{item.status}}">{{item.statusDesc}}</view>
+      </view>
+      <view class="pet-info" wx:if="{{item.petName}}">
+        <text>宠物：{{item.petName}}</text>
+      </view>
+      <view class="description" wx:if="{{item.description}}">
+        {{item.description}}
+      </view>
+      <view class="item-footer">
+        <text class="fee">¥{{item.fee}}</text>
+        <text class="time">{{item.createTime}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{consultationList.length === 0}}">
+    <text class="empty-text">暂无咨询记录</text>
+  </view>
+</view>

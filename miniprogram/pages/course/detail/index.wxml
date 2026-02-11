@@ -1,0 +1,117 @@
+<view class="page">
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <view class="loading-dot"></view>
+  </view>
+
+  <block wx:elif="{{course}}">
+    <!-- 封面Banner -->
+    <view class="cover-banner slide-up">
+      <image wx:if="{{course.coverUrl}}" class="cover-img" src="{{course.coverUrl}}" mode="aspectFill"/>
+      <view wx:else class="cover-placeholder">
+        <text class="cover-emoji">🎓</text>
+      </view>
+      <view class="cover-overlay">
+        <view class="cover-tag" wx:if="{{course.tag}}">{{course.tag}}</view>
+      </view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="info-card apple-card slide-up" style="animation-delay: 0.05s">
+      <text class="course-title">{{course.title}}</text>
+      <view class="meta-row">
+        <text class="meta-item">📚 {{course.lessonCount || 0}}课时</text>
+        <text class="meta-item">👥 {{course.studentCount || 0}}人学习</text>
+        <text class="price" wx:if="{{course.price > 0}}">¥{{course.price}}</text>
+        <text class="price free" wx:else>免费</text>
+      </view>
+      <text class="desc">{{course.description}}</text>
+    </view>
+
+    <!-- 讲师信息 -->
+    <view class="section-card apple-card slide-up" style="animation-delay: 0.1s" wx:if="{{course.instructorName}}">
+      <text class="section-title">讲师介绍</text>
+      <view class="instructor-row">
+        <image wx:if="{{course.instructorAvatar}}" class="instructor-avatar" src="{{course.instructorAvatar}}" mode="aspectFill"/>
+        <view wx:else class="instructor-avatar-placeholder">👨‍🏫</view>
+        <view class="instructor-info">
+          <text class="instructor-name">{{course.instructorName}}</text>
+          <text class="instructor-bio">{{course.instructorBio}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 章节列表 -->
+    <view class="section-card apple-card slide-up" style="animation-delay: 0.15s" wx:if="{{course.chapters && course.chapters.length > 0}}">
+      <text class="section-title">课程目录 ({{course.chapters.length}}节)</text>
+      <view class="chapter-list">
+        <view class="chapter-item" wx:for="{{course.chapters}}" wx:key="id" bindtap="onChapterTap" data-chapter="{{item}}">
+          <view class="chapter-left">
+            <text class="chapter-num">{{index + 1}}</text>
+            <view class="chapter-info">
+              <text class="chapter-title">{{item.title}}</text>
+              <text class="chapter-duration" wx:if="{{item.duration}}">{{item.duration}}秒</text>
+            </view>
+          </view>
+          <view class="chapter-right">
+            <text wx:if="{{item.isFree}}" class="free-tag">试看</text>
+            <text class="chapter-arrow">▶</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 学习进度 -->
+    <view class="section-card apple-card slide-up" style="animation-delay: 0.2s" wx:if="{{course.userProgress !== null && course.userProgress !== undefined}}">
+      <text class="section-title">学习进度</text>
+      <view class="progress-wrap">
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{course.userProgress}}%"></view>
+        </view>
+        <text class="progress-text">{{course.userProgress}}%</text>
+      </view>
+      <text wx:if="{{course.isCompleted}}" class="completed-badge">已完成 ✅</text>
+    </view>
+
+    <!-- 评价列表 -->
+    <view class="section-card apple-card slide-up" style="animation-delay: 0.25s" wx:if="{{reviews.length > 0}}">
+      <text class="section-title">学员评价 ({{reviews.length}})</text>
+      <view class="review-list">
+        <view class="review-item" wx:for="{{reviews}}" wx:key="id">
+          <view class="review-header">
+            <text class="review-user">{{item.userNickname || '匿名用户'}}</text>
+            <text class="review-stars">{{item.rating}}★</text>
+          </view>
+          <text class="review-content">{{item.content}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部安全区 -->
+    <view class="safe-area-bottom"></view>
+  </block>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar" wx:if="{{course}}">
+    <button class="btn-review" bindtap="onShowReview">写评价</button>
+    <button class="btn-learn" bindtap="onStartLearn">
+      {{course.userProgress > 0 ? '继续学习' : '开始学习'}}
+    </button>
+  </view>
+
+  <!-- 评价弹窗 -->
+  <view class="modal-mask" wx:if="{{showReviewModal}}" bindtap="onHideReview"></view>
+  <view class="review-modal" wx:if="{{showReviewModal}}">
+    <text class="modal-title">评价课程</text>
+    <view class="rating-row">
+      <text class="rating-label">评分</text>
+      <slider min="1" max="5" step="1" value="{{reviewRating}}" bindchange="onRatingChange" class="rating-slider"/>
+      <text class="rating-value">{{reviewRating}}星</text>
+    </view>
+    <textarea class="review-textarea" placeholder="分享你的学习心得..." bindinput="onReviewInput" value="{{reviewContent}}" maxlength="200"/>
+    <view class="modal-btns">
+      <button class="btn-cancel" bindtap="onHideReview">取消</button>
+      <button class="btn-submit" bindtap="onSubmitReview">提交</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,71 @@
+<!--pages/coupon/center.wxml-->
+<view class="coupon-container">
+  <!-- Tab切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-tab="0">
+      <text>全部</text>
+      <view class="tab-indicator" wx:if="{{activeTab === 0}}"></view>
+    </view>
+    <view class="tab-item {{activeTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-tab="1">
+      <text>满减券</text>
+      <view class="tab-indicator" wx:if="{{activeTab === 1}}"></view>
+    </view>
+    <view class="tab-item {{activeTab === 2 ? 'active' : ''}}" bindtap="switchTab" data-tab="2">
+      <text>折扣券</text>
+      <view class="tab-indicator" wx:if="{{activeTab === 2}}"></view>
+    </view>
+  </view>
+
+  <!-- 优惠券列表 -->
+  <view class="coupon-list">
+    <view class="coupon-card" wx:for="{{couponList}}" wx:key="id">
+      <!-- 优惠券主体 -->
+      <view class="coupon-main">
+        <!-- 左侧金额区域 -->
+        <view class="coupon-amount-section {{item.type === 1 ? 'type-reduction' : 'type-discount'}}">
+          <view class="amount-row">
+            <text class="amount-symbol" wx:if="{{item.type === 1}}">¥</text>
+            <text class="amount-value">{{item.type === 1 ? item.discountAmount : item.discountRate}}</text>
+            <text class="amount-unit" wx:if="{{item.type === 2}}">折</text>
+          </view>
+          <text class="amount-condition">满{{item.minAmount}}元可用</text>
+        </view>
+
+        <!-- 右侧信息区域 -->
+        <view class="coupon-info-section">
+          <text class="coupon-name">{{item.name}}</text>
+          <text class="coupon-desc">{{item.description || '全场通用'}}</text>
+          <text class="coupon-time">{{item.startTime}} ~ {{item.endTime}}</text>
+        </view>
+      </view>
+
+      <!-- 优惠券底部操作区 -->
+      <view class="coupon-footer">
+        <view class="coupon-tag">
+          <text>{{item.type === 1 ? '满减' : '折扣'}}</text>
+        </view>
+        <view class="coupon-action">
+          <button
+            class="receive-btn {{item.canReceive ? '' : 'disabled'}}"
+            bindtap="receiveCoupon"
+            data-id="{{item.id}}"
+            data-can-receive="{{item.canReceive}}"
+          >
+            {{item.canReceive ? '立即领取' : '已领取'}}
+          </button>
+        </view>
+      </view>
+
+      <!-- 装饰圆点 -->
+      <view class="coupon-circle left"></view>
+      <view class="coupon-circle right"></view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{couponList.length === 0}}">
+    <text class="empty-icon">🎫</text>
+    <text class="empty-text">暂无可领取的优惠券</text>
+    <text class="empty-tip">精彩活动即将上线，敬请期待</text>
+  </view>
+</view>

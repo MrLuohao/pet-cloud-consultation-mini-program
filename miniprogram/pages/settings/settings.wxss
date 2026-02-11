@@ -1,0 +1,10 @@
+.settings-page { padding: 24rpx; background: #f6f7fb; min-height: 100vh; box-sizing: border-box; }
+.card { background: #fff; border-radius: 16rpx; padding: 20rpx; margin-bottom: 20rpx; }
+.row { display: flex; justify-content: space-between; align-items: center; padding: 14rpx 0; border-bottom: 1px solid #f1f2f4; }
+.row:last-child { border-bottom: none; }
+.arrow { color: #9ca3af; font-size: 32rpx; }
+.muted { color: #9ca3af; font-size: 24rpx; }
+.title { font-size: 28rpx; font-weight: 600; margin-bottom: 12rpx; }
+.input { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10rpx; padding: 16rpx; }
+.btn-row { display: flex; gap: 12rpx; margin-top: 14rpx; }
+.danger { background: #ef4444 !important; color: #fff !important; }

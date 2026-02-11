@@ -1,0 +1,189 @@
+.page {
+  min-height: 100vh;
+  background: #f5f5f7;
+  padding-bottom: 40rpx;
+}
+
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 160rpx 0;
+}
+
+.loading-dot {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  border: 4rpx solid #f0f0f0;
+  border-top-color: #667eea;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 月度报告 */
+.report-card {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  margin: 16rpx;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  color: #fff;
+}
+
+.report-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32rpx;
+}
+
+.month-title {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.month-nav {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 700;
+}
+
+.report-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 24rpx;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stat-num {
+  font-size: 48rpx;
+  font-weight: 800;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  opacity: 0.85;
+}
+
+.report-total {
+  text-align: center;
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+/* 时间轴 */
+.timeline-section {
+  padding: 0 16rpx;
+  margin-top: 8rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1d1d1f;
+  display: block;
+  margin-bottom: 24rpx;
+  padding: 0 8rpx;
+}
+
+.empty-timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 0;
+  gap: 16rpx;
+}
+
+.empty-icon { font-size: 80rpx; }
+.empty-text { font-size: 28rpx; color: #86868b; }
+
+.timeline {
+  padding-left: 8rpx;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 8rpx;
+}
+
+.timeline-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.timeline-dot {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dot-icon { font-size: 30rpx; }
+
+.timeline-line {
+  width: 2rpx;
+  flex: 1;
+  background: #e5e5ea;
+  margin: 8rpx 0;
+  min-height: 40rpx;
+}
+
+.timeline-content {
+  flex: 1;
+  padding-bottom: 32rpx;
+}
+
+.event-date {
+  font-size: 24rpx;
+  color: #86868b;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.event-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+}
+
+.event-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.event-content {
+  font-size: 24rpx;
+  color: #86868b;
+  line-height: 1.5;
+}
+
+/* CSS 变量 颜色 */
+view {
+  --color-blue: #3b82f6;
+  --color-green: #10b981;
+  --color-orange: #f59e0b;
+  --color-red: #ef4444;
+  --color-purple: #8b5cf6;
+  --color-gray: #6b7280;
+}

@@ -1,0 +1,166 @@
+<!--pages/diagnosis/diagnosis.wxml-->
+<view class="page">
+  <scroll-view class="container" scroll-y>
+    <!-- 诊断说明卡片 - 带动态特效 -->
+    <view class="intro-card {{heroLoaded ? 'loaded' : ''}}">
+      <!-- 背景装饰元素 -->
+      <view class="hero-bg">
+        <view class="hero-gradient"></view>
+        <view class="hero-grid"></view>
+        <view class="hero-orb hero-orb-1 animate-float"></view>
+        <view class="hero-orb hero-orb-2 animate-float" style="animation-delay: 0.5s"></view>
+        <view class="hero-orb hero-orb-3 animate-float" style="animation-delay: 1s"></view>
+      </view>
+
+      <!-- 内容 -->
+      <view class="intro-content">
+        <view class="intro-icon animate-float-icon">🏥</view>
+        <view class="intro-title animate-fade-in-up stagger-1">AI 宠物健康诊断</view>
+        <view class="intro-desc animate-fade-in-up stagger-2">描述宠物的症状，AI助手会为您提供初步的健康分析和建议</view>
+      </view>
+    </view>
+
+    <!-- 宠物信息表单 -->
+    <view class="form-section">
+      <view class="section-title">宠物信息</view>
+
+      <!-- 宠物类型 -->
+      <view class="form-item">
+        <view class="form-label">宠物类型 <text class="required">*</text></view>
+        <view class="pet-type-selector">
+          <view class="type-item {{petType === 1 ? 'active' : ''}}" bindtap="selectPetType" data-type="1">
+            <text class="type-icon">🐕</text>
+            <text class="type-name">狗狗</text>
+          </view>
+          <view class="type-item {{petType === 2 ? 'active' : ''}}" bindtap="selectPetType" data-type="2">
+            <text class="type-icon">🐱</text>
+            <text class="type-name">猫咪</text>
+          </view>
+          <view class="type-item {{petType === 3 ? 'active' : ''}}" bindtap="selectPetType" data-type="3">
+            <text class="type-icon">🐰</text>
+            <text class="type-name">其他</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 宠物年龄 -->
+      <view class="form-item">
+        <view class="form-label">宠物年龄（月）</view>
+        <input class="form-input" type="number" placeholder="请输入宠物年龄" value="{{petAge}}" bindinput="onPetAgeInput" />
+      </view>
+    </view>
+
+    <!-- 症状描述 -->
+    <view class="form-section">
+      <view class="section-title">症状描述 <text class="required">*</text></view>
+
+      <!-- 快捷症状标签 -->
+      <view class="quick-symptoms">
+        <view class="symptom-tag {{symptomTags.includes('食欲不振') ? 'active' : ''}}" bindtap="toggleSymptom" data-symptom="食欲不振">
+          <text>食欲不振</text>
+        </view>
+        <view class="symptom-tag {{symptomTags.includes('呕吐') ? 'active' : ''}}" bindtap="toggleSymptom" data-symptom="呕吐">
+          <text>呕吐</text>
+        </view>
+        <view class="symptom-tag {{symptomTags.includes('腹泻') ? 'active' : ''}}" bindtap="toggleSymptom" data-symptom="腹泻">
+          <text>腹泻</text>
+        </view>
+        <view class="symptom-tag {{symptomTags.includes('精神萎靡') ? 'active' : ''}}" bindtap="toggleSymptom" data-symptom="精神萎靡">
+          <text>精神萎靡</text>
+        </view>
+        <view class="symptom-tag {{symptomTags.includes('咳嗽') ? 'active' : ''}}" bindtap="toggleSymptom" data-symptom="咳嗽">
+          <text>咳嗽</text>
+        </view>
+        <view class="symptom-tag {{symptomTags.includes('皮肤瘙痒') ? 'active' : ''}}" bindtap="toggleSymptom" data-symptom="皮肤瘙痒">
+          <text>皮肤瘙痒</text>
+        </view>
+      </view>
+
+      <!-- 详细描述 -->
+      <view class="form-item">
+        <textarea
+          class="symptom-textarea"
+          placeholder="请详细描述宠物的症状，如持续多久、严重程度等..."
+          value="{{symptoms}}"
+          bindinput="onSymptomsInput"
+          maxlength="500"
+          show-confirm-bar="{{false}}"
+          auto-height
+        />
+        <view class="char-count">{{symptoms.length}}/500</view>
+      </view>
+    </view>
+
+    <!-- 图片上传（预留） -->
+    <view class="form-section">
+      <view class="section-title">相关图片（可选）</view>
+      <view class="upload-area" bindtap="uploadImage">
+        <text class="upload-icon">📷</text>
+        <text class="upload-text">点击上传患处照片</text>
+      </view>
+      <view class="uploaded-images" wx:if="{{imageUrl}}">
+        <image class="uploaded-image" src="{{imageUrl}}" mode="aspectFill" />
+        <view class="remove-image" bindtap="removeImage">✕</view>
+      </view>
+    </view>
+
+    <!-- 免责声明 -->
+    <view class="disclaimer">
+      <text class="disclaimer-text">⚠️ AI诊断仅供参考，不能替代专业兽医诊断。如症状严重或持续，请及时就医！</text>
+    </view>
+
+    <!-- 诊断结果 -->
+    <view class="result-card" wx:if="{{diagnosisResult}}">
+      <view class="result-header">
+        <text class="result-icon">📋</text>
+        <text class="result-title">诊断结果</text>
+      </view>
+      <view class="result-content">
+        <!-- 使用解析后的结构化内容 -->
+        <view class="markdown-content" wx:if="{{parsedResult && parsedResult.length > 0}}">
+          <block wx:for="{{parsedResult}}" wx:for-item="block" wx:key="index">
+            <!-- 标题 -->
+            <view class="md-heading md-heading-{{block.level}}" wx:if="{{block.type === 'heading'}}">
+              <block wx:for="{{block.content}}" wx:for-item="seg" wx:key="idx">
+                <text class="{{seg.type === 'bold' ? 'md-bold' : ''}}">{{seg.content}}</text>
+              </block>
+            </view>
+
+            <!-- 段落 -->
+            <view class="md-paragraph" wx:if="{{block.type === 'paragraph'}}">
+              <block wx:for="{{block.content}}" wx:for-item="seg" wx:key="idx">
+                <text class="{{seg.type === 'bold' ? 'md-bold' : ''}}">{{seg.content}}</text>
+              </block>
+            </view>
+
+            <!-- 列表项 -->
+            <view class="md-list-item" wx:if="{{block.type === 'listItem'}}">
+              <view class="md-list-marker">
+                <text wx:if="{{block.ordered}}">{{block.number}}</text>
+                <text wx:else class="md-bullet">•</text>
+              </view>
+              <view class="md-list-content">
+                <block wx:for="{{block.content}}" wx:for-item="seg" wx:key="idx">
+                  <text class="{{seg.type === 'bold' ? 'md-bold' : ''}}">{{seg.content}}</text>
+                </block>
+              </view>
+            </view>
+          </block>
+        </view>
+        <!-- 降级显示原始内容 -->
+        <text class="result-text" wx:else>{{diagnosisResult}}</text>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-bar">
+    <button class="diagnose-btn {{isLoading ? 'loading' : ''}}" bindtap="submitDiagnosis" disabled="{{isLoading}}">
+      <text wx:if="{{!isLoading}}">开始诊断</text>
+      <text wx:else>诊断中...</text>
+    </button>
+  </view>
+</view>

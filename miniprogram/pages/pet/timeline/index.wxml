@@ -1,0 +1,63 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <view class="loading-dot"></view>
+  </view>
+
+  <block wx:else>
+    <!-- 月度报告 -->
+    <view class="report-card" wx:if="{{report}}">
+      <view class="report-header">
+        <view class="month-nav" bindtap="onPrevMonth">‹</view>
+        <text class="month-title">{{currentYear}}年{{currentMonth}}月报告</text>
+        <view class="month-nav" bindtap="onNextMonth">›</view>
+      </view>
+      <view class="report-stats">
+        <view class="stat-item">
+          <text class="stat-num">{{report.vaccineCount}}</text>
+          <text class="stat-label">💉疫苗</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-num">{{report.checkupCount}}</text>
+          <text class="stat-label">🏥检查</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-num">{{report.medicineCount}}</text>
+          <text class="stat-label">💊用药</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-num">{{report.consultationCount}}</text>
+          <text class="stat-label">💬咨询</text>
+        </view>
+      </view>
+      <text class="report-total">本月共 {{report.totalEvents}} 条健康记录</text>
+    </view>
+
+    <!-- 时间轴 -->
+    <view class="timeline-section">
+      <text class="section-title">成长时间轴</text>
+
+      <view class="empty-timeline" wx:if="{{timeline.length === 0}}">
+        <text class="empty-icon">📅</text>
+        <text class="empty-text">暂无记录</text>
+      </view>
+
+      <view class="timeline" wx:else>
+        <view class="timeline-item" wx:for="{{timeline}}" wx:key="eventId">
+          <view class="timeline-left">
+            <view class="timeline-dot" style="background: var(--color-{{item.color}})">
+              <text class="dot-icon">{{item.icon}}</text>
+            </view>
+            <view class="timeline-line" wx:if="{{index < timeline.length - 1}}"></view>
+          </view>
+          <view class="timeline-content">
+            <text class="event-date">{{item.eventDate}}</text>
+            <view class="event-card">
+              <text class="event-title">{{item.title}}</text>
+              <text class="event-content" wx:if="{{item.content}}">{{item.content}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
