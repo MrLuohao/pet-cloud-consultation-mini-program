@@ -15,7 +15,7 @@ import com.alibaba.dashscope.utils.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.petcloud.user.application.config.AliYunAiConfig;
-import com.petcloud.user.domain.dto.AgentApplicationParam;
+import com.petcloud.user.domain.dto.AgentApplicationDTO;
 import com.petcloud.user.domain.service.ChatService;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
@@ -269,7 +269,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public String agentApplication(AgentApplicationParam param) {
+    public String agentApplication(AgentApplicationDTO param) {
         try {
             ApplicationParam requestParam = ApplicationParam.builder()
                     .apiKey(aliyunAiConfig.getApiKey())

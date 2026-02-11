@@ -1,10 +1,13 @@
 package com.petcloud.shop;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StopWatch;
 
@@ -15,10 +18,13 @@ import java.text.DecimalFormat;
  *
  * @author luohao
  */
-@Slf4j
 @SpringBootApplication
-@ConfigurationPropertiesScan("com.petcloud.shop")
+@ConfigurationPropertiesScan(basePackages = {"com.petcloud.common.web", "com.petcloud.shop"})
+@ComponentScan(basePackages = {"com.petcloud.common.web", "com.petcloud.shop"})
+@EnableFeignClients(basePackages = "com.petcloud.shop.infrastructure.feign")
 public class ShopServiceApplication {
+
+    private static final Logger log = LoggerFactory.getLogger(ShopServiceApplication.class);
 
     public static void main(String[] args) {
         StopWatch stopWatch = new StopWatch();

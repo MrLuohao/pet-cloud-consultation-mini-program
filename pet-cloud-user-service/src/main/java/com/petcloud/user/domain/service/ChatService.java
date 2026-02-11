@@ -1,6 +1,6 @@
 package com.petcloud.user.domain.service;
 
-import com.petcloud.user.domain.dto.AgentApplicationParam;
+import com.petcloud.user.domain.dto.AgentApplicationDTO;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 /**
@@ -28,5 +28,5 @@ public interface ChatService {
     /**
      * 调用 Agent 应用
      */
-    String agentApplication(AgentApplicationParam param);
+    String agentApplication(AgentApplicationDTO param);
 }

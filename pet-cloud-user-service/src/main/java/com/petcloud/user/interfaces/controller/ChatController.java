@@ -1,7 +1,11 @@
 package com.petcloud.user.interfaces.controller;
 
-import com.petcloud.user.domain.dto.AgentApplicationParam;
+import com.petcloud.common.core.response.Response;
+import com.petcloud.common.web.utils.UserContextHolderWeb;
+import com.petcloud.user.domain.dto.AgentApplicationDTO;
 import com.petcloud.user.domain.service.ChatService;
+import com.petcloud.user.domain.service.ConversationService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -26,6 +31,8 @@ import java.util.concurrent.CompletableFuture;
 public class ChatController {
 
     private final ChatService chatService;
+    private final ConversationService conversationService;
+    private final UserContextHolderWeb userContextHolderWeb;
 
     /**
      * 聊天 qwen3Max
@@ -103,12 +110,48 @@ public class ChatController {
      * 访问Agent应用
      */
     @PostMapping("/agent")
-    public String agentApplication(@RequestBody @Valid AgentApplicationParam param) {
+    public String agentApplication(@RequestBody @Valid AgentApplicationDTO param) {
         try {
             return chatService.agentApplication(param);
         } catch (Exception e) {
             log.error("Agent应用调用失败", e);
             return "访问agent应用失败：" + e.getMessage();
         }
+    }
+
+    /**
+     * 发送AI消息（带会话支持）
+     */
+    @PostMapping("/send")
+    public Response<String> sendAiMessage(HttpServletRequest request,
+                                          @RequestBody Map<String, Object> params) {
+        Long userId = userContextHolderWeb.getRequiredUserId(request);
+        Long conversationId = params.get("conversationId") != null
+                ? Long.valueOf(params.get("conversationId").toString())
+                : null;
+        String content = (String) params.get("content");
+        String modelType = (String) params.getOrDefault("modelType", "qwen");
+
+        log.info("发送AI消息, userId: {}, conversationId: {}, modelType: {}", userId, conversationId, modelType);
+
+        if (conversationId == null) {
+            // 如果没有会话ID，先创建一个
+            var conversation = conversationService.getOrCreateAiConversation(userId);
+            conversationId = conversation.getId();
+        }
+
+        String response = conversationService.sendAiMessage(userId, conversationId, content, modelType);
+        return Response.succeed(response);
+    }
+
+    /**
+     * 获取AI聊天历史
+     */
+    @GetMapping("/history/{conversationId}")
+    public Response<?> getChatHistory(HttpServletRequest request,
+                                      @PathVariable Long conversationId) {
+        Long userId = userContextHolderWeb.getRequiredUserId(request);
+        log.info("获取AI聊天历史, userId: {}, conversationId: {}", userId, conversationId);
+        return Response.succeed(conversationService.getAiChatHistory(userId, conversationId));
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StopWatch;
 
@@ -17,7 +18,8 @@ import java.text.DecimalFormat;
  */
 @Slf4j
 @SpringBootApplication
-@ConfigurationPropertiesScan("com.petcloud.user")
+@ConfigurationPropertiesScan(basePackages = {"com.petcloud.common.web", "com.petcloud.user"})
+@ComponentScan(basePackages = {"com.petcloud.common.web", "com.petcloud.user"})
 public class UserServiceApplication {
 
     public static void main(String[] args) {

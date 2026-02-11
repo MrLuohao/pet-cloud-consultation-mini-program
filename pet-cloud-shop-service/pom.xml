@@ -12,43 +12,19 @@
 
     <artifactId>pet-cloud-shop-service</artifactId>
     <name>PetCloudShopService</name>
-    <description>商城服务 - 启动模块</description>
+    <description>商城服务 - 商品、订单、购物车、优惠券等业务</description>
 
     <dependencies>
-        <!-- 依赖 common 模块 -->
-        <dependency>
-            <groupId>com.petcloud</groupId>
-            <artifactId>pet-cloud-common-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+        <!-- 公共模块 (已包含 core, database, web, redis, jwt 等) -->
         <dependency>
             <groupId>com.petcloud</groupId>
             <artifactId>pet-cloud-common-web</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.petcloud</groupId>
-            <artifactId>pet-cloud-common-database</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
-        <!-- Spring Boot Web -->
+        <!-- OpenFeign (微服务间调用) -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <!-- Spring Boot Validation -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
         <!-- Spring Boot Test -->

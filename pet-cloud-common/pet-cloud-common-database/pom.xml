@@ -19,7 +19,6 @@
         <dependency>
             <groupId>com.petcloud</groupId>
             <artifactId>pet-cloud-common-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- MyBatis-Plus -->
@@ -38,13 +37,6 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-        </dependency>
-
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Spring Boot Configuration Processor -->
