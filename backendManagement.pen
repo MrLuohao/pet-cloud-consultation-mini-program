@@ -1,5 +1,5 @@
 {
-  "version": "2.6",
+  "version": "2.8",
   "children": [
     {
       "type": "frame",
@@ -13,5 +13,8 @@
       "fill": "#FFFFFF",
       "layout": "none"
     }
-  ]
+  ],
+  "imports": {
+    "f": "pencil:halo.lib.pen"
+  }
 }
