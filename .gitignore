@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Node
+node_modules/
+
+# Java / Maven
+**/target/
+
+# Runtime artifacts
+uploads/
+*.log
+
+# Local config
+project.private.config.json
+application-local.properties
+
+# AI / workflow helper dirs
+.claude/
+_bmad/
