@@ -17511,6 +17511,803 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "H6Xma",
+      "x": 3390,
+      "y": 0,
+      "name": "单宠物健康档案页 Pet Health Profile",
+      "clip": true,
+      "width": 390,
+      "height": 1120,
+      "fill": "#F8F8F8",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "cDbql",
+          "name": "statusProfile",
+          "width": "fill_container",
+          "height": 62,
+          "fill": "#F8F8F8",
+          "padding": [
+            18,
+            20,
+            12,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "zeV2x",
+              "name": "time",
+              "fill": "#111111",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "QEMX8",
+              "name": "icons",
+              "fill": "#111111",
+              "content": "5G   100%",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "OAJ36",
+          "name": "body",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            8,
+            16,
+            24,
+            16
+          ],
+          "justifyContent": "space_between",
+          "children": [
+            {
+              "type": "frame",
+              "id": "uMJbo",
+              "name": "content",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ZWRWz",
+                  "name": "pageTitle",
+                  "fill": "#2B2438",
+                  "content": "健康档案",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "hqzgv",
+                  "name": "identityCard",
+                  "width": "fill_container",
+                  "fill": "#FCFBFF",
+                  "cornerRadius": 22,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#F4F0FA"
+                  },
+                  "gap": 14,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "u32sx",
+                      "name": "avatar",
+                      "width": 64,
+                      "height": 64,
+                      "fill": "#F4EEFF",
+                      "cornerRadius": 32,
+                      "layout": "vertical",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "m5LzU",
+                          "name": "avatarText",
+                          "fill": "#6D32FF",
+                          "content": "团",
+                          "fontFamily": "Inter",
+                          "fontSize": 26,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "l3ODG",
+                      "name": "identityInfo",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "39lA6",
+                          "name": "petName",
+                          "fill": "#2B2438",
+                          "content": "团子",
+                          "fontFamily": "Inter",
+                          "fontSize": 20,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "YXPPX",
+                          "name": "petMeta",
+                          "fill": "#8A81A0",
+                          "content": "英短蓝猫 · 2岁3个月",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "rhZMX",
+                          "name": "petNote",
+                          "fill": "#7A738A",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "最近状态平稳，饮食和作息记录保持连续。",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xXY7B",
+                  "name": "healthSummaryCard",
+                  "width": "fill_container",
+                  "fill": "#FCFBFF",
+                  "cornerRadius": 24,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#F3EEF9"
+                  },
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "W5CSA",
+                      "name": "statusPill",
+                      "fill": "#F0FAF3",
+                      "cornerRadius": 999,
+                      "padding": [
+                        5,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SIMe6",
+                          "name": "statusPillText",
+                          "fill": "#3B855B",
+                          "content": "状态稳定",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "1aB9t",
+                      "name": "summaryTitle",
+                      "fill": "#2B2438",
+                      "content": "今日整体状态平稳",
+                      "fontFamily": "Inter",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ifDc6",
+                      "name": "summaryMeta",
+                      "fill": "#958BAE",
+                      "content": "最近关键记录 · 今天 09:20",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "G7wqt",
+                      "name": "summaryAdvice",
+                      "fill": "#5E566F",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "最近 7 天没有新增异常记录，可以继续保持规律观察，并留意下一次驱虫提醒。",
+                      "lineHeight": 1.45,
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "qPLtZ",
+                      "name": "statsRow",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "padding": [
+                        2,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Z0Jb0",
+                          "name": "recordsStat",
+                          "width": "fill_container",
+                          "fill": "#FCFBFF",
+                          "cornerRadius": 16,
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mCYO7",
+                              "name": "recordsValue",
+                              "fill": "#2B2438",
+                              "content": "03",
+                              "fontFamily": "Inter",
+                              "fontSize": 18,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "wwSx7",
+                              "name": "recordsLabel",
+                              "fill": "#9B91B3",
+                              "content": "近7天记录",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "gUb44",
+                          "name": "pendingStat",
+                          "width": "fill_container",
+                          "fill": "#FCFBFF",
+                          "cornerRadius": 16,
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "XMa3W",
+                              "name": "pendingValue",
+                              "fill": "#2B2438",
+                              "content": "01",
+                              "fontFamily": "Inter",
+                              "fontSize": 18,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "itttJ",
+                              "name": "pendingLabel",
+                              "fill": "#9B91B3",
+                              "content": "待关注项",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "1c5ZU",
+                          "name": "nextStat",
+                          "width": "fill_container",
+                          "fill": "#FCFBFF",
+                          "cornerRadius": 16,
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "WTR79",
+                              "name": "nextValue",
+                              "fill": "#2B2438",
+                              "content": "2天",
+                              "fontFamily": "Inter",
+                              "fontSize": 18,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "PPkEk",
+                              "name": "nextLabel",
+                              "fill": "#9B91B3",
+                              "content": "下次提醒",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "IydwD",
+                  "name": "reminderOverviewCard",
+                  "width": "fill_container",
+                  "fill": "#FFFDF9",
+                  "cornerRadius": 18,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#F5EDE4"
+                  },
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "4rY8p",
+                      "name": "reminderTitle",
+                      "fill": "#2B2438",
+                      "content": "提醒概览",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "OoTBb",
+                      "name": "reminderSummary",
+                      "fill": "#71697F",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "当前有 2 条提醒待处理，优先关注驱虫和复查安排。",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Jts2N",
+                      "name": "reminderTags",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "4ZbIL",
+                          "name": "tagDeworm",
+                          "fill": "#F6F1FF",
+                          "cornerRadius": 999,
+                          "padding": [
+                            6,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "lcqGa",
+                              "name": "tagDewormText",
+                              "fill": "#7B5CCB",
+                              "content": "驱虫提醒",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "CSRPa",
+                          "name": "tagReview",
+                          "fill": "#FFF7EF",
+                          "cornerRadius": 999,
+                          "padding": [
+                            6,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "YV6Gg",
+                              "name": "tagReviewText",
+                              "fill": "#B77434",
+                              "content": "复查安排",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "618FQ",
+                  "name": "timelineCard",
+                  "width": "fill_container",
+                  "fill": "#FFFEFD",
+                  "cornerRadius": 18,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#F3EEE8"
+                  },
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "M8MRr",
+                      "name": "timelineTitle",
+                      "fill": "#2B2438",
+                      "content": "健康记录",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "a5Poo",
+                      "name": "recordVaccination",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "padding": [
+                        0,
+                        0,
+                        10,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "5F2RB",
+                          "name": "recordDate",
+                          "width": 50,
+                          "fill": "#F7F4FC",
+                          "cornerRadius": 14,
+                          "layout": "vertical",
+                          "padding": [
+                            8,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "JOu74",
+                              "name": "recordDateText",
+                              "fill": "#775AC7",
+                              "content": "03/16",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "3z26c",
+                          "name": "recordContent",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "nWleU",
+                              "name": "recordTitle",
+                              "fill": "#2D2540",
+                              "content": "驱虫记录已补充",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "FzQlF",
+                              "name": "recordNote",
+                              "fill": "#746C86",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "已记录本月体外驱虫时间，下一次建议在 2 周后复查。",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QddLL",
+                      "name": "recordObservation",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "padding": [
+                        0,
+                        0,
+                        10,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "d1K1N",
+                          "name": "recordDate",
+                          "width": 50,
+                          "fill": "#F3F8FC",
+                          "cornerRadius": 14,
+                          "layout": "vertical",
+                          "padding": [
+                            8,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "3zJAm",
+                              "name": "recordDateText",
+                              "fill": "#4E7EA9",
+                              "content": "03/12",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "QJUTK",
+                          "name": "recordContent",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "5wmzj",
+                              "name": "recordTitle",
+                              "fill": "#2D2540",
+                              "content": "饮食观察记录",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "iumok",
+                              "name": "recordNote",
+                              "fill": "#746C86",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "食欲和饮水量恢复稳定，最近 3 天精神状态表现良好。",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "i05uO",
+                      "name": "recordDiagnosis",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "DRJ8a",
+                          "name": "recordDate",
+                          "width": 50,
+                          "fill": "#FCF5EE",
+                          "cornerRadius": 14,
+                          "layout": "vertical",
+                          "padding": [
+                            8,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "vvfXp",
+                              "name": "recordDateText",
+                              "fill": "#B47643",
+                              "content": "03/05",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "EsFLD",
+                          "name": "recordContent",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "BhKBf",
+                              "name": "recordTitle",
+                              "fill": "#2D2540",
+                              "content": "AI 诊断摘要沉淀",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "zPcUy",
+                              "name": "recordNote",
+                              "fill": "#746C86",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "耳后抓挠已转为轻度观察项，建议持续记录是否再次出现频繁抓挠。",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mftNe",
+              "name": "bottomAction",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Dq8w5",
+                  "name": "primaryAction",
+                  "width": "fill_container",
+                  "fill": "#5C35D6",
+                  "cornerRadius": 20,
+                  "layout": "vertical",
+                  "padding": [
+                    15,
+                    18
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "6wdxq",
+                      "name": "primaryActionText",
+                      "fill": "#FFFFFF",
+                      "content": "新增健康记录",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "uqeMe",
+                  "name": "secondaryActions",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "IYceR",
+                      "name": "timelineAction",
+                      "width": "fill_container",
+                      "fill": "#F7F4FC",
+                      "cornerRadius": 18,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#F7F4FC"
+                      },
+                      "layout": "vertical",
+                      "padding": 12,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "rPJfL",
+                          "name": "timelineActionText",
+                          "fill": "#625A74",
+                          "content": "查看成长档案",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "henIr",
+                      "name": "editAction",
+                      "width": "fill_container",
+                      "fill": "#F7F4FC",
+                      "cornerRadius": 18,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#F7F4FC"
+                      },
+                      "layout": "vertical",
+                      "padding": 12,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "voBNq",
+                          "name": "editActionText",
+                          "fill": "#625A74",
+                          "content": "编辑宠物资料",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }
