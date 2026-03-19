@@ -1,7 +1,7 @@
 # 伴宠云诊后端API接口文档
 
-> **文档版本**: v1.0
-> **更新日期**: 2026-02-12
+> **文档版本**: v1.1
+> **更新日期**: 2026-03-19
 > **维护规则**: 每次有接口更新时，必须同步更新本文档
 
 ---
@@ -131,30 +131,9 @@ X-User-Id: {用户ID}
   - `weight`: 体重
 - **响应**: `Long` (宠物ID)
 
-### 3. 获取收货地址列表
-- **接口**: `GET /api/user/address`
-- **认证**: 需要Token
-- **响应**: `List<UserAddressVO>`
-
-### 4. 添加收货地址
-- **接口**: `POST /api/user/address`
-- **认证**: 需要Token
-- **查询参数**:
-  - `contactName`: 联系人姓名
-  - `contactPhone`: 联系电话
-  - `province`: 省份
-  - `city`: 城市
-  - `district`: 区县
-  - `detailAddress`: 详细地址
-  - `isDefault`: 是否默认地址
-- **响应**: `Long` (地址ID)
-
-### 5. 更新收货地址
-- **接口**: `PUT /api/user/address/{id}`
-- **认证**: 需要Token
-- **路径参数**: `id` - 地址ID
-- **查询参数**: 同添加地址（全部可选）
-- **响应**: `Void`
+### 3. 地址管理说明
+- 收货地址能力已统一迁移到 `地址管理模块 (/api/address)`
+- 请使用本文下方 `地址管理模块` 中的 `/api/address/*` 接口
 
 ---
 
@@ -241,7 +220,16 @@ X-User-Id: {用户ID}
   "city": "北京市",
   "district": "朝阳区",
   "detailAddress": "某某街道123号",
-  "isDefault": 1
+  "isDefault": 1,
+  "longitude": 116.478921,
+  "latitude": 39.989612,
+  "businessArea": "望京",
+  "doorNo": "A座1201",
+  "rawText": "张三 13800138000 北京市朝阳区某某街道123号A座1201",
+  "parsedName": "张三",
+  "parsedPhone": "13800138000",
+  "mapAddress": "北京市朝阳区某某街道123号",
+  "addressTag": "家"
 }
 ```
 - **响应**: `Long` (地址ID)
@@ -249,7 +237,28 @@ X-User-Id: {用户ID}
 ### 4. 更新地址
 - **接口**: `PUT /api/address/update`
 - **认证**: 需要Token (`X-User-Id`)
-- **请求体**: 同创建地址
+- **请求体**:
+```json
+{
+  "id": 1,
+  "contactName": "张三",
+  "contactPhone": "13800138000",
+  "province": "北京市",
+  "city": "北京市",
+  "district": "朝阳区",
+  "detailAddress": "某某街道123号A座1201",
+  "isDefault": 1,
+  "longitude": 116.478921,
+  "latitude": 39.989612,
+  "businessArea": "望京",
+  "doorNo": "A座1201",
+  "rawText": "张三 13800138000 北京市朝阳区某某街道123号A座1201",
+  "parsedName": "张三",
+  "parsedPhone": "13800138000",
+  "mapAddress": "北京市朝阳区某某街道123号",
+  "addressTag": "家"
+}
+```
 - **响应**: `Void`
 
 ### 5. 删除地址
@@ -268,6 +277,21 @@ X-User-Id: {用户ID}
 - **接口**: `GET /api/address/default`
 - **认证**: 需要Token (`X-User-Id`)
 - **响应**: `UserAddressVO`
+
+#### `UserAddressVO` 关键字段
+- `id`: 地址ID
+- `contactName`: 联系人
+- `contactPhone`: 联系电话
+- `province` / `city` / `district` / `detailAddress`: 地址拆分字段
+- `fullAddress`: 拼接后的完整地址
+- `isDefault`: 是否默认地址
+- `longitude` / `latitude`: 地图坐标
+- `businessArea`: 商圈
+- `doorNo`: 门牌号
+- `rawText`: 原始粘贴文本
+- `parsedName` / `parsedPhone`: 地址解析得到的联系人和手机号
+- `mapAddress`: 地图地址描述
+- `addressTag`: 地址标签
 
 ---
 
@@ -681,28 +705,42 @@ X-User-Id: {用户ID}
 ### 1. 获取购物车列表
 - **接口**: `GET /api/cart/list`
 - **认证**: 需要Token
-- **响应**: `List<CartVO>`
+- **响应**: `CartPageVO`
 
 ### 2. 添加商品到购物车
 - **接口**: `POST /api/cart/add`
 - **认证**: 需要Token
-- **查询参数**:
-  - `productId`: 商品ID
-  - `quantity` (可选，默认1): 数量
+- **请求体**:
+```json
+{
+  "productId": 1001,
+  "quantity": 2,
+  "specLabel": "冻干桶装 400g · 幼年期"
+}
+```
 - **响应**: `Long` (购物车ID)
 
 ### 3. 更新购物车商品数量
 - **接口**: `PUT /api/cart/update`
 - **认证**: 需要Token
-- **查询参数**:
-  - `cartId`: 购物车ID
-  - `quantity`: 数量
+- **请求体**:
+```json
+{
+  "cartId": 1,
+  "quantity": 3
+}
+```
 - **响应**: `Void`
 
 ### 4. 删除购物车商品
 - **接口**: `DELETE /api/cart/delete`
 - **认证**: 需要Token
-- **查询参数**: `cartId` - 购物车ID
+- **请求体**:
+```json
+{
+  "cartId": 1
+}
+```
 - **响应**: `Void`
 
 ### 5. 清空购物车
@@ -714,6 +752,41 @@ X-User-Id: {用户ID}
 - **接口**: `GET /api/cart/count`
 - **认证**: 需要Token
 - **响应**: `Integer`
+
+#### `CartPageVO` 结构
+- `cartGroups`: 按店铺分组的有效购物车项
+- `invalidItems`: 失效商品列表
+- `summary`: 汇总信息
+
+#### `CartGroupVO` 关键字段
+- `merchantId`: 店铺ID
+- `merchantName`: 店铺名称
+- `serviceText`: 服务文案
+- `allSelected`: 当前店铺下是否全选
+- `selectedCount`: 当前店铺已选商品数
+- `totalAmount`: 当前店铺已选商品金额
+- `items`: `CartItemVO` 列表
+
+#### `CartItemVO` 关键字段
+- `id`: 购物车ID
+- `productId`: 商品ID
+- `name`: 商品名称
+- `coverUrl`: 商品封面
+- `price` / `originalPrice`: 当前价格与原价快照
+- `quantity`: 数量
+- `stock`: 当前库存
+- `shopId` / `shopName`: 店铺信息
+- `serviceText`: 服务文案
+- `spec`: 规格描述
+- `selected`: 是否选中
+- `status`: `active` / `invalid`
+- `subtotal`: 小计
+
+#### `CartSummaryVO` 关键字段
+- `selectedCount`: 已选商品总数
+- `totalAmount`: 已选商品总金额
+- `totalDiscount`: 总优惠金额
+- `allSelected`: 是否全选
 
 ---
 
@@ -755,7 +828,8 @@ X-User-Id: {用户ID}
 {
   "productIds": [1, 2],
   "quantities": [1, 2],
-  "cartIds": [1, 2]
+  "cartIds": [1, 2],
+  "specLabels": ["冻干桶装 400g · 幼年期", "经典洁牙骨 6支装"]
 }
 ```
 - **响应**: `OrderConfirmVO`
@@ -768,9 +842,13 @@ X-User-Id: {用户ID}
 {
   "productIds": [1, 2],
   "quantities": [1, 2],
+  "cartIds": [1, 2],
+  "specLabels": ["冻干桶装 400g · 幼年期", "经典洁牙骨 6支装"],
   "addressId": 1,
   "couponId": 1,
-  "remark": "备注"
+  "remark": "备注",
+  "paymentMethod": "wechat",
+  "verificationType": "password"
 }
 ```
 - **响应**: `Long` (订单ID)
@@ -791,25 +869,101 @@ X-User-Id: {用户ID}
 ### 5. 取消订单
 - **接口**: `PUT /api/order/cancel`
 - **认证**: 需要Token
-- **查询参数**: `orderId` - 订单ID
+- **请求体**:
+```json
+{
+  "orderId": 1
+}
+```
 - **响应**: `Void`
 
 ### 6. 确认收货
 - **接口**: `PUT /api/order/confirm-receive`
 - **认证**: 需要Token
-- **查询参数**: `orderId` - 订单ID
+- **请求体**:
+```json
+{
+  "orderId": 1
+}
+```
 - **响应**: `Void`
 
 ### 7. 支付订单
 - **接口**: `POST /api/order/pay`
 - **认证**: 需要Token
-- **查询参数**: `orderId` - 订单ID
-- **响应**: `Boolean`
+- **请求体**:
+```json
+{
+  "orderId": 1
+}
+```
+- **响应**: `WxPayParamsVO`
 
 ### 8. 获取各状态订单数量
 - **接口**: `GET /api/order/count`
 - **认证**: 需要Token
 - **响应**: `Object`
+
+### 9. 获取订单时间线
+- **接口**: `GET /api/order/{id}/timeline`
+- **认证**: 需要Token
+- **路径参数**: `id` - 订单ID
+- **响应**: `List<OrderTimelineVO>`
+
+### 10. 获取待评价订单列表
+- **接口**: `GET /api/order/pending-review`
+- **认证**: 需要Token
+- **查询参数**:
+  - `page` (可选，默认1)
+  - `size` (可选，默认10)
+- **响应**: `List<PendingReviewOrderVO>`
+
+### 11. 获取待评价商品数量
+- **接口**: `GET /api/order/pending-review/count`
+- **认证**: 需要Token
+- **响应**: `Integer`
+
+#### `OrderConfirmVO` 关键字段
+- `items`: `OrderItemVO` 列表
+- `address`: 当前默认或所选地址
+- `totalCount`: 商品件数
+- `totalAmount`: 商品总金额
+- `goodsAmount`: 商品金额
+- `freight`: 运费
+- `couponDiscount`: 优惠金额
+- `payAmount`: 应付金额
+- `availableCoupons`: 可用优惠券
+- `deliveryText`: 配送文案
+- `orderHint`: 下单提示
+- `selectedPaymentMethod`: 默认支付方式
+- `paymentMethods`: 支付方式列表
+
+#### `OrderItemVO` 关键字段
+- `orderItemId`: 订单项ID
+- `productId`: 商品ID
+- `productName`: 商品名称
+- `coverUrl`: 商品封面
+- `shopId` / `shopName`: 店铺信息
+- `serviceText`: 服务文案
+- `spec`: 规格描述
+- `price` / `originalPrice`: 商品价格与原价快照
+- `quantity`: 数量
+- `subtotal`: 小计
+- `reviewed`: 是否已评价
+
+#### `PaymentMethodVO` 关键字段
+- `key`: 支付方式编码，如 `wechat`、`alipay`
+- `title`: 支付方式标题
+- `subtitle`: 支付辅助文案
+- `verifyType`: 对应验证方式
+
+#### `WxPayParamsVO` 关键字段
+- `timeStamp`: 微信支付时间戳
+- `nonceStr`: 随机字符串
+- `packageStr`: 预支付包字符串
+- `signType`: 签名方式
+- `paySign`: 支付签名
+- `orderId`: 订单ID
 
 ---
 
