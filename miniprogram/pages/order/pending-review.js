@@ -68,16 +68,16 @@ Page({
 
   goToReview(e) {
     const { orderId, orderItemId, productId, productName, coverUrl, price, quantity } = e.currentTarget.dataset
-    const itemData = encodeURIComponent(JSON.stringify({
+    const itemsData = encodeURIComponent(JSON.stringify([{
       orderItemId,
       productId,
       productName,
       coverUrl,
       price,
       quantity
-    }))
+    }]))
     wx.navigateTo({
-      url: `/pages/order/review?orderId=${orderId}&itemData=${itemData}`
+      url: `/pages/order/review?orderId=${orderId}&itemsData=${itemsData}`
     })
   },
 

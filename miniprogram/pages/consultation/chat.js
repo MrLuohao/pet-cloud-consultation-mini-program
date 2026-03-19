@@ -1,5 +1,5 @@
 // pages/consultation/chat.js
-const { ConsultationAPI } = require('../../utils/api')
+const { ConsultationAPI, AIAPI } = require('../../utils/api')
 
 Page({
   data: {
@@ -79,13 +79,15 @@ Page({
       sourceType: ['album', 'camera'],
       success: async (res) => {
         try {
-          wx.showLoading({ title: '发送中...' })
+          wx.showLoading({ title: '上传中...' })
+          const uploadedUrl = await AIAPI.uploadImage(res.tempFilePaths[0])
           await ConsultationAPI.sendMessage(
             this.data.consultationId,
             2,
             null,
-            res.tempFilePaths[0]
+            uploadedUrl
           )
+          wx.hideLoading()
           this.loadMessages()
         } catch (error) {
           wx.hideLoading()

@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "pageKey": "order-detail",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "HJ257",
+    "frameName": "订单详情页 Pending Payment Order Detail"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 18,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "surface": "#FFFEFB",
+      "surfaceWarm": "#FBF7F0",
+      "textPrimary": "#20252C",
+      "textSecondary": "#6E7681",
+      "textMuted": "#8D867C",
+      "borderSoft": "#EDE6DC",
+      "actionPrimary": "#30343C"
+    },
+    "radius": {
+      "card": 22,
+      "statusCard": 26,
+      "button": 16
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+      "amount": { "fontFamily": "Inter", "fontSize": 24, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "nHBhw", "copy": ["9:41", "5G   100%"] },
+    { "key": "status_card", "type": "pending_order_status_card", "sourceNodeId": "kDBQo", "copy": ["待支付"] },
+    { "key": "address_card", "type": "order_address_card", "sourceNodeId": "0oVUN", "copy": ["收货信息"] },
+    { "key": "product_card", "type": "order_product_card", "sourceNodeId": "9u730", "copy": ["商品信息"] },
+    { "key": "amount_card", "type": "order_amount_card", "sourceNodeId": "67VAT", "copy": ["金额明细", "商品总额", "运费", "优惠", "实付款"] },
+    { "key": "info_card", "type": "order_info_card", "sourceNodeId": "fBq1E", "copy": ["订单信息", "订单编号", "创建时间", "支付方式", "订单备注"] },
+    { "key": "bottom_action", "type": "order_bottom_actions", "sourceNodeId": "GRisv", "copy": ["取消订单", "继续支付"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "status_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["status", "statusDesc", "payDeadlineText"]
+    },
+    {
+      "sectionKey": "address_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["receiverName", "receiverPhone", "receiverAddress"]
+    },
+    {
+      "sectionKey": "product_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["items[].productName", "items[].specLabel", "items[].coverUrl", "items[].price", "items[].quantity"]
+    },
+    {
+      "sectionKey": "amount_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["totalAmount", "freight", "couponDiscount", "payAmount"]
+    },
+    {
+      "sectionKey": "info_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["orderNo", "createTime", "paymentMethodDesc", "remark"]
+    }
+  ],
+  "actions": [
+    { "name": "cancelOrder", "target": "PUT /api/order/cancel", "sectionKey": "bottom_action" },
+    { "name": "continuePay", "target": "POST /api/order/pay", "sectionKey": "bottom_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "HJ257",
+    "criticalCheckpoints": [
+      "pending status card remains the first visual anchor and uses warm neutral transaction styling",
+      "all information blocks are separate rounded cards instead of a single white list container",
+      "bottom actions stay light secondary plus dark primary, never revert to purple CTA styling"
+    ]
+  }
+}

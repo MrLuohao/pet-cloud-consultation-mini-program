@@ -1,60 +1,50 @@
-// pages/order/pay-result/index.js - 支付结果页（Story 4.2）
-const { OrderAPI } = require('../../../utils/api')
-
 Page({
   data: {
-    status: 'success',  // success | fail | pending
+    status: 'success',
     orderId: null,
     amount: '0.00',
-    order: null,
-    loading: false
+    feedbackTitle: '支付成功'
   },
 
   onLoad(options) {
     const status = options.status || 'success'
     const orderId = options.orderId ? Number(options.orderId) : null
     const amount = options.amount || '0.00'
-    this.setData({ status, orderId, amount })
 
-    // 支付成功时拉取订单摘要
-    if (status === 'success' && orderId) {
-      this.loadOrderSummary(orderId)
+    this.setData({
+      status,
+      orderId,
+      amount,
+      feedbackTitle: status === 'success' ? '支付成功' : status === 'fail' ? '支付未完成' : '支付处理中'
+    })
+
+    if (status === 'success') {
+      this.redirectTimer = setTimeout(() => {
+        this.closeSuccess()
+      }, 1200)
     }
   },
 
-  async loadOrderSummary(orderId) {
-    this.setData({ loading: true })
-    try {
-      const order = await OrderAPI.getDetail(orderId)
-      this.setData({ order, loading: false })
-    } catch (error) {
-      console.error('加载订单摘要失败:', error)
-      this.setData({ loading: false })
+  onUnload() {
+    if (this.redirectTimer) {
+      clearTimeout(this.redirectTimer)
+      this.redirectTimer = null
     }
   },
 
-  goToOrderDetail() {
+  closeSuccess() {
+    if (this.redirectTimer) {
+      clearTimeout(this.redirectTimer)
+      this.redirectTimer = null
+    }
+
     if (this.data.orderId) {
       wx.redirectTo({
         url: `/pages/order/detail?id=${this.data.orderId}`
       })
+      return
     }
-  },
 
-  goToHome() {
-    wx.switchTab({ url: '/pages/index/index' })
-  },
-
-  goToShop() {
     wx.switchTab({ url: '/pages/shop/shop' })
-  },
-
-  // 重试支付（失败时）
-  retryPay() {
-    if (this.data.orderId) {
-      wx.redirectTo({
-        url: `/pages/order/detail?id=${this.data.orderId}`
-      })
-    }
   }
 })

@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "pageKey": "pay-success",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "MeD2O",
+    "frameName": "支付成功 Success Feedback"
+  },
+  "layout": {
+    "background": "#F5F1EA",
+    "contentPadding": [20, 18, 20, 18],
+    "sectionGap": 12,
+    "safeAreaTop": false
+  },
+  "tokens": {
+    "colors": {
+      "overlay": "#1111111E",
+      "cardBackground": "#FFFDF9D6",
+      "successPrimary": "#4EA772",
+      "textPrimary": "#1D232A",
+      "borderSoft": "#F4EEE6"
+    },
+    "radius": {
+      "card": 34
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 21, "fontWeight": "600" }
+    }
+  },
+  "sections": [
+    { "key": "mask", "type": "overlay", "sourceNodeId": "2NzSg" },
+    { "key": "success_card", "type": "center_success_feedback", "sourceNodeId": "kuip8", "copy": ["支付成功"] }
+  ],
+  "dataBindings": [
+    { "sectionKey": "success_card", "api": "payment result", "fields": ["status"] }
+  ],
+  "actions": [
+    { "name": "closeSuccess", "target": "/pages/order/detail", "sectionKey": "success_card" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "MeD2O",
+    "criticalCheckpoints": [
+      "success card remains centered and modal-like",
+      "green ring/check animation area remains dominant visual focus"
+    ]
+  }
+}

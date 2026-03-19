@@ -1,0 +1,285 @@
+<!--pages/community/detail.wxml-->
+<view class="detail-page">
+  <!-- 帖子内容 -->
+  <view class="post-detail" wx:if="{{post}}">
+    <!-- 用户信息 -->
+    <view class="post-header">
+      <image wx:if="{{post.identityAvatarUrl}}" class="identity-avatar" src="{{post.identityAvatarUrl}}" mode="aspectFill" bindtap="goToUserProfile" data-id="{{post.userId}}" />
+      <view wx:else class="identity-avatar user-avatar-placeholder" bindtap="goToUserProfile" data-id="{{post.userId}}">
+        <text>{{post.identityInitial}}</text>
+      </view>
+      <view class="identity-main">
+        <text class="identity-name">{{post.identityName}}</text>
+        <text class="identity-meta">{{post.identityMeta}}</text>
+        <text wx:if="{{post.showIdentitySignature}}" class="identity-signature">{{post.identitySignature}}</text>
+      </view>
+      <view class="follow-btn" wx:if="{{!post.isSelf}}" bindtap="toggleFollow">
+        {{post.isFollowed ? '已关注' : '关注'}}
+      </view>
+    </view>
+
+    <!-- 内容 -->
+    <view class="post-content">
+      <text class="content-text">{{post.content}}</text>
+      <view class="topic-tag" wx:if="{{post.topicName}}" bindtap="goToTopic" data-id="{{post.topicId}}">
+        #{{post.topicName}}
+      </view>
+    </view>
+
+    <!-- 视频 -->
+    <view class="media-video-wrap" wx:if="{{post.mediaType === 'video' && post.mediaUrls && post.mediaUrls.length > 0}}">
+      <video
+        id="postDetailVideo"
+        class="media-video"
+        src="{{post.mediaUrls[0]}}"
+        controls
+        show-center-play-btn
+        show-play-btn
+        show-fullscreen-btn
+        enable-play-gesture
+        enable-progress-gesture
+        vslide-gesture
+        picture-in-picture-mode="{{['push', 'pop']}}"
+        object-fit="contain"
+        bindfullscreenchange="onDetailVideoFullscreenChange"
+        bindenterpictureinpicture="onDetailVideoEnterPip"
+        bindleavepictureinpicture="onDetailVideoLeavePip" />
+    </view>
+
+    <!-- 图片 -->
+    <view class="media-grid media-grid-{{post.mediaUrls.length || 0}}" wx:elif="{{post.mediaUrls && post.mediaUrls.length > 0}}">
+      <image
+        class="media-item"
+        wx:for="{{post.mediaUrls}}"
+        wx:key="index"
+        src="{{item}}"
+        mode="aspectFill"
+        bindtap="previewImage"
+        data-urls="{{post.mediaUrls}}"
+        data-current="{{item}}" />
+    </view>
+
+  </view>
+
+  <!-- 评论区 -->
+  <view class="comment-section">
+    <view class="section-header">
+      <view class="section-title">评论 {{comments.length}}</view>
+      <view class="sort-tabs">
+        <view class="sort-tab {{commentSort === 'hot' ? 'active' : ''}}" data-type="hot" bindtap="switchCommentSort">最热</view>
+        <view class="sort-tab {{commentSort === 'new' ? 'active' : ''}}" data-type="new" bindtap="switchCommentSort">最新</view>
+      </view>
+    </view>
+
+    <view class="comment-list">
+      <view class="comment-item {{index === displayComments.length - 1 ? 'is-last' : ''}}" wx:for="{{displayComments}}" wx:key="id">
+        <image wx:if="{{item.avatarUrl}}" class="comment-avatar" src="{{item.avatarUrl}}" mode="aspectFill" />
+        <view wx:else class="comment-avatar comment-avatar-placeholder">
+          <text>{{item.nickname ? item.nickname[0] : '宠'}}</text>
+        </view>
+        <view class="comment-content">
+          <view class="comment-header">
+            <text class="comment-nickname">{{item.nickname}}</text>
+            <text class="reply-to" wx:if="{{item.replyToNickname}}">回复 <text class="reply-name">@{{item.replyToNickname}}</text></text>
+          </view>
+          <text class="comment-text">{{item.content}}</text>
+          <!-- 评论图片/视频 -->
+          <view class="comment-media" wx:if="{{item.mediaUrls && item.mediaUrls.length > 0}}">
+            <video
+              wx:if="{{item.mediaType === 'video'}}"
+              class="comment-video"
+              src="{{item.mediaUrls[0]}}"
+              controls="{{false}}"
+              show-center-play-btn="{{false}}"
+              show-play-btn="{{false}}"
+              show-fullscreen-btn="{{false}}"
+              enable-play-gesture
+              enable-progress-gesture="{{false}}"
+              vslide-gesture="{{false}}"
+              object-fit="cover"
+              autoplay="{{false}}"
+              loop="{{false}}"
+              muted />
+            <image wx:else class="comment-img" src="{{item.mediaUrls[0]}}" mode="aspectFill" bindtap="previewCommentImage" data-urls="{{item.mediaUrls}}" data-current="{{item.mediaUrls[0]}}" />
+          </view>
+          <view class="comment-footer">
+            <text class="comment-time">{{item.createTime}}</text>
+            <view class="comment-actions">
+              <view class="comment-action {{item.isLiked ? 'liked' : ''}}" bindtap="likeComment" data-id="{{item.id}}">
+                <text class="comment-action-icon">{{item.isLiked ? '♥' : '♡'}}</text>
+                <text wx:if="{{item.likeCount > 0}}">{{item.likeCount}}</text>
+              </view>
+              <view class="comment-action" bindtap="replyTo" data-id="{{item.id}}" data-userid="{{item.userId}}" data-nickname="{{item.nickname}}">
+                <text class="comment-action-icon">↩</text>
+                <text>回复</text>
+              </view>
+              <!-- 删除按钮：仅自己的评论显示 -->
+              <view class="comment-action delete-action" wx:if="{{item.isSelf}}" bindtap="deleteComment" data-id="{{item.id}}">
+                <text class="comment-action-icon">🗑️</text>
+                <text>删除</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空评论 -->
+      <view class="empty-comment" wx:if="{{displayComments.length === 0}}">
+        <text class="empty-icon">💬</text>
+        <text class="empty-text">暂无评论，快来抢沙发吧~</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部合并栏 -->
+  <view class="bottom-merged-bar" wx:if="{{post}}">
+    <view class="merged-actions">
+      <view class="action-item {{post.isLiked ? 'liked' : ''}}" bindtap="toggleLike">
+        <text class="action-icon">{{post.isLiked ? '❤️' : '🤍'}}</text>
+        <text class="action-count">{{post.likeCount || 0}}</text>
+      </view>
+      <view class="action-item">
+        <text class="action-icon">💬</text>
+        <text class="action-count">{{post.commentCount || 0}}</text>
+      </view>
+      <view class="action-item {{post.isCollected ? 'collected' : ''}}" bindtap="toggleCollect">
+        <text class="action-icon">{{post.isCollected ? '⭐' : '☆'}}</text>
+        <text class="action-count">{{post.collectCount || 0}}</text>
+      </view>
+      <button class="action-item share-btn" open-type="share">
+        <text class="action-icon">↗</text>
+        <text class="action-count">{{post.shareCount || 0}}</text>
+      </button>
+    </view>
+    <!-- 评论媒体预览 -->
+    <view class="comment-media-preview" wx:if="{{commentMediaUrls.length > 0}}">
+      <view class="preview-item" wx:for="{{commentMediaUrls}}" wx:key="index">
+        <video wx:if="{{commentMediaType === 'video'}}" class="preview-media" src="{{item}}" />
+        <image wx:else class="preview-media" src="{{item}}" mode="aspectFill" bindtap="previewCommentImage" data-urls="{{commentMediaUrls}}" data-current="{{item}}" />
+        <view class="preview-remove" bindtap="removeCommentMedia" data-index="{{index}}">×</view>
+      </view>
+    </view>
+    <view class="merged-input-wrap">
+      <view class="add-media-btn" bindtap="showMediaPicker">+</view>
+      <input
+        class="comment-input"
+        placeholder="{{replyToNickname ? '回复 @' + replyToNickname : '说点什么...'}}"
+        value="{{inputContent}}"
+        bindinput="onInputChange"
+        bindconfirm="submitComment"
+        confirm-type="send"
+      />
+      <view class="send-btn {{inputContent || commentMediaUrls.length > 0 ? 'active' : ''}}" bindtap="submitComment">发送</view>
+    </view>
+  </view>
+
+  <!-- 更多操作按钮（本人显示删除，他人显示举报） -->
+  <view class="more-btn" bindtap="showMoreActions">
+    <text>···</text>
+  </view>
+</view>
+
+<!-- 操作弹窗（编辑/权限/删除/举报） -->
+<view class="modal-mask" wx:if="{{showMoreModal}}" bindtap="hideMoreModal">
+  <view class="modal-content" catchtap="">
+    <view class="modal-title">{{post && post.isSelf ? '帖子管理' : '举报原因'}}</view>
+    <!-- 本人：显示管理选项 -->
+    <view class="report-options" wx:if="{{post && post.isSelf}}">
+      <view class="report-option" bindtap="editPost">
+        <text class="option-icon">✏️</text>
+        <text>编辑动态</text>
+      </view>
+      <view class="report-option" bindtap="showVisibilityPicker">
+        <text class="option-icon">👁️</text>
+        <text>可见范围</text>
+        <text class="option-hint">{{visibilityText}}</text>
+      </view>
+      <view class="report-option delete-option" bindtap="deletePost">
+        <text class="option-icon">🗑️</text>
+        <text>删除动态</text>
+      </view>
+    </view>
+    <!-- 他人：显示举报选项 -->
+    <view class="report-options" wx:else>
+      <view class="report-option" wx:for="{{reportReasons}}" wx:key="*this" bindtap="submitReport" data-reason="{{item}}">
+        {{item}}
+      </view>
+    </view>
+    <view class="modal-cancel" bindtap="hideMoreModal">取消</view>
+  </view>
+</view>
+
+<!-- 可见性设置弹窗 -->
+<view class="modal-mask" wx:if="{{showVisibilityPicker}}" bindtap="hideVisibilityPicker">
+  <view class="modal-content visibility-modal" catchtap="">
+    <view class="modal-title">谁可以看</view>
+    <view class="visibility-options">
+      <view class="visibility-option {{tempVisibility === 0 ? 'selected' : ''}}" bindtap="selectVisibility" data-visibility="0">
+        <view class="visibility-left">
+          <text class="visibility-icon">🌐</text>
+          <view class="visibility-info">
+            <text class="visibility-name">公开</text>
+            <text class="visibility-desc">所有人可见</text>
+          </view>
+        </view>
+        <text class="visibility-check" wx:if="{{tempVisibility === 0}}">✓</text>
+      </view>
+      <view class="visibility-option {{tempVisibility === 1 ? 'selected' : ''}}" bindtap="selectVisibility" data-visibility="1">
+        <view class="visibility-left">
+          <text class="visibility-icon">👥</text>
+          <view class="visibility-info">
+            <text class="visibility-name">部分人可见</text>
+            <text class="visibility-desc">仅选中的人可见</text>
+          </view>
+        </view>
+        <text class="visibility-check" wx:if="{{tempVisibility === 1}}">✓</text>
+      </view>
+      <view class="visibility-option {{tempVisibility === 2 ? 'selected' : ''}}" bindtap="selectVisibility" data-visibility="2">
+        <view class="visibility-left">
+          <text class="visibility-icon">🔒</text>
+          <view class="visibility-info">
+            <text class="visibility-name">仅自己可见</text>
+            <text class="visibility-desc">仅自己可以查看</text>
+          </view>
+        </view>
+        <text class="visibility-check" wx:if="{{tempVisibility === 2}}">✓</text>
+      </view>
+    </view>
+    <!-- 指定可见用户（当选择部分人可见时） -->
+    <view class="visible-users-section" wx:if="{{tempVisibility === 1}}">
+      <view class="section-header">
+        <text class="section-title">选择可见用户</text>
+        <text class="section-count">{{tempVisibleUserIds.length}}人</text>
+      </view>
+      <view class="selected-users" wx:if="{{tempVisibleUserIds.length > 0}}">
+        <view class="selected-user" wx:for="{{tempVisibleUserNames}}" wx:key="index">
+          <text>{{item}}</text>
+          <text class="remove-user" bindtap="removeVisibleUser" data-index="{{index}}">×</text>
+        </view>
+      </view>
+      <view class="add-user-btn" bindtap="addVisibleUser">+ 添加用户</view>
+    </view>
+    <view class="modal-buttons">
+      <view class="modal-btn cancel-btn" bindtap="hideVisibilityPicker">取消</view>
+      <view class="modal-btn confirm-btn" bindtap="confirmVisibility">确定</view>
+    </view>
+  </view>
+</view>
+
+<!-- 媒体选择弹窗 -->
+<view class="modal-mask" wx:if="{{showMediaPicker}}" bindtap="hideMediaPicker">
+  <view class="modal-content media-picker-modal" catchtap="">
+    <view class="modal-title">选择媒体</view>
+    <view class="media-picker-options">
+      <view class="media-picker-item" bindtap="chooseCommentImage">
+        <text class="media-picker-icon">🖼️</text>
+        <text class="media-picker-text">图片</text>
+      </view>
+      <view class="media-picker-item" bindtap="chooseCommentVideo">
+        <text class="media-picker-icon">🎬</text>
+        <text class="media-picker-text">视频</text>
+      </view>
+    </view>
+    <view class="modal-cancel" bindtap="hideMediaPicker">取消</view>
+  </view>
+</view>

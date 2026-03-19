@@ -9,10 +9,10 @@ Page({
     petAge: '',
     symptoms: '',
     symptomTags: [],
-    imageUrl: '',
-    diagnosisResult: '',
-    parsedResult: [],
+    uploadedAssets: [],
+    diagnosisResult: null,
     isLoading: false,
+    diagnosisTaskId: null,
     // 访客限制相关
     isLoggedIn: false,
     remainingCount: -1, // -1表示已登录用户无限制
@@ -36,18 +36,13 @@ Page({
     const isLoggedIn = !!app.globalData?.token;
     this.setData({ isLoggedIn });
 
-    // 已登录用户不需要检查次数
-    if (isLoggedIn) {
-      return;
-    }
-
     // 访客检查剩余次数
     try {
-      const deviceId = this.getDeviceId();
-      const result = await AIAPI.getDiagnosisRemainingCount(deviceId);
-      this.setData({ remainingCount: result.remainingCount });
+      const deviceId = isLoggedIn ? null : this.getDeviceId();
+      const result = await AIAPI.getDiagnosisEntry(deviceId);
+      this.setData({ remainingCount: result.loggedIn ? -1 : result.remainingCount });
 
-      if (result.limitReached) {
+      if (!result.loggedIn && result.remainingCount <= 0) {
         this.showLimitReachedModal();
       }
     } catch (e) {
@@ -266,23 +261,49 @@ Page({
     this.setData({ symptoms: tagsStr });
   },
 
-  // 上传图片（预留功能）
+  // 上传图片
   uploadImage() {
+    const remainCount = 6 - this.data.uploadedAssets.length
+    if (remainCount <= 0) {
+      wx.showToast({ title: '最多上传6张图片', icon: 'none' })
+      return
+    }
+
     wx.chooseImage({
-      count: 1,
+      count: remainCount,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
-      success: (res) => {
-        this.setData({
-          imageUrl: res.tempFilePaths[0]
-        });
+      success: async (res) => {
+        wx.showLoading({ title: '上传中...' });
+        const nextAssets = [...this.data.uploadedAssets]
+        try {
+          for (const tempPath of res.tempFilePaths) {
+            const uploaded = await AIAPI.uploadMedia(tempPath, 'diagnosis')
+            if (!uploaded.availableForSubmit) {
+              throw new Error(uploaded.reason || '内容不符合发布规范，请更换图片后重试')
+            }
+            nextAssets.push(uploaded)
+          }
+          this.setData({ uploadedAssets: nextAssets })
+          wx.hideLoading();
+        } catch (err) {
+          wx.hideLoading();
+          console.error('图片上传失败:', err);
+          wx.showToast({ title: err.message || '图片上传失败', icon: 'none' });
+        }
       }
     });
   },
 
   // 删除图片
-  removeImage() {
-    this.setData({ imageUrl: '' });
+  removeImage(e) {
+    const index = e?.currentTarget?.dataset?.index
+    if (index === undefined) {
+      return
+    }
+    const uploadedAssets = [...this.data.uploadedAssets]
+    uploadedAssets.splice(index, 1)
+    this.setData({ uploadedAssets })
   },
 
   // 提交诊断
@@ -307,36 +328,36 @@ Page({
     // 构建诊断数据
     const diagnosisData = {
       petType: this.data.petType,
-      petAge: this.data.petAge ? parseInt(this.data.petAge) : 0,
-      symptoms: this.data.symptoms,
-      imageUrl: this.data.imageUrl
+      petAgeMonths: this.data.petAge ? parseInt(this.data.petAge) : 0,
+      symptomTags: this.data.symptomTags,
+      symptomDescription: this.data.symptoms,
+      mediaAssetIds: this.data.uploadedAssets.map(item => item.assetId)
     };
 
     // 访客需要传递设备ID
     const deviceId = this.data.isLoggedIn ? null : this.getDeviceId();
 
     try {
-      // 调用AI诊断接口
-      const result = await AIAPI.diagnose(diagnosisData, deviceId);
+      const submitResult = await AIAPI.submitDiagnosis(diagnosisData, deviceId);
 
-      // 检查是否达到限制
-      if (result.limitReached) {
+      if (submitResult.limitReached) {
         this.setData({ isLoading: false });
         this.showLimitReachedModal();
         return;
       }
 
-      // 更新剩余次数（访客）
-      if (!result.isLoggedIn && result.remainingCount !== undefined) {
-        this.setData({ remainingCount: result.remainingCount });
+      if (submitResult.remainingCount !== undefined && submitResult.remainingCount >= 0) {
+        this.setData({ remainingCount: submitResult.remainingCount });
       }
 
-      // 解析Markdown结果
-      const parsedResult = this.parseMarkdown(result.result);
+      this.setData({
+        diagnosisTaskId: submitResult.taskId
+      });
+
+      const result = await this.pollDiagnosisTask(submitResult.taskId)
 
       this.setData({
-        diagnosisResult: result.result,
-        parsedResult: parsedResult,
+        diagnosisResult: result,
         isLoading: false
       });
 
@@ -346,9 +367,9 @@ Page({
       }
 
       // 显示剩余次数提示（访客）
-      if (!this.data.isLoggedIn && result.remainingCount !== undefined && result.remainingCount > 0) {
+      if (!this.data.isLoggedIn && submitResult.remainingCount !== undefined && submitResult.remainingCount > 0) {
         wx.showToast({
-          title: `剩余${result.remainingCount}次免费机会`,
+          title: `剩余${submitResult.remainingCount}次免费机会`,
           icon: 'none',
           duration: 2000
         });
@@ -385,5 +406,16 @@ Page({
   // 返回
   goBack() {
     wx.navigateBack();
+  },
+
+  async pollDiagnosisTask(taskId, maxAttempts = 6) {
+    for (let index = 0; index < maxAttempts; index++) {
+      const result = await AIAPI.getDiagnosisTask(taskId)
+      if (result.status === 'completed') {
+        return result
+      }
+      await new Promise(resolve => setTimeout(resolve, 1200))
+    }
+    throw new Error('诊断结果生成超时，请稍后重试')
   }
 });

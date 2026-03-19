@@ -1,0 +1,211 @@
+<!--pages/community/publish.wxml-->
+<view class="publish-page">
+  <!-- 内容输入 -->
+  <view class="content-section">
+    <textarea
+      class="content-input"
+      placeholder="分享你和毛孩子的日常..."
+      value="{{content}}"
+      bindinput="onContentInput"
+      maxlength="1000"
+      auto-height
+      show-confirm-bar="{{false}}"
+    />
+    <view class="word-count">{{content.length}}/1000</view>
+  </view>
+
+  <!-- 图片上传 -->
+  <view class="media-section">
+    <view class="video-preview" wx:if="{{mediaType === 'video' && mediaUrls.length > 0}}">
+      <video
+        class="video-item"
+        src="{{mediaUrls[0]}}"
+        controls
+        show-center-play-btn
+        enable-play-gesture
+        object-fit="cover" />
+      <view class="remove-btn video-remove" catchtap="removeMedia" data-index="0">✕</view>
+    </view>
+
+    <view class="media-list" wx:elif="{{mediaType !== 'video'}}">
+      <view class="media-item" wx:for="{{mediaUrls}}" wx:key="*this">
+        <image src="{{item}}" mode="aspectFill" />
+        <view class="remove-btn" catchtap="removeMedia" data-index="{{index}}">✕</view>
+      </view>
+      <view class="add-media" wx:if="{{mediaUrls.length < 9}}" bindtap="chooseMedia">
+        <text class="add-icon">+</text>
+        <text class="add-text">{{mediaType === 'image' ? '添加图片' : '添加图片/视频'}}</text>
+      </view>
+    </view>
+
+    <view class="video-add" wx:if="{{mediaType === 'video' && mediaUrls.length > 0}}" bindtap="chooseMedia">
+      <text class="video-add-text">重新选择视频</text>
+    </view>
+  </view>
+
+  <!-- 话题选择 -->
+  <view class="option-section" bindtap="showTopicPicker">
+    <view class="option-left">
+      <text class="option-icon">📌</text>
+      <text class="option-label">话题</text>
+    </view>
+    <view class="option-right">
+      <text class="option-value" wx:if="{{selectedTopic}}">#{{selectedTopic.name}}</text>
+      <text class="option-placeholder" wx:else>选择话题</text>
+      <text class="option-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 宠物关联 -->
+  <view class="option-section" bindtap="showPetPicker">
+    <view class="option-left">
+      <text class="option-icon">🐾</text>
+      <text class="option-label">关联宠物</text>
+    </view>
+    <view class="option-right">
+      <text class="option-value" wx:if="{{selectedPet}}">{{selectedPet.name}}</text>
+      <text class="option-placeholder" wx:else>选择宠物</text>
+      <text class="option-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 可见性设置 -->
+  <view class="option-section" bindtap="showVisibilityPicker">
+    <view class="option-left">
+      <text class="option-icon">👁️</text>
+      <text class="option-label">可见范围</text>
+    </view>
+    <view class="option-right">
+      <text class="option-value">{{visibilityText}}</text>
+      <text class="option-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 发布按钮 -->
+  <view class="publish-bar">
+    <button
+      class="publish-btn {{canPublish && !uploadingVideo ? '' : 'disabled'}}"
+      bindtap="publishPost"
+      disabled="{{!canPublish || uploadingVideo}}">
+      {{uploadingVideo ? '视频处理中...' : (editMode ? '保存' : '发布')}}
+    </button>
+  </view>
+</view>
+
+<!-- 话题选择弹窗 -->
+<view class="picker-mask" wx:if="{{showTopicModal}}" bindtap="hideTopicPicker">
+  <view class="picker-content" catchtap="">
+    <view class="picker-header">
+      <text class="picker-title">选择话题</text>
+      <text class="picker-close" bindtap="hideTopicPicker">✕</text>
+    </view>
+    <view class="picker-search">
+      <input placeholder="搜索话题" value="{{topicKeyword}}" bindinput="searchTopic" />
+    </view>
+    <scroll-view class="picker-list" scroll-y>
+      <view
+        class="picker-item {{selectedTopic && selectedTopic.id === item.id ? 'selected' : ''}}"
+        wx:for="{{topicList}}"
+        wx:key="id"
+        bindtap="selectTopic"
+        data-item="{{item}}">
+        <text class="topic-icon">{{item.icon || '📌'}}</text>
+        <view class="topic-info">
+          <text class="topic-name">#{{item.name}}</text>
+          <text class="topic-count">{{item.postCount}} 讨论</text>
+        </view>
+        <text class="check-icon" wx:if="{{selectedTopic && selectedTopic.id === item.id}}">✓</text>
+      </view>
+    </scroll-view>
+  </view>
+</view>
+
+<!-- 宠物选择弹窗 -->
+<view class="picker-mask" wx:if="{{showPetModal}}" bindtap="hidePetPicker">
+  <view class="picker-content" catchtap="">
+    <view class="picker-header">
+      <text class="picker-title">关联宠物</text>
+      <text class="picker-close" bindtap="hidePetPicker">✕</text>
+    </view>
+    <scroll-view class="picker-list" scroll-y>
+      <view
+        class="picker-item {{selectedPet && selectedPet.id === item.id ? 'selected' : ''}}"
+        wx:for="{{petList}}"
+        wx:key="id"
+        bindtap="selectPet"
+        data-item="{{item}}">
+        <image wx:if="{{item.avatarUrl}}" class="pet-avatar" src="{{item.avatarUrl}}" mode="aspectFill" />
+        <view wx:else class="pet-avatar pet-avatar-fallback">🐾</view>
+        <view class="pet-info">
+          <text class="pet-name">{{item.name}}</text>
+          <text class="pet-breed">{{item.breed}}</text>
+        </view>
+        <text class="check-icon" wx:if="{{selectedPet && selectedPet.id === item.id}}">✓</text>
+      </view>
+    </scroll-view>
+  </view>
+</view>
+
+<!-- 可见性设置弹窗 -->
+<view class="picker-mask" wx:if="{{showVisibilityPicker}}" bindtap="hideVisibilityPicker">
+  <view class="picker-content visibility-picker" catchtap="">
+    <view class="picker-header">
+      <text class="picker-title">谁可以看</text>
+      <text class="picker-close" bindtap="hideVisibilityPicker">✕</text>
+    </view>
+
+    <view class="visibility-options">
+      <view class="visibility-option {{visibility === 0 ? 'selected' : ''}}" bindtap="selectVisibility" data-visibility="0">
+        <view class="visibility-left">
+          <text class="visibility-icon">🌐</text>
+          <view class="visibility-info">
+            <text class="visibility-name">公开</text>
+            <text class="visibility-desc">所有人可见</text>
+          </view>
+        </view>
+        <text class="visibility-check" wx:if="{{visibility === 0}}">✓</text>
+      </view>
+
+      <view class="visibility-option {{visibility === 1 ? 'selected' : ''}}" bindtap="selectVisibility" data-visibility="1">
+        <view class="visibility-left">
+          <text class="visibility-icon">👥</text>
+          <view class="visibility-info">
+            <text class="visibility-name">部分人可见</text>
+            <text class="visibility-desc">仅选中的人可见</text>
+          </view>
+        </view>
+        <text class="visibility-check" wx:if="{{visibility === 1}}">✓</text>
+      </view>
+
+      <view class="visibility-option {{visibility === 2 ? 'selected' : ''}}" bindtap="selectVisibility" data-visibility="2">
+        <view class="visibility-left">
+          <text class="visibility-icon">🔒</text>
+          <view class="visibility-info">
+            <text class="visibility-name">仅自己可见</text>
+            <text class="visibility-desc">仅自己可以查看</text>
+          </view>
+        </view>
+        <text class="visibility-check" wx:if="{{visibility === 2}}">✓</text>
+      </view>
+    </view>
+
+    <!-- 指定可见用户（当选择部分人可见时） -->
+    <view class="visible-users-section" wx:if="{{visibility === 1}}">
+      <view class="section-header">
+        <text class="section-title">选择可见用户</text>
+        <text class="section-count">{{visibleUserIds.length}}人</text>
+      </view>
+      <view class="selected-users" wx:if="{{visibleUserIds.length > 0}}">
+        <view class="selected-user" wx:for="{{visibleUserNames}}" wx:key="index">
+          <text>{{item}}</text>
+          <text class="remove-user" catchtap="removeVisibleUser" data-index="{{index}}">×</text>
+        </view>
+      </view>
+      <view class="add-user-btn" catchtap="addVisibleUser">+ 添加用户</view>
+    </view>
+
+    <view class="picker-footer">
+      <button class="confirm-btn" bindtap="confirmVisibility">确定</button>
+    </view>
+  </view>
+</view>

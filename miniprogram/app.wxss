@@ -164,6 +164,8 @@ page {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100%;
+  position: relative;
 }
 
 /* ==================== 2. 基础重置 ==================== */

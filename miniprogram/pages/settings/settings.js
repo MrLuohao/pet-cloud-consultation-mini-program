@@ -1,10 +1,18 @@
 const app = getApp()
 const { AuthAPI, isLoggedIn, navigateToLogin } = require('../../utils/api')
+const config = require('../../utils/config')
 
 Page({
   data: {
     userInfo: {},
-    apiHost: ''
+    apiHost: '',
+    defaultHost: '',
+    recommendedHost: '',
+    platformLabel: '',
+    currentUserApi: '',
+    currentShopApi: '',
+    connectionStatus: '',  // '', 'testing', 'success', 'fail'
+    statusMessage: ''
   },
 
   onShow() {
@@ -16,7 +24,16 @@ Page({
   },
 
   async loadData() {
-    this.setData({ apiHost: wx.getStorageSync('apiHost') || '' })
+    const defaultConfig = config.getDefaultConfig()
+    const isDevtools = config.isDevtoolsPlatform()
+    this.setData({
+      apiHost: config.getApiHost(),
+      defaultHost: defaultConfig.API_HOST,
+      recommendedHost: config.getRecommendedApiHost(),
+      platformLabel: isDevtools ? '开发者工具' : '真机',
+      currentUserApi: config.getApiBaseUrl(),
+      currentShopApi: config.getShopApiBaseUrl()
+    })
     try {
       const userInfo = await AuthAPI.getUserInfo()
       this.setData({ userInfo: userInfo || {} })
@@ -33,28 +50,77 @@ Page({
     this.setData({ apiHost: e.detail.value.trim() })
   },
 
-  saveApiHost() {
-    const host = this.data.apiHost
+  async saveApiHost() {
+    const host = this.data.apiHost.trim()
+
     if (!host) {
-      wx.removeStorageSync('apiHost')
-      wx.showToast({ title: '已恢复默认地址', icon: 'none' })
+      config.setApiHost(null)
+      this.setData({
+        apiHost: config.getApiHost(),
+        currentUserApi: config.getApiBaseUrl(),
+        currentShopApi: config.getShopApiBaseUrl(),
+        connectionStatus: '',
+        statusMessage: ''
+      })
+      wx.showToast({ title: '已恢复默认地址', icon: 'success' })
       return
     }
 
+    // 验证IP或域名格式
     const valid = /^(\d{1,3}\.){3}\d{1,3}$/.test(host) || /^[a-zA-Z0-9.-]+$/.test(host)
     if (!valid) {
       wx.showToast({ title: '地址格式不正确', icon: 'none' })
       return
     }
 
-    wx.setStorageSync('apiHost', host)
-    wx.showToast({ title: '已保存，重进页面生效', icon: 'none' })
+    config.setApiHost(host)
+    this.setData({
+      currentUserApi: config.getApiBaseUrl(),
+      currentShopApi: config.getShopApiBaseUrl()
+    })
+    wx.showToast({ title: '已保存', icon: 'success' })
+
+    // 自动测试连接
+    await this.testConnection()
+  },
+
+  async useRecommendedHost() {
+    const host = this.data.recommendedHost
+    config.setApiHost(host)
+    this.setData({
+      apiHost: host,
+      currentUserApi: config.getApiBaseUrl(),
+      currentShopApi: config.getShopApiBaseUrl()
+    })
+    wx.showToast({ title: '已应用推荐地址', icon: 'success' })
+    await this.testConnection()
   },
 
   resetApiHost() {
-    wx.removeStorageSync('apiHost')
-    this.setData({ apiHost: '' })
-    wx.showToast({ title: '已恢复默认地址', icon: 'none' })
+    config.setApiHost(null)
+    this.setData({
+      apiHost: config.getApiHost(),
+      currentUserApi: config.getApiBaseUrl(),
+      currentShopApi: config.getShopApiBaseUrl(),
+      connectionStatus: '',
+      statusMessage: ''
+    })
+    wx.showToast({ title: '已恢复默认地址', icon: 'success' })
+  },
+
+  async testConnection() {
+    this.setData({ connectionStatus: 'testing', statusMessage: '测试中...' })
+
+    const result = await config.testConnection()
+
+    this.setData({
+      connectionStatus: result.success ? 'success' : 'fail',
+      statusMessage: result.message
+    })
+
+    if (result.success) {
+      wx.showToast({ title: '连接成功', icon: 'success' })
+    }
   },
 
   logout() {

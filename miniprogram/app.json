@@ -51,10 +51,21 @@
     "pages/beauty/booking-detail/index",
     "pages/consultation/urgent/index",
     "pages/shop/subscription/index",
-    "pages/community/index"
+    "pages/community/index",
+    "pages/community/tab",
+    "pages/community/detail",
+    "pages/community/search",
+    "pages/community/topic",
+    "pages/community/publish",
+    "pages/message/conversations",
+    "pages/message/chat",
+    "pages/user/followers",
+    "pages/user/followings"
   ],
   "window": {
-    "backgroundColor": "#FFFFFF",
+    "backgroundColor": "#F8F8F8",
+    "backgroundColorTop": "#F8F8F8",
+    "backgroundColorBottom": "#F8F8F8",
     "backgroundTextStyle": "dark",
     "navigationBarTitleText": "伴宠云诊",
     "navigationBarBackgroundColor": "#FFFFFF",
@@ -63,7 +74,7 @@
   },
   "tabBar": {
     "color": "#86868B",
-    "selectedColor": "#667eea",
+    "selectedColor": "#6D32FF",
     "backgroundColor": "#FFFFFF",
     "borderStyle": "white",
     "list": [
@@ -78,6 +89,12 @@
         "text": "商城",
         "iconPath": "/image/商城.png",
         "selectedIconPath": "/image/商城.png"
+      },
+      {
+        "pagePath": "pages/community/tab",
+        "text": "社区",
+        "iconPath": "/image/社区.png",
+        "selectedIconPath": "/image/社区-active.png"
       },
       {
         "pagePath": "pages/news/news",

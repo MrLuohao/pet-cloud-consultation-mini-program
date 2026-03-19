@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "pageKey": "payment-verification",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "Ef00X",
+    "frameName": "支付验证层 Payment Verification"
+  },
+  "layout": {
+    "background": "#F5F1EA",
+    "contentPadding": [24, 22, 26, 22],
+    "sectionGap": 16,
+    "safeAreaTop": false
+  },
+  "tokens": {
+    "colors": {
+      "overlay": "#11111120",
+      "cardBackground": "#FFFDF9E0",
+      "textPrimary": "#1F242C",
+      "textSecondary": "#7F7A72",
+      "surface": "#FBFCFB",
+      "brandDark": "#30343C",
+      "success": "#4EA772"
+    },
+    "radius": {
+      "card": 36,
+      "facePanel": 28,
+      "pill": 999
+    },
+    "typography": {
+      "amount": { "fontFamily": "Inter", "fontSize": 30, "fontWeight": "600" },
+      "title": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "600" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    { "key": "mask", "type": "overlay", "sourceNodeId": "KC1WY" },
+    { "key": "verification_card", "type": "face_verification_card", "sourceNodeId": "x5Np5", "copy": ["¥ 289.00", "微信支付 · Face ID 验证", "确认支付", "注视屏幕以完成身份验证", "改用支付密码"] }
+  ],
+  "dataBindings": [
+    { "sectionKey": "verification_card", "api": "payment draft", "fields": ["payAmount", "payMethod", "verifyType"] }
+  ],
+  "actions": [
+    { "name": "verifyFaceId", "target": "payment-verify", "sectionKey": "verification_card" },
+    { "name": "switchToPassword", "target": "password-verify", "sectionKey": "verification_card" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "Ef00X",
+    "criticalCheckpoints": [
+      "verification card remains centered above dimmed checkout background",
+      "amount is the first visual anchor",
+      "face panel remains the focal object before title and dots"
+    ]
+  }
+}

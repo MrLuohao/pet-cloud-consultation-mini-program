@@ -23,11 +23,12 @@
 
 /* 月度报告 */
 .report-card {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #6d32ff 0%, #b057f5 38%, #ec4899 72%, #fff2fa 100%);
   margin: 16rpx;
   border-radius: 24rpx;
   padding: 32rpx;
   color: #fff;
+  box-shadow: 0 16rpx 36rpx rgba(236, 72, 153, 0.24);
 }
 
 .report-header {

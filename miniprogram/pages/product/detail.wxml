@@ -1,235 +1,108 @@
-<!--pages/product/detail.wxml-->
-<view class="product-container">
-  <!-- 商品图片轮播 -->
-  <view class="swiper-wrapper">
-    <swiper class="product-swiper" indicator-dots="{{false}}" autoplay="{{true}}" interval="{{3000}}" duration="{{500}}" circular="{{true}}" bindchange="onSwiperChange">
-      <swiper-item wx:for="{{product.imageUrls}}" wx:key="index">
-        <image class="swiper-image" src="{{item}}" mode="aspectFill" binderror="onImageError" data-index="{{index}}"></image>
-      </swiper-item>
-    </swiper>
-    <!-- 自定义指示器 -->
-    <view class="swiper-indicator">
-      <text>{{currentImageIndex + 1}}/{{product.imageUrls.length || 1}}</text>
-    </view>
-  </view>
-
-  <!-- 商品信息卡片 -->
-  <view class="product-card">
-    <!-- 价格区域 -->
-    <view class="price-section">
-      <view class="price-main">
-        <text class="price-symbol">¥</text>
-        <text class="price-integer">{{priceInteger}}</text>
-        <text class="price-decimal">.{{priceDecimal}}</text>
-      </view>
-      <view class="price-extra">
-        <text class="original-price" wx:if="{{product.originalPrice && product.originalPrice > product.price}}">¥{{product.originalPrice}}</text>
-      </view>
-    </view>
-
-    <!-- 销量信息 -->
-    <view class="sales-row">
-      <text class="sales-text">已售 {{product.sales || 0}}+</text>
-      <view class="guarantee-tags">
-        <view class="tag-item">
-          <text class="tag-icon">✓</text>
-          <text>正品保障</text>
-        </view>
-        <view class="tag-item">
-          <text class="tag-icon">✓</text>
-          <text>7天退换</text>
+<view class="product-detail-page">
+  <view class="detail-body">
+    <view class="hero-poster">
+      <view class="hero-poster__stage">
+        <image
+          wx:if="{{product.coverUrl}}"
+          class="hero-poster__image"
+          src="{{product.coverUrl}}"
+          mode="aspectFit"
+        />
+        <view wx:else class="hero-poster__fallback">
+          <view class="hero-poster__shape hero-poster__shape--large"></view>
+          <view class="hero-poster__shape hero-poster__shape--pill"></view>
+          <view class="hero-poster__shape hero-poster__shape--small"></view>
+          <view class="hero-poster__shadow"></view>
         </view>
       </view>
     </view>
 
-    <!-- 商品名称 -->
-    <view class="product-title">{{product.name}}</view>
-    <view class="product-desc" wx:if="{{product.summary}}">{{product.summary}}</view>
-  </view>
+    <view class="hero-info">
+      <text class="hero-info__title">{{product.name || heroCopy.title}}</text>
+      <text class="hero-info__subtitle">{{product.summary || heroCopy.subtitle}}</text>
+      <text class="hero-info__price">¥{{displayPrice}}</text>
+    </view>
 
-  <!-- 服务保障 -->
-  <view class="service-card">
-    <view class="service-item">
-      <text class="service-icon">🚚</text>
-      <text class="service-text">全场包邮</text>
-    </view>
-    <view class="service-divider"></view>
-    <view class="service-item">
-      <text class="service-icon">🛡️</text>
-      <text class="service-text">正品保障</text>
-    </view>
-    <view class="service-divider"></view>
-    <view class="service-item">
-      <text class="service-icon">↩️</text>
-      <text class="service-text">7天退换</text>
-    </view>
-  </view>
+    <view class="hero-gap"></view>
 
-  <!-- 评分和评价 -->
-  <view class="review-card">
-    <view class="review-header" bindtap="gotoReviews">
-      <view class="review-title">
-        <text class="title-text">用户评价</text>
-        <view class="rating-badge">
-          <text class="rating-value">{{product.rating || 5.0}}</text>
-          <text class="rating-star">★</text>
+    <view class="spec-section">
+      <view class="spec-group" wx:for="{{specGroups}}" wx:key="key">
+        <view class="spec-group__head">
+          <text class="spec-group__title">{{item.label}}</text>
+          <text class="spec-group__value">{{item.selectedLabel}}</text>
         </view>
-      </view>
-      <view class="review-more">
-        <text>{{product.reviewCount || reviews.length || 0}}条</text>
-        <text class="arrow-icon">›</text>
-      </view>
-    </view>
-
-    <!-- 评价预览 -->
-    <view class="review-preview" wx:if="{{reviews.length > 0}}">
-      <view class="preview-item" wx:for="{{reviews}}" wx:key="id" wx:if="{{index < 2}}">
-        <image class="preview-avatar-img" src="{{item.userAvatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'}}" mode="aspectFill"></image>
-        <view class="preview-content">
-          <view class="preview-user-info">
-            <text class="preview-username">{{item.userNickname || '匿名用户'}}</text>
-            <view class="preview-rating">
-              <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" wx:for-item="star" class="preview-star {{item.rating >= star ? 'active' : ''}}">★</text>
-            </view>
-          </view>
-          <text class="preview-text">{{item.content}}</text>
-          <!-- 评价图片 -->
-          <view class="preview-images" wx:if="{{item.images && item.images.length > 0}}">
-            <image
-              class="preview-img"
-              wx:for="{{item.images}}"
-              wx:key="*this"
-              wx:for-item="imgUrl"
-              src="{{imgUrl}}"
-              mode="aspectFill"
-              bindtap="previewReviewImages"
-              data-url="{{imgUrl}}"
-              data-urls="{{item.images}}"
-            />
+        <view class="spec-group__options">
+          <view
+            class="spec-option {{option.selected ? 'spec-option--active' : ''}}"
+            wx:for="{{item.options}}"
+            wx:key="value"
+            wx:for-item="option"
+            data-group="{{item.key}}"
+            data-value="{{option.value}}"
+            bindtap="selectSpec"
+          >
+            <text class="spec-option__label">{{option.label}}</text>
+            <text class="spec-option__hint">{{option.hint}}</text>
           </view>
         </view>
       </view>
     </view>
+
+    <view class="highlights">
+      <text class="highlights__item" wx:for="{{highlights}}" wx:key="*this">{{item}}</text>
+    </view>
+
+    <view class="story-sections">
+      <view class="story-card" wx:for="{{storySections}}" wx:key="title">
+        <view class="story-card__visual story-card__visual--{{index}}">
+          <image
+            wx:if="{{item.imageUrl || (product.coverUrl && index === 0)}}"
+            class="story-card__image"
+            src="{{item.imageUrl || product.coverUrl}}"
+            mode="aspectFit"
+          />
+          <view wx:else class="story-card__art">
+            <view class="story-card__art-shape story-card__art-shape--left"></view>
+            <view class="story-card__art-shape story-card__art-shape--right"></view>
+          </view>
+        </view>
+        <text class="story-card__title">{{item.title}}</text>
+        <text class="story-card__desc">{{item.description}}</text>
+      </view>
+    </view>
+
+    <view class="note-section">
+      <text class="note-section__title">{{usageNote.title}}</text>
+      <text class="note-section__content">{{usageNote.content}}</text>
+    </view>
+
+    <view class="review-section" bindtap="goToReviews">
+      <view class="review-section__header">
+        <view class="review-section__headline">
+          <text class="review-section__title">用户评价</text>
+          <text class="review-section__score">{{reviewSummary.avgRatingDisplay}}</text>
+        </view>
+        <text class="review-section__arrow">›</text>
+      </view>
+      <view class="review-section__stats">
+        <text class="review-section__stat">全部 {{reviewSummary.total}}</text>
+        <text class="review-section__stat">好评 {{reviewSummary.goodCount}}</text>
+        <text class="review-section__stat">有图 {{reviewSummary.withImagesCount}}</text>
+      </view>
+      <view wx:if="{{reviewableOrderItem}}" class="review-section__action" catchtap="goToWriteReview">
+        <text>写评价</text>
+      </view>
+    </view>
+
+    <view class="bottom-spacer"></view>
   </view>
 
-  <!-- 数量选择 -->
-  <view class="quantity-card">
-    <view class="quantity-left">
-      <text class="quantity-label">购买数量</text>
-      <text class="stock-text {{product.stock <= 0 ? 'out' : product.stock <= 10 ? 'low' : ''}}">
-        {{product.stock <= 0 ? '暂无库存' : product.stock <= 10 ? '仅剩' + product.stock + '件' : '库存充足'}}
-      </text>
+  <view class="detail-bottom-bar">
+    <view class="detail-bottom-bar__secondary" bindtap="addToCart">
+      <text>加入购物袋</text>
     </view>
-    <view class="quantity-control">
-      <view class="qty-btn minus {{quantity <= 1 ? 'disabled' : ''}}" bindtap="decreaseQuantity">
-        <text>−</text>
-      </view>
-      <input class="qty-input" type="digit" value="{{quantity}}" bindinput="onQuantityInput" bindblur="onQuantityBlur" />
-      <view class="qty-btn plus {{product.stock <= quantity ? 'disabled' : ''}}" bindtap="increaseQuantity">
-        <text>+</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 底部占位 -->
-  <view class="bottom-placeholder"></view>
-</view>
-
-<!-- 底部操作栏 - 参考淘宝/京东布局 -->
-<view class="bottom-action-bar">
-  <!-- 左侧图标区：客服 | 收藏 | 购物车 -->
-  <view class="action-icons">
-    <view class="action-icon-item" bindtap="contactService">
-      <view class="icon-wrapper">
-        <text class="icon-text">💬</text>
-      </view>
-      <text class="icon-label">客服</text>
-    </view>
-    <view class="action-icon-item {{isCollected ? 'active' : ''}}" bindtap="toggleCollect">
-      <view class="icon-wrapper">
-        <text class="icon-heart {{isCollected ? 'collected' : ''}}">{{isCollected ? '♥' : '♡'}}</text>
-      </view>
-      <text class="icon-label">{{isCollected ? '已收藏' : '收藏'}}</text>
-    </view>
-    <view class="action-icon-item" bindtap="gotoCart">
-      <view class="icon-wrapper">
-        <text class="icon-text">🛒</text>
-        <view class="cart-badge" wx:if="{{cartCount > 0}}">{{cartCount > 99 ? '99+' : cartCount}}</view>
-      </view>
-      <text class="icon-label">购物车</text>
-    </view>
-  </view>
-
-  <!-- 右侧按钮区：加入购物车 | 立即购买 -->
-  <view class="action-buttons">
-    <view class="action-btn cart-btn" bindtap="addToCart">
-      <text>加入购物车</text>
-    </view>
-    <view class="action-btn buy-btn" bindtap="buyNow">
+    <view class="detail-bottom-bar__primary" bindtap="buyNow">
       <text>立即购买</text>
     </view>
-  </view>
-</view>
-
-<!-- 写评价弹窗 -->
-<view class="review-popup-mask" wx:if="{{showReviewPopup}}" bindtap="closeReviewPopup">
-  <view class="review-popup" catchtap="stopPropagation">
-    <!-- 弹窗头部 -->
-    <view class="popup-header">
-      <text class="popup-title">发表评价</text>
-      <view class="popup-close" bindtap="closeReviewPopup">✕</view>
-    </view>
-
-    <!-- 订单商品信息 -->
-    <view class="order-product-info" wx:if="{{reviewableOrderItem}}">
-      <image class="order-product-image" src="{{reviewableOrderItem.coverUrl}}" mode="aspectFill" />
-      <view class="order-product-meta">
-        <text class="order-product-name">{{reviewableOrderItem.productName}}</text>
-        <text class="order-product-price">¥{{reviewableOrderItem.price}} × {{reviewableOrderItem.quantity}}</text>
-      </view>
-    </view>
-
-    <!-- 评分 -->
-    <view class="rating-section">
-      <text class="section-label">评分</text>
-      <view class="rating-stars">
-        <text
-          wx:for="{{[1,2,3,4,5]}}"
-          wx:key="*this"
-          class="star {{reviewForm.rating >= item ? 'active' : ''}}"
-          data-rating="{{item}}"
-          bindtap="setRating"
-        >★</text>
-      </view>
-    </view>
-
-    <!-- 评价内容 -->
-    <view class="content-section">
-      <textarea
-        class="review-textarea"
-        placeholder="分享您的购买体验吧~"
-        maxlength="500"
-        value="{{reviewForm.content}}"
-        bindinput="onReviewInput"
-      />
-      <text class="char-count">{{reviewForm.content.length}}/500</text>
-    </view>
-
-    <!-- 图片上传 -->
-    <view class="image-section">
-      <view class="image-list">
-        <view class="image-item" wx:for="{{reviewForm.images}}" wx:key="*this">
-          <image src="{{item}}" mode="aspectFill" bindtap="previewReviewImage" data-url="{{item}}" />
-          <view class="delete-btn" catchtap="deleteReviewImage" data-index="{{index}}">✕</view>
-        </view>
-        <view class="add-image-btn" wx:if="{{reviewForm.images.length < 9}}" bindtap="chooseReviewImage">
-          <text class="add-icon">+</text>
-          <text class="add-text">添加图片</text>
-        </view>
-      </view>
-    </view>
-
-    <!-- 提交按钮 -->
-    <view class="submit-btn" bindtap="submitReview">提交评价</view>
   </view>
 </view>

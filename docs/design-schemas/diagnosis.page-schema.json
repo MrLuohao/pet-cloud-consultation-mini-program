@@ -1,0 +1,208 @@
+{
+  "meta": {
+    "pageKey": "diagnosis",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "V2TLb",
+    "frameName": "AI健康诊断 Professional Style"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [4, 16, 16, 16],
+    "sectionGap": 10,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "cardBackground": "#FFFFFF",
+      "cardBackgroundSoft": "#FCFCFD",
+      "brandPrimary": "#6D32FF",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#7C8395",
+      "textMuted": "#9CA3AF",
+      "borderSoft": "#F2EDF8",
+      "borderWarm": "#F4E2C8",
+      "warningBackground": "#FFF9F2"
+    },
+    "radius": {
+      "card": 20,
+      "textarea": 16,
+      "pill": 999,
+      "cta": 25,
+      "noteCard": 18
+    },
+    "typography": {
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "700", "lineHeight": 1.25 },
+      "sectionTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "lineHeight": 1.5 },
+      "bodyMuted": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "lineHeight": 1.5 },
+      "chip": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "600" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "wJWIH",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "hero",
+      "type": "intro_card",
+      "sourceNodeId": "C8LtL",
+      "title": "AI健康诊断",
+      "copy": [
+        "AI健康诊断",
+        "描述症状并补充照片，获得可信的初步建议。"
+      ],
+      "layout": { "padding": 16, "gap": 8, "cornerRadius": 20 }
+    },
+    {
+      "key": "record_summary",
+      "type": "summary_card",
+      "sourceNodeId": "5Hqmn",
+      "title": "健康档案摘要",
+      "copy": [
+        "查看完整病历",
+        "团子 · 最近 7 天有 2 次相关记录",
+        "上次关注：食欲下降、皮肤瘙痒",
+        "本次建议补充：持续时间、是否加重、是否出现新症状"
+      ],
+      "layout": { "padding": 16, "gap": 10, "cornerRadius": 20 }
+    },
+    {
+      "key": "symptom_input",
+      "type": "tagged_textarea_form",
+      "sourceNodeId": "IA3lA",
+      "title": "症状描述",
+      "copy": [
+        "食欲不振",
+        "呕吐",
+        "精神萎靡",
+        "腹泻",
+        "皮肤瘙痒",
+        "请详细描述持续时间、严重程度、近期饮食或精神状态变化...",
+        "0/500"
+      ],
+      "layout": { "padding": 16, "gap": 12, "cornerRadius": 20 }
+    },
+    {
+      "key": "upload",
+      "type": "upload_card",
+      "sourceNodeId": "3OgaV",
+      "title": "症状相关图片",
+      "copy": [
+        "上传患处照片",
+        "最多上传 6 张图片，如有可见症状，建议补充不同角度与患处细节，提高判断准确性。"
+      ],
+      "layout": { "padding": 16, "gap": 14, "cornerRadius": 20 }
+    },
+    {
+      "key": "pet_info",
+      "type": "pet_info_form",
+      "sourceNodeId": "4ZtUU",
+      "title": "宠物基本信息",
+      "copy": [
+        "狗狗",
+        "猫咪",
+        "其他",
+        "宠物年龄（月）",
+        "请输入"
+      ],
+      "layout": { "padding": 14, "gap": 12, "cornerRadius": 20 }
+    },
+    {
+      "key": "diagnosis_note",
+      "type": "warning_note",
+      "sourceNodeId": "hDC2g",
+      "title": "诊断说明",
+      "copy": [
+        "AI 诊断仅提供初步建议，不能替代专业兽医诊断。如症状持续或明显加重，请尽快就医。"
+      ],
+      "layout": { "padding": 14, "gap": 6, "cornerRadius": 18 }
+    },
+    {
+      "key": "cta",
+      "type": "primary_cta_block",
+      "sourceNodeId": "4AOMn",
+      "copy": [
+        "开始诊断",
+        "已完善症状描述后，即可开始生成初步建议"
+      ],
+      "layout": { "padding": [2, 0, 0, 0], "gap": 6, "cornerRadius": 25 }
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "record_summary",
+      "api": "GET /api/diagnosis/entry",
+      "fields": [
+        "loggedIn",
+        "remainingCount",
+        "defaultPetHint",
+        "archiveSummaryPlaceholder"
+      ]
+    },
+    {
+      "sectionKey": "symptom_input",
+      "api": "local page state",
+      "fields": [
+        "symptomTags[]",
+        "symptoms",
+        "symptoms.length"
+      ]
+    },
+    {
+      "sectionKey": "upload",
+      "api": "POST /api/media/upload?ownerType=diagnosis",
+      "fields": [
+        "uploadedAssets[].assetId",
+        "uploadedAssets[].url",
+        "availableForSubmit"
+      ]
+    },
+    {
+      "sectionKey": "cta",
+      "api": "POST /api/diagnosis/submit",
+      "fields": [
+        "petType",
+        "petAgeMonths",
+        "symptomTags[]",
+        "symptomDescription",
+        "mediaAssetIds[]",
+        "taskId"
+      ]
+    },
+    {
+      "sectionKey": "cta",
+      "api": "GET /api/diagnosis/tasks/{taskId}",
+      "fields": [
+        "riskLevel",
+        "summary",
+        "possibleCauses[]",
+        "careSuggestions[]",
+        "nextActions[]"
+      ]
+    }
+  ],
+  "actions": [
+    { "name": "getDiagnosisEntry", "target": "/api/diagnosis/entry", "sectionKey": "record_summary" },
+    { "name": "toggleSymptom", "target": "local-state", "sectionKey": "symptom_input" },
+    { "name": "uploadImage", "target": "/api/media/upload?ownerType=diagnosis", "sectionKey": "upload" },
+    { "name": "submitDiagnosis", "target": "/api/diagnosis/submit", "sectionKey": "cta" },
+    { "name": "pollDiagnosisTask", "target": "/api/diagnosis/tasks/{taskId}", "sectionKey": "cta" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "V2TLb",
+    "criticalCheckpoints": [
+      "hero area stays lightweight and does not use decorative gradient hero",
+      "record summary appears before symptom input",
+      "symptom tags fit in a compact single row block before textarea",
+      "upload card stays centered and supports up to 6 images",
+      "pet info sits below upload, not above symptom input",
+      "warning note uses warm background and remains above CTA",
+      "CTA is a single primary action block followed by compact hint text"
+    ]
+  }
+}

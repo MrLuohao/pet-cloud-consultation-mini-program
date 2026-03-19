@@ -3,26 +3,41 @@
  * ║  评价页面 | Review Page                                                     ║
  * ╚══════════════════════════════════════════════════════════════════════════════
  */
-const { ProductAPI, API_BASE_URL } = require('../../utils/api')
+const { ProductAPI, AIAPI } = require('../../utils/api')
+
+function normalizeReviewItems(items) {
+  const list = Array.isArray(items) ? items : []
+  return list.map(item => ({
+    orderItemId: item.orderItemId,
+    productId: item.productId,
+    productName: item.productName,
+    coverUrl: item.coverUrl,
+    metaText: `${item.specLabel || item.spec || ''}${item.specLabel || item.spec ? '' : ''}${item.price ? ` · ¥${item.price}` : ''}${item.quantity ? ` · x${item.quantity}` : ''}`.replace(/^ · /, ''),
+    rating: 5,
+    content: '',
+    images: [],
+    maxImages: 3,
+    placeholder: '分享你在适口性、耐受性、实际使用感受。',
+    starOptions: [1, 2, 3, 4, 5].map(value => ({ value }))
+  }))
+}
 
 Page({
   data: {
     orderId: null,
-    orderItem: null,
-    rating: 5,
-    content: '',
-    images: [],
-    maxImages: 9,
+    reviewItems: [],
     submitting: false
   },
 
   onLoad(options) {
-    if (options.orderId && options.itemData) {
+    if (options.orderId && (options.itemsData || options.itemData)) {
       try {
-        const orderItem = JSON.parse(decodeURIComponent(options.itemData))
+        const parsedItems = options.itemsData
+          ? JSON.parse(decodeURIComponent(options.itemsData))
+          : [JSON.parse(decodeURIComponent(options.itemData))]
         this.setData({
           orderId: options.orderId,
-          orderItem
+          reviewItems: normalizeReviewItems(parsedItems)
         })
       } catch (e) {
         console.error('解析商品数据失败:', e)
@@ -33,20 +48,27 @@ Page({
   },
 
   setRating(e) {
-    const rating = e.currentTarget.dataset.rating
-    this.setData({ rating })
+    const { index, rating } = e.currentTarget.dataset
+    const reviewItems = this.data.reviewItems.slice()
+    reviewItems[index].rating = Number(rating)
+    this.setData({ reviewItems })
   },
 
   onContentInput(e) {
-    this.setData({ content: e.detail.value })
+    const { index } = e.currentTarget.dataset
+    const reviewItems = this.data.reviewItems.slice()
+    reviewItems[index].content = e.detail.value
+    this.setData({ reviewItems })
   },
 
-  chooseImage() {
-    const { images, maxImages } = this.data
-    const remaining = maxImages - images.length
+  chooseImage(e) {
+    const { index } = e.currentTarget.dataset
+    const reviewItems = this.data.reviewItems.slice()
+    const reviewItem = reviewItems[index]
+    const remaining = reviewItem.maxImages - reviewItem.images.length
 
     if (remaining <= 0) {
-      wx.showToast({ title: `最多上传${maxImages}张图片`, icon: 'none' })
+      wx.showToast({ title: `最多上传${reviewItem.maxImages}张图片`, icon: 'none' })
       return
     }
 
@@ -56,39 +78,37 @@ Page({
       sourceType: ['album', 'camera'],
       success: (res) => {
         const newImages = res.tempFiles.map(file => file.tempFilePath)
-        this.setData({
-          images: [...images, ...newImages]
-        })
+        reviewItem.images = [...reviewItem.images, ...newImages]
+        reviewItems[index] = reviewItem
+        this.setData({ reviewItems })
       }
     })
   },
 
   previewImage(e) {
     const url = e.currentTarget.dataset.url
+    const { index } = e.currentTarget.dataset
     wx.previewImage({
       current: url,
-      urls: this.data.images
+      urls: this.data.reviewItems[index].images
     })
   },
 
   deleteImage(e) {
-    const index = e.currentTarget.dataset.index
-    const images = this.data.images.filter((_, i) => i !== index)
-    this.setData({ images })
+    const { index, imageIndex } = e.currentTarget.dataset
+    const reviewItems = this.data.reviewItems.slice()
+    reviewItems[index].images = reviewItems[index].images.filter((_, i) => i !== imageIndex)
+    this.setData({ reviewItems })
   },
 
   async submitReview() {
-    const { orderId, orderItem, rating, content, images, submitting } = this.data
+    const { reviewItems, submitting } = this.data
 
     if (submitting) return
 
-    if (!content.trim()) {
-      wx.showToast({ title: '请填写评价内容', icon: 'none' })
-      return
-    }
-
-    if (content.length < 10) {
-      wx.showToast({ title: '评价内容至少10个字', icon: 'none' })
+    const invalidItem = reviewItems.find(item => !item.content.trim() || item.content.trim().length < 10)
+    if (invalidItem) {
+      wx.showToast({ title: '每件商品评价至少10个字', icon: 'none' })
       return
     }
 
@@ -96,27 +116,27 @@ Page({
       this.setData({ submitting: true })
       wx.showLoading({ title: '提交中...' })
 
-      // 上传图片
-      let uploadedImages = []
-      for (const imagePath of images) {
-        try {
-          const result = await this.uploadImage(imagePath)
-          if (result) {
-            uploadedImages.push(result)
+      for (const item of reviewItems) {
+        const uploadedImages = []
+        for (const imagePath of item.images) {
+          try {
+            const result = await this.uploadImage(imagePath)
+            if (result) {
+              uploadedImages.push(result)
+            }
+          } catch (e) {
+            console.error('上传图片失败:', e)
           }
-        } catch (e) {
-          console.error('上传图片失败:', e)
         }
-      }
 
-      // 提交评价
-      await ProductAPI.createReview(
-        orderItem.orderItemId,
-        orderItem.productId,
-        rating,
-        content,
-        uploadedImages.join(',')
-      )
+        await ProductAPI.createReview(
+          item.orderItemId,
+          item.productId,
+          item.rating,
+          item.content,
+          uploadedImages.join(',')
+        )
+      }
 
       wx.hideLoading()
       wx.showToast({ title: '评价成功', icon: 'success' })
@@ -133,35 +153,7 @@ Page({
   },
 
   uploadImage(filePath) {
-    return new Promise((resolve, reject) => {
-      const token = wx.getStorageSync('token')
-      const userInfo = wx.getStorageSync('userInfo') || {}
-      wx.uploadFile({
-        url: `${API_BASE_URL}/api/upload/image`,
-        filePath: filePath,
-        name: 'file',
-        header: {
-          'Authorization': token ? `Bearer ${token}` : '',
-          'X-User-Id': userInfo.id ? String(userInfo.id) : ''
-        },
-        success: (res) => {
-          if (res.statusCode === 200) {
-            try {
-              const data = JSON.parse(res.data)
-              if (data.status === true) {
-                resolve(data.data)
-              } else {
-                reject(new Error(data.msg || '上传失败'))
-              }
-            } catch (e) {
-              reject(e)
-            }
-          } else {
-            reject(new Error('上传失败'))
-          }
-        },
-        fail: reject
-      })
-    })
+    return AIAPI.uploadMedia(filePath, 'shop_review')
+      .then(result => result.url)
   }
 })

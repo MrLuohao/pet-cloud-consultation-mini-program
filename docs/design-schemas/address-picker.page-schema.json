@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "pageKey": "address-picker",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "D5qTR",
+    "frameName": "地址选择页 Address Picker"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 40, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "textPrimary": "#20252C",
+      "textSecondary": "#838078",
+      "textMuted": "#949087",
+      "surface": "#FFFEFB",
+      "surfaceSoft": "#F7F3ED",
+      "mapBackground": "#ECE8E0",
+      "actionPrimary": "#30343C",
+      "success": "#4EA772"
+    },
+    "radius": {
+      "helper": 18,
+      "map": 30,
+      "card": 22,
+      "button": 18,
+      "pill": 999
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "600" },
+      "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "wux3U", "copy": ["9:41", "5G   100%"] },
+    { "key": "nav", "type": "address_picker_nav", "sourceNodeId": "twQ0f", "copy": ["选择收货地址", "上海 · 已定位"] },
+    { "key": "helper", "type": "location_helper", "sourceNodeId": "auHbv", "copy": ["拖动地图进行精细选点", "允许定位"] },
+    { "key": "map_stage", "type": "interactive_map_stage", "sourceNodeId": "4wcqr" },
+    { "key": "result_card", "type": "location_result_card", "sourceNodeId": "I3AEa", "copy": ["当前位置已自动映射"] },
+    { "key": "paste_card", "type": "paste_parse_card", "sourceNodeId": "Ft8oF", "copy": ["粘贴完整地址，自动识别", "已识别 4 项关键信息"] },
+    { "key": "confirm_bar", "type": "address_confirm_bar", "sourceNodeId": "Gc10e", "copy": ["确认并使用此地址"] }
+  ],
+  "dataBindings": [
+    { "sectionKey": "map_stage", "api": "map/location service", "fields": ["centerPoint", "mapAddress"] },
+    { "sectionKey": "result_card", "api": "address parse result", "fields": ["city", "district", "detailAddress", "businessArea", "doorNo"] },
+    { "sectionKey": "paste_card", "api": "address parse service", "fields": ["parsedName", "parsedPhone", "parsedAddress"] }
+  ],
+  "actions": [
+    { "name": "requestLocation", "target": "wx.getLocation", "sectionKey": "helper" },
+    { "name": "dragMap", "target": "map-center-change", "sectionKey": "map_stage" },
+    { "name": "pasteAndParseAddress", "target": "address-parse", "sectionKey": "paste_card" },
+    { "name": "confirmAddress", "target": "/pages/order/confirm", "sectionKey": "confirm_bar" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "D5qTR",
+    "criticalCheckpoints": [
+      "map stage remains the dominant module",
+      "helper and parse cards stay secondary to map",
+      "confirm CTA remains bottom-most single strong action"
+    ]
+  }
+}

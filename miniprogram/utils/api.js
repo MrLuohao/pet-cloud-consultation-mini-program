@@ -1,26 +1,13 @@
 // utils/api.js - API配置和请求封装
+const config = require('./config')
 
-// API基础地址配置
-// 优先读取 Storage 中的 apiHost，方便切换环境；
-// 未设置时使用下方默认IP（开发者本机局域网地址）。
-// 修改方法：把下方 IP 替换为你的电脑局域网 IP 即可。
-//   Windows: ipconfig 查看 IPv4 地址
-//   Mac/Linux: ifconfig 查看局域网 IP
-const DEFAULT_API_HOST = '10.0.12.147'
-const API_HOST = wx.getStorageSync('apiHost') || DEFAULT_API_HOST
-const API_BASE_URL = `http://${API_HOST}:8117`  // 用户服务地址
-const SHOP_API_BASE_URL = `http://${API_HOST}:8118`  // 商城服务地址
+// 动态获取API基础地址（每次调用时获取最新值）
+const getApiBaseUrl = config.getApiBaseUrl
+const getShopApiBaseUrl = config.getShopApiBaseUrl
+const getMapApiBaseUrl = config.getMapApiBaseUrl
 
 function normalizeUploadUrl(url, useShopPort = false) {
-  if (!url || typeof url !== 'string') return url
-  // 已经是完整URL则直接返回
-  if (url.startsWith('http://') || url.startsWith('https://')) return url
-  // 本地路径，根据服务类型拼接完整URL
-  if (url.startsWith('/uploads/')) {
-    const port = useShopPort ? 8118 : 8117
-    return `http://${API_HOST}:${port}${url}`
-  }
-  return url
+  return config.getUploadUrl(url, useShopPort)
 }
 
 function normalizeUploadUrlList(list, useShopPort = false) {
@@ -28,6 +15,52 @@ function normalizeUploadUrlList(list, useShopPort = false) {
   return list
     .map(item => normalizeUploadUrl((item || '').trim(), useShopPort))
     .filter(Boolean)
+}
+
+/**
+ * 处理 JSON 字符串中的图片URL（数据库中存储的JSON数组）
+ * @param {string|Array} jsonStr - JSON字符串或数组
+ * @param {boolean} useShopPort - 是否使用商城端口
+ * @returns {Array}
+ */
+function normalizeJsonImages(jsonStr, useShopPort = false) {
+  if (!jsonStr) return []
+  // 如果已经是数组，直接处理
+  if (Array.isArray(jsonStr)) {
+    return normalizeUploadUrlList(jsonStr, useShopPort)
+  }
+  // 如果是字符串，尝试解析JSON
+  if (typeof jsonStr === 'string') {
+    try {
+      const arr = JSON.parse(jsonStr)
+      return normalizeUploadUrlList(arr, useShopPort)
+    } catch (e) {
+      return []
+    }
+  }
+  return []
+}
+
+/**
+ * 通用的图片URL处理函数 - 处理对象中所有可能的图片字段
+ * @param {object} obj - 要处理的对象
+ * @param {object} fieldConfig - 字段配置 { fieldName: useShopPort }
+ */
+function normalizeImageFields(obj, fieldConfig = {}) {
+  if (!obj || typeof obj !== 'object') return obj
+
+  const result = { ...obj }
+  for (const [field, useShopPort] of Object.entries(fieldConfig)) {
+    if (result[field]) {
+      // 判断是数组/JSON还是单个URL
+      if (Array.isArray(result[field]) || (typeof result[field] === 'string' && result[field].startsWith('['))) {
+        result[field] = normalizeJsonImages(result[field], useShopPort)
+      } else {
+        result[field] = normalizeUploadUrl(result[field], useShopPort)
+      }
+    }
+  }
+  return result
 }
 
 // 统一处理商品图片URL（商城服务端口8118）
@@ -38,6 +71,20 @@ function normalizeShopProduct(product) {
     coverUrl: normalizeUploadUrl(product.coverUrl, true),
     imageUrls: product.imageUrls ? normalizeUploadUrlList(product.imageUrls, true) : product.imageUrls,
     productImage: product.productImage ? normalizeUploadUrl(product.productImage, true) : product.productImage
+  }
+}
+
+function normalizeProductDetail(detail) {
+  if (!detail || typeof detail !== 'object') return detail
+  return {
+    ...normalizeShopProduct(detail),
+    storySections: Array.isArray(detail.storySections)
+      ? detail.storySections.map(section => ({
+          ...section,
+          imageUrl: normalizeUploadUrl(section.imageUrl, true)
+        }))
+      : [],
+    reviews: Array.isArray(detail.reviews) ? detail.reviews.map(normalizeProductReview) : []
   }
 }
 
@@ -60,6 +107,62 @@ function normalizeArticleComment(comment) {
           ...reply,
           userAvatar: normalizeUploadUrl(reply.userAvatar)
         }))
+      : []
+  }
+}
+
+function normalizeCommunityPost(post) {
+  if (!post || typeof post !== 'object') return post
+  return {
+    ...post,
+    avatarUrl: normalizeUploadUrl(post.avatarUrl),
+    author: post.author
+      ? {
+          ...post.author,
+          avatarUrl: normalizeUploadUrl(post.author.avatarUrl)
+        }
+      : null,
+    pet: post.pet
+      ? {
+          ...post.pet,
+          avatarUrl: normalizeUploadUrl(post.pet.avatarUrl)
+        }
+      : null,
+    // 使用 normalizeJsonImages 处理 mediaUrls，支持 JSON 字符串和数组
+    mediaUrls: normalizeJsonImages(post.mediaUrls),
+    mediaType: post.mediaType
+  }
+}
+
+function normalizeCommunityComment(comment) {
+  if (!comment || typeof comment !== 'object') return comment
+  return {
+    ...comment,
+    avatarUrl: normalizeUploadUrl(comment.avatarUrl),
+    // 处理评论中的媒体URL（如果有的话）
+    mediaUrls: normalizeJsonImages(comment.mediaUrls)
+  }
+}
+
+function normalizeCartItem(item) {
+  return normalizeShopProduct(item)
+}
+
+function normalizeCartPage(page) {
+  if (!page || typeof page !== 'object' || Array.isArray(page)) {
+    return page
+  }
+
+  return {
+    ...page,
+    cartGroups: Array.isArray(page.cartGroups)
+      ? page.cartGroups.map(group => ({
+          ...group,
+          items: Array.isArray(group.items) ? group.items.map(normalizeCartItem) : []
+        }))
+      : [],
+    invalidItems: Array.isArray(page.invalidItems)
+      ? page.invalidItems.map(normalizeCartItem)
       : []
   }
 }
@@ -132,10 +235,12 @@ function navigateToLogin() {
  * @param {string} url - 接口地址
  * @param {string} method - 请求方法
  * @param {object} data - 请求数据
- * @param {string} base_url - 基础URL
+ * @param {string|null} base_url - 基础URL（null时动态获取）
  * @param {boolean} requireAuth - 是否需要登录认证，默认true
  */
-function request(url, method = 'GET', data = null, base_url = API_BASE_URL, requireAuth = true) {
+function request(url, method = 'GET', data = null, base_url = null, requireAuth = true) {
+  // 动态获取基础URL（每次请求时获取最新值）
+  const baseUrl = base_url || getApiBaseUrl()
   return new Promise((resolve, reject) => {
     // 需要认证的接口，未登录时直接跳转登录页（静默处理，不reject）
     if (requireAuth && !isLoggedIn()) {
@@ -156,7 +261,7 @@ function request(url, method = 'GET', data = null, base_url = API_BASE_URL, requ
     }
 
     wx.request({
-      url: `${base_url}${url}`,
+      url: `${baseUrl}${url}`,
       method: method,
       data: data,
       header: header,
@@ -187,8 +292,12 @@ function request(url, method = 'GET', data = null, base_url = API_BASE_URL, requ
           reject({ message: '登录已过期', code: 401, needLogin: true })
           return
         } else {
+          const isBadGateway = res.statusCode === 502
+          const toastTitle = isBadGateway
+            ? `网关异常(502): ${baseUrl}`
+            : `请求失败(${res.statusCode})`
           wx.showToast({
-            title: `请求失败(${res.statusCode})`,
+            title: toastTitle,
             icon: 'none'
           })
           reject(res)
@@ -210,15 +319,46 @@ function request(url, method = 'GET', data = null, base_url = API_BASE_URL, requ
 /**
  * 公开接口请求（不需要登录）
  */
-function publicRequest(url, method = 'GET', data = null, base_url = API_BASE_URL) {
-  return request(url, method, data, base_url, false)
+function publicRequest(url, method = 'GET', data = null, base_url = null) {
+  const baseUrl = base_url || getApiBaseUrl()
+  return request(url, method, data, baseUrl, false)
 }
 
 /**
  * 需认证接口请求（需要登录）
  */
-function authRequest(url, method = 'GET', data = null, base_url = API_BASE_URL) {
-  return request(url, method, data, base_url, true)
+function authRequest(url, method = 'GET', data = null, base_url = null) {
+  const baseUrl = base_url || getApiBaseUrl()
+  return request(url, method, data, baseUrl, true)
+}
+
+function normalizeHomeSummary(summary) {
+  if (!summary || typeof summary !== 'object') return summary
+
+  const petCard = summary.petCard
+    ? {
+        ...summary.petCard,
+        pets: Array.isArray(summary.petCard.pets)
+          ? summary.petCard.pets.map(pet => ({
+              ...pet,
+              avatarUrl: normalizeUploadUrl(pet.avatarUrl)
+            }))
+          : []
+      }
+    : null
+
+  const featuredContents = Array.isArray(summary.featuredContents)
+    ? summary.featuredContents.map(item => ({
+        ...item,
+        coverUrl: normalizeUploadUrl(item.coverUrl)
+      }))
+    : []
+
+  return {
+    ...summary,
+    petCard,
+    featuredContents
+  }
 }
 
 // ==================== 认证相关API ====================
@@ -248,6 +388,13 @@ const AuthAPI = {
    */
   getUserInfo() {
     return authRequest('/api/auth/userinfo', 'GET')
+      .then(user => {
+        if (!user || typeof user !== 'object') return user
+        return {
+          ...user,
+          avatarUrl: normalizeUploadUrl(user.avatarUrl)
+        }
+      })
   },
 
   /**
@@ -278,6 +425,50 @@ const AuthAPI = {
   }
 }
 
+const HomeAPI = {
+  getSummary() {
+    return publicRequest('/api/home/summary', 'GET')
+      .then(normalizeHomeSummary)
+  },
+
+  getCurrentPetCard() {
+    return authRequest('/api/pets/current-card', 'GET')
+      .then(petCard => {
+        if (!petCard || typeof petCard !== 'object') return petCard
+        return {
+          ...petCard,
+          pets: Array.isArray(petCard.pets)
+            ? petCard.pets.map(pet => ({
+                ...pet,
+                avatarUrl: normalizeUploadUrl(pet.avatarUrl)
+              }))
+            : []
+        }
+      })
+  }
+}
+
+const MapAPI = {
+  geocode(address, cityCode = '') {
+    return publicRequest('/api/map/geocode', 'POST', { address, cityCode }, getMapApiBaseUrl())
+  },
+
+  reverseGeocode(latitude, longitude) {
+    return publicRequest('/api/map/reverse-geocode', 'POST', { latitude, longitude }, getMapApiBaseUrl())
+  },
+
+  searchSuggest(keyword, cityCode = '', poiType = 'address', latitude = null, longitude = null) {
+    const query = [
+      `keyword=${encodeURIComponent(keyword)}`,
+      cityCode ? `cityCode=${encodeURIComponent(cityCode)}` : '',
+      poiType ? `poiType=${encodeURIComponent(poiType)}` : '',
+      latitude != null ? `latitude=${encodeURIComponent(latitude)}` : '',
+      longitude != null ? `longitude=${encodeURIComponent(longitude)}` : ''
+    ].filter(Boolean).join('&')
+    return publicRequest(`/api/map/search/suggest?${query}`, 'GET', null, getMapApiBaseUrl())
+  }
+}
+
 // ==================== 会员相关API ====================
 
 const VipAPI = {
@@ -304,6 +495,10 @@ const CourseAPI = {
    */
   getList() {
     return publicRequest('/api/course/list', 'GET')
+      .then(list => {
+        if (!Array.isArray(list)) return list
+        return list.map(item => normalizeImageFields(item, { coverUrl: false }))
+      })
   },
 
   /**
@@ -311,6 +506,10 @@ const CourseAPI = {
    */
   getDetail(id) {
     return publicRequest(`/api/course/${id}`, 'GET')
+      .then(item => {
+        if (!item || typeof item !== 'object') return item
+        return normalizeImageFields(item, { coverUrl: false })
+      })
   },
 
   getProgress(courseId) {
@@ -338,6 +537,10 @@ const BeautyAPI = {
    */
   getStoreList() {
     return publicRequest('/api/beauty/stores', 'GET')
+      .then(list => {
+        if (!Array.isArray(list)) return list
+        return list.map(item => normalizeImageFields(item, { coverUrl: false, imageUrl: false }))
+      })
   },
 
   /**
@@ -345,6 +548,10 @@ const BeautyAPI = {
    */
   getStoreDetail(id) {
     return publicRequest(`/api/beauty/store/${id}`, 'GET')
+      .then(item => {
+        if (!item || typeof item !== 'object') return item
+        return normalizeImageFields(item, { coverUrl: false, imageUrl: false })
+      })
   },
 
   /**
@@ -352,6 +559,10 @@ const BeautyAPI = {
    */
   getStoreServices(storeId) {
     return publicRequest(`/api/beauty/store/${storeId}/services`, 'GET')
+      .then(list => {
+        if (!Array.isArray(list)) return list
+        return list.map(item => normalizeImageFields(item, { imageUrl: false, coverUrl: false }))
+      })
   },
 
   /**
@@ -374,6 +585,10 @@ const BeautyAPI = {
   getBookingList(status = null) {
     const url = status !== null ? `/api/beauty/bookings?status=${status}` : '/api/beauty/bookings'
     return authRequest(url, 'GET')
+      .then(list => {
+        if (!Array.isArray(list)) return list
+        return list.map(item => normalizeImageFields(item, { storeCoverUrl: false, coverUrl: false }))
+      })
   },
 
   /**
@@ -381,6 +596,10 @@ const BeautyAPI = {
    */
   getBookingDetail(id) {
     return authRequest(`/api/beauty/booking/${id}`, 'GET')
+      .then(item => {
+        if (!item || typeof item !== 'object') return item
+        return normalizeImageFields(item, { storeCoverUrl: false, coverUrl: false })
+      })
   },
 
   /**
@@ -399,7 +618,7 @@ const MessageAPI = {
    * @param {string} type - system/order/consultation/activity（可选）
    */
   getList(type = null) {
-    const url = type ? `/api/message/list?type=${type}` : '/api/message/list'
+    const url = type ? `/api/messages/notifications?type=${type}` : '/api/messages/notifications'
     return authRequest(url, 'GET')
   },
 
@@ -407,21 +626,21 @@ const MessageAPI = {
    * 标记消息已读
    */
   markAsRead(id) {
-    return authRequest(`/api/message/${id}/read`, 'PUT')
+    return authRequest(`/api/messages/notifications/${id}/read`, 'PUT')
   },
 
   /**
    * 全部标记已读
    */
   markAllAsRead() {
-    return authRequest('/api/message/read-all', 'PUT')
+    return authRequest('/api/messages/notifications/read-all', 'PUT')
   },
 
   /**
    * 获取未读数量
    */
   getUnreadCount() {
-    return authRequest('/api/message/unread-count', 'GET')
+    return authRequest('/api/messages/notifications/unread-count', 'GET')
   }
 }
 
@@ -438,6 +657,16 @@ const ArticleAPI = {
     params.push(`page=${page}`)
     params.push(`pageSize=${pageSize}`)
     return publicRequest(`/api/article/list?${params.join('&')}`, 'GET')
+      .then(res => {
+        if (!res || !res.list) return res
+        return {
+          ...res,
+          list: res.list.map(article => ({
+            ...article,
+            coverUrl: normalizeUploadUrl(article.coverUrl)
+          }))
+        }
+      })
   },
 
   /**
@@ -445,6 +674,13 @@ const ArticleAPI = {
    */
   getDetail(id) {
     return publicRequest(`/api/article/${id}`, 'GET')
+      .then(article => {
+        if (!article || typeof article !== 'object') return article
+        return {
+          ...article,
+          coverUrl: normalizeUploadUrl(article.coverUrl)
+        }
+      })
   },
 
   /**
@@ -510,7 +746,7 @@ const ShopAPI = {
    * 获取商品分类（公开）
    */
   getCategories() {
-    return publicRequest('/api/product/categories', 'GET', null, SHOP_API_BASE_URL)
+    return publicRequest('/api/product/categories', 'GET', null, getShopApiBaseUrl())
   },
 
   /**
@@ -522,7 +758,7 @@ const ShopAPI = {
     if (categoryId != null) params.push(`categoryId=${categoryId}`)
     params.push(`page=${page}`)
     params.push(`pageSize=${pageSize}`)
-    return publicRequest(`/api/product/list?${params.join('&')}`, 'GET', null, SHOP_API_BASE_URL)
+    return publicRequest(`/api/product/list?${params.join('&')}`, 'GET', null, getShopApiBaseUrl())
       .then(res => {
         if (!res || !res.list) return res
         return {
@@ -539,7 +775,7 @@ const ShopAPI = {
    * 获取商品详情（公开）
    */
   getProductDetail(id) {
-    return publicRequest(`/api/product/${id}`, 'GET', null, SHOP_API_BASE_URL)
+    return publicRequest(`/api/product/${id}`, 'GET', null, getShopApiBaseUrl())
       .then(product => normalizeShopProduct(product))
   }
 }
@@ -551,53 +787,55 @@ const CartAPI = {
    * 获取购物车列表
    */
   getList() {
-    return authRequest('/api/cart/list', 'GET', null, SHOP_API_BASE_URL)
-      .then(list => {
-        if (!Array.isArray(list)) return list
-        return list.map(item => normalizeShopProduct(item))
+    return authRequest('/api/cart/list', 'GET', null, getShopApiBaseUrl())
+      .then(payload => {
+        if (Array.isArray(payload)) {
+          return payload.map(item => normalizeShopProduct(item))
+        }
+        return normalizeCartPage(payload)
       })
   },
 
   /**
    * 添加商品到购物车
    */
-  add(productId, quantity = 1) {
-    return authRequest('/api/cart/add', 'POST', { productId, quantity }, SHOP_API_BASE_URL)
+  add(productId, quantity = 1, specLabel = null) {
+    return authRequest('/api/cart/add', 'POST', { productId, quantity, specLabel }, getShopApiBaseUrl())
   },
 
   /**
    * 更新购物车商品数量
    */
   updateQuantity(cartId, quantity) {
-    return authRequest('/api/cart/update', 'PUT', { cartId, quantity }, SHOP_API_BASE_URL)
+    return authRequest('/api/cart/update', 'PUT', { cartId, quantity }, getShopApiBaseUrl())
   },
 
   /**
    * 删除购物车商品
    */
   delete(cartId) {
-    return authRequest('/api/cart/delete', 'DELETE', { cartId }, SHOP_API_BASE_URL)
+    return authRequest('/api/cart/delete', 'DELETE', { cartId }, getShopApiBaseUrl())
   },
 
   /**
    * 清空购物车
    */
   clear() {
-    return authRequest('/api/cart/clear', 'DELETE', null, SHOP_API_BASE_URL)
+    return authRequest('/api/cart/clear', 'DELETE', null, getShopApiBaseUrl())
   },
 
   /**
    * 更新购物车商品规格
    */
   updateSpec(cartId, spec) {
-    return authRequest('/api/cart/spec', 'PUT', { cartId, spec }, SHOP_API_BASE_URL)
+    return authRequest('/api/cart/spec', 'PUT', { cartId, spec }, getShopApiBaseUrl())
   },
 
   /**
    * 获取购物车商品数量
    */
   getCount() {
-    return authRequest('/api/cart/count', 'GET', null, SHOP_API_BASE_URL)
+    return authRequest('/api/cart/count', 'GET', null, getShopApiBaseUrl())
   }
 }
 
@@ -607,8 +845,8 @@ const OrderAPI = {
   /**
    * 获取订单确认页信息
    */
-  getConfirm(productIds, quantities, cartIds) {
-    return authRequest('/api/order/confirm', 'POST', { productIds, quantities, cartIds }, SHOP_API_BASE_URL)
+  getConfirm(productIds, quantities, cartIds = [], specLabels = []) {
+    return authRequest('/api/order/confirm', 'POST', { productIds, quantities, cartIds, specLabels }, getShopApiBaseUrl())
       .then(res => {
         if (!res || typeof res !== 'object') return res
         return {
@@ -621,8 +859,21 @@ const OrderAPI = {
   /**
    * 提交订单
    */
-  submit(productIds, quantities, addressId, couponId, remark) {
-    return authRequest('/api/order/submit', 'POST', { productIds, quantities, addressId, couponId, remark }, SHOP_API_BASE_URL)
+  submit(payloadOrProductIds, quantities, addressId, couponId, remark, cartIds, paymentMethod, verificationType) {
+    const payload = Array.isArray(payloadOrProductIds)
+      ? {
+          productIds: payloadOrProductIds,
+          quantities,
+          addressId,
+          couponId,
+          remark,
+          cartIds,
+          paymentMethod,
+          verificationType
+        }
+      : payloadOrProductIds
+
+    return authRequest('/api/order/submit', 'POST', payload, getShopApiBaseUrl())
   },
 
   /**
@@ -630,7 +881,7 @@ const OrderAPI = {
    */
   getList(status = null) {
     const url = status ? `/api/order/list?status=${status}` : '/api/order/list'
-    return authRequest(url, 'GET', null, SHOP_API_BASE_URL)
+    return authRequest(url, 'GET', null, getShopApiBaseUrl())
       .then(list => {
         if (!Array.isArray(list)) return list
         return list.map(order => ({
@@ -644,7 +895,7 @@ const OrderAPI = {
    * 获取订单详情
    */
   getDetail(id) {
-    return authRequest(`/api/order/${id}`, 'GET', null, SHOP_API_BASE_URL)
+    return authRequest(`/api/order/${id}`, 'GET', null, getShopApiBaseUrl())
       .then(order => {
         if (!order || typeof order !== 'object') return order
         return {
@@ -654,39 +905,43 @@ const OrderAPI = {
       })
   },
 
+  getTimeline(id) {
+    return authRequest(`/api/order/${id}/timeline`, 'GET', null, getShopApiBaseUrl())
+  },
+
   /**
    * 取消订单
    */
   cancel(orderId) {
-    return authRequest('/api/order/cancel', 'PUT', { orderId }, SHOP_API_BASE_URL)
+    return authRequest('/api/order/cancel', 'PUT', { orderId }, getShopApiBaseUrl())
   },
 
   /**
    * 确认收货
    */
   confirmReceive(orderId) {
-    return authRequest('/api/order/confirm-receive', 'PUT', { orderId }, SHOP_API_BASE_URL)
+    return authRequest('/api/order/confirm-receive', 'PUT', { orderId }, getShopApiBaseUrl())
   },
 
   /**
    * 支付订单
    */
   pay(orderId) {
-    return authRequest('/api/order/pay', 'POST', { orderId }, SHOP_API_BASE_URL)
+    return authRequest('/api/order/pay', 'POST', { orderId }, getShopApiBaseUrl())
   },
 
   /**
    * 获取各状态订单数量
    */
   getCount() {
-    return authRequest('/api/order/count', 'GET', null, SHOP_API_BASE_URL)
+    return authRequest('/api/order/count', 'GET', null, getShopApiBaseUrl())
   },
 
   /**
    * 获取待评价订单列表
    */
   getPendingReviewList(page = 1, size = 10) {
-    return authRequest(`/api/order/pending-review?page=${page}&size=${size}`, 'GET', null, SHOP_API_BASE_URL)
+    return authRequest(`/api/order/pending-review?page=${page}&size=${size}`, 'GET', null, getShopApiBaseUrl())
       .then(list => {
         if (!Array.isArray(list)) return list
         return list.map(item => ({
@@ -700,7 +955,7 @@ const OrderAPI = {
    * 获取待评价商品数量
    */
   getPendingReviewCount() {
-    return authRequest('/api/order/pending-review/count', 'GET', null, SHOP_API_BASE_URL)
+    return authRequest('/api/order/pending-review/count', 'GET', null, getShopApiBaseUrl())
   }
 }
 
@@ -711,23 +966,15 @@ const ProductAPI = {
    * 获取商品详情（含评价）（公开）
    */
   getDetail(id) {
-    return publicRequest(`/api/product/${id}/detail`, 'GET', null, SHOP_API_BASE_URL)
-      .then(detail => {
-        if (!detail || typeof detail !== 'object') return detail
-        return {
-          ...detail,
-          coverUrl: normalizeUploadUrl(detail.coverUrl, true),
-          imageUrls: normalizeUploadUrlList(detail.imageUrls, true),
-          reviews: Array.isArray(detail.reviews) ? detail.reviews.map(normalizeProductReview) : []
-        }
-      })
+    return publicRequest(`/api/product/${id}/detail`, 'GET', null, getShopApiBaseUrl())
+      .then(normalizeProductDetail)
   },
 
   /**
    * 获取商品评价列表（公开）
    */
   getReviews(id, page = 1, size = 10) {
-    return publicRequest(`/api/product/${id}/reviews?page=${page}&size=${size}`, 'GET', null, SHOP_API_BASE_URL)
+    return publicRequest(`/api/product/${id}/reviews?page=${page}&size=${size}`, 'GET', null, getShopApiBaseUrl())
       .then(list => (list || []).map(normalizeProductReview))
   },
 
@@ -735,14 +982,14 @@ const ProductAPI = {
    * 提交商品评价（需登录）
    */
   createReview(orderItemId, productId, rating, content, images) {
-    return authRequest('/api/product/review', 'POST', { orderItemId, productId, rating, content, images }, SHOP_API_BASE_URL)
+    return authRequest('/api/product/review', 'POST', { orderItemId, productId, rating, content, images }, getShopApiBaseUrl())
   },
 
   /**
    * 获取评价列表（带筛选）（公开）
    */
   getReviewsWithFilter(productId, filter = 'all', page = 1, size = 10) {
-    return publicRequest(`/api/product/${productId}/reviews?filter=${filter}&page=${page}&size=${size}`, 'GET', null, SHOP_API_BASE_URL)
+    return publicRequest(`/api/product/${productId}/reviews?filter=${filter}&page=${page}&size=${size}`, 'GET', null, getShopApiBaseUrl())
       .then(list => (list || []).map(normalizeProductReview))
   },
 
@@ -750,35 +997,35 @@ const ProductAPI = {
    * 点赞评价（需登录）
    */
   toggleReviewLike(reviewId) {
-    return authRequest(`/api/product/review/${reviewId}/like`, 'POST', null, SHOP_API_BASE_URL)
+    return authRequest(`/api/product/review/${reviewId}/like`, 'POST', null, getShopApiBaseUrl())
   },
 
   /**
    * 编辑评价（需登录）
    */
   updateReview(reviewId, rating, content, images) {
-    return authRequest(`/api/product/review/${reviewId}`, 'PUT', { rating, content, images }, SHOP_API_BASE_URL)
+    return authRequest(`/api/product/review/${reviewId}`, 'PUT', { rating, content, images }, getShopApiBaseUrl())
   },
 
   /**
    * 添加追评（需登录）
    */
   addFollowUp(reviewId, content) {
-    return authRequest(`/api/product/review/${reviewId}/follow-up`, 'POST', { content }, SHOP_API_BASE_URL)
+    return authRequest(`/api/product/review/${reviewId}/follow-up`, 'POST', { content }, getShopApiBaseUrl())
   },
 
   /**
    * 获取可评价的订单项（需登录）
    */
   getReviewableOrderItem(productId) {
-    return authRequest(`/api/product/${productId}/reviewable-order-item`, 'GET', null, SHOP_API_BASE_URL)
+    return authRequest(`/api/product/${productId}/reviewable-order-item`, 'GET', null, getShopApiBaseUrl())
   },
 
   /**
    * 获取商品评价统计（公开）
    */
   getReviewSummary(productId) {
-    return publicRequest(`/api/product/${productId}/reviews/summary`, 'GET', null, SHOP_API_BASE_URL)
+    return publicRequest(`/api/product/${productId}/reviews/summary`, 'GET', null, getShopApiBaseUrl())
   }
 }
 
@@ -789,7 +1036,7 @@ const CouponAPI = {
    * 获取可领取优惠券列表
    */
   getList() {
-    return authRequest('/api/coupon/list', 'GET', null, SHOP_API_BASE_URL)
+    return authRequest('/api/coupon/list', 'GET', null, getShopApiBaseUrl())
   },
 
   /**
@@ -797,21 +1044,21 @@ const CouponAPI = {
    */
   getMyCoupons(status = null) {
     const url = status !== null && status !== undefined ? `/api/coupon/my?status=${status}` : '/api/coupon/my'
-    return authRequest(url, 'GET', null, SHOP_API_BASE_URL)
+    return authRequest(url, 'GET', null, getShopApiBaseUrl())
   },
 
   /**
    * 领取优惠券
    */
   receive(couponId) {
-    return authRequest('/api/coupon/receive', 'POST', { couponId }, SHOP_API_BASE_URL)
+    return authRequest('/api/coupon/receive', 'POST', { couponId }, getShopApiBaseUrl())
   },
 
   /**
    * 获取订单可用优惠券
    */
   getAvailable(totalAmount) {
-    return authRequest(`/api/coupon/available?totalAmount=${totalAmount}`, 'GET', null, SHOP_API_BASE_URL)
+    return authRequest(`/api/coupon/available?totalAmount=${totalAmount}`, 'GET', null, getShopApiBaseUrl())
   }
 }
 
@@ -822,7 +1069,7 @@ const PromotionAPI = {
    * 获取当前有效的满减活动
    */
   getActivePromotions() {
-    return publicRequest('/api/promotion/active', 'GET', null, SHOP_API_BASE_URL)
+    return publicRequest('/api/promotion/active', 'GET', null, getShopApiBaseUrl())
   }
 }
 
@@ -833,21 +1080,21 @@ const CollectionAPI = {
    * 添加收藏
    */
   add(productId) {
-    return authRequest('/api/collection/add', 'POST', { productId }, SHOP_API_BASE_URL)
+    return authRequest('/api/collection/add', 'POST', { productId }, getShopApiBaseUrl())
   },
 
   /**
    * 取消收藏
    */
   remove(productId) {
-    return authRequest('/api/collection/remove', 'POST', { productId }, SHOP_API_BASE_URL)
+    return authRequest('/api/collection/remove', 'POST', { productId }, getShopApiBaseUrl())
   },
 
   /**
    * 获取收藏列表
    */
   getList() {
-    return authRequest('/api/collection/list', 'GET', null, SHOP_API_BASE_URL)
+    return authRequest('/api/collection/list', 'GET', null, getShopApiBaseUrl())
       .then(list => {
         if (!Array.isArray(list)) return list
         return list.map(item => normalizeShopProduct(item))
@@ -858,14 +1105,14 @@ const CollectionAPI = {
    * 检查是否已收藏
    */
   check(productId) {
-    return authRequest(`/api/collection/check?productId=${productId}`, 'GET', null, SHOP_API_BASE_URL)
+    return authRequest(`/api/collection/check?productId=${productId}`, 'GET', null, getShopApiBaseUrl())
   },
 
   /**
    * 切换收藏状态
    */
   toggle(productId) {
-    return authRequest('/api/collection/toggle', 'POST', { productId }, SHOP_API_BASE_URL)
+    return authRequest('/api/collection/toggle', 'POST', { productId }, getShopApiBaseUrl())
   }
 }
 
@@ -876,7 +1123,7 @@ const SearchAPI = {
    * 搜索商品
    */
   searchProducts(keyword) {
-    return publicRequest(`/api/search/products?keyword=${encodeURIComponent(keyword)}`, 'GET', null, SHOP_API_BASE_URL)
+    return publicRequest(`/api/search/products?keyword=${encodeURIComponent(keyword)}`, 'GET', null, getShopApiBaseUrl())
       .then(list => {
         if (!Array.isArray(list)) return list
         return list.map(product => ({
@@ -890,7 +1137,7 @@ const SearchAPI = {
    * 获取热门搜索词
    */
   getHotKeywords() {
-    return publicRequest('/api/search/hot', 'GET', null, SHOP_API_BASE_URL)
+    return publicRequest('/api/search/hot', 'GET', null, getShopApiBaseUrl())
   }
 }
 
@@ -901,7 +1148,7 @@ const RecommendationAPI = {
    * 根据购物车获取推荐商品（需登录）
    */
   getByCart(limit = 10) {
-    return authRequest(`/api/recommendation/by-cart?limit=${limit}`, 'GET', null, SHOP_API_BASE_URL)
+    return authRequest(`/api/recommendation/by-cart?limit=${limit}`, 'GET', null, getShopApiBaseUrl())
       .then(list => {
         if (!Array.isArray(list)) return list
         return list.map(item => normalizeShopProduct(item))
@@ -912,7 +1159,7 @@ const RecommendationAPI = {
    * 获取热销商品推荐（公开）
    */
   getHot(limit = 10) {
-    return publicRequest(`/api/recommendation/hot?limit=${limit}`, 'GET', null, SHOP_API_BASE_URL)
+    return publicRequest(`/api/recommendation/hot?limit=${limit}`, 'GET', null, getShopApiBaseUrl())
       .then(list => {
         if (!Array.isArray(list)) return list
         return list.map(item => normalizeShopProduct(item))
@@ -923,7 +1170,7 @@ const RecommendationAPI = {
    * 获取相似商品推荐（公开）
    */
   getSimilar(productId, limit = 5) {
-    return publicRequest(`/api/recommendation/similar/${productId}?limit=${limit}`, 'GET', null, SHOP_API_BASE_URL)
+    return publicRequest(`/api/recommendation/similar/${productId}?limit=${limit}`, 'GET', null, getShopApiBaseUrl())
       .then(list => {
         if (!Array.isArray(list)) return list
         return list.map(item => normalizeShopProduct(item))
@@ -940,6 +1187,14 @@ const DoctorAPI = {
   getList(department = null) {
     const url = department ? `/api/doctor/list?department=${department}` : '/api/doctor/list'
     return publicRequest(url, 'GET')
+      .then(list => {
+        if (!Array.isArray(list)) return list
+        return list.map(doctor => ({
+          ...doctor,
+          avatar: normalizeUploadUrl(doctor.avatar),
+          avatarUrl: normalizeUploadUrl(doctor.avatar || doctor.avatarUrl)
+        }))
+      })
   },
 
   /**
@@ -947,6 +1202,14 @@ const DoctorAPI = {
    */
   getDetail(id) {
     return publicRequest(`/api/doctor/${id}`, 'GET')
+      .then(doctor => {
+        if (!doctor || typeof doctor !== 'object') return doctor
+        return {
+          ...doctor,
+          avatar: normalizeUploadUrl(doctor.avatar),
+          avatarUrl: normalizeUploadUrl(doctor.avatar || doctor.avatarUrl)
+        }
+      })
   },
 
   /**
@@ -976,6 +1239,14 @@ const ConsultationAPI = {
    */
   getList() {
     return authRequest('/api/consultation/list', 'GET')
+      .then(list => {
+        if (!Array.isArray(list)) return list
+        return list.map(item => normalizeImageFields(item, {
+          images: false,
+          userAvatar: false,
+          doctorAvatar: false
+        }))
+      })
   },
 
   /**
@@ -983,6 +1254,14 @@ const ConsultationAPI = {
    */
   getDetail(id) {
     return authRequest(`/api/consultation/${id}`, 'GET')
+      .then(item => {
+        if (!item || typeof item !== 'object') return item
+        return normalizeImageFields(item, {
+          images: false,
+          userAvatar: false,
+          doctorAvatar: false
+        })
+      })
   },
 
   /**
@@ -1030,6 +1309,10 @@ const HealthAPI = {
    */
   getList() {
     return authRequest('/api/health/list', 'GET')
+      .then(list => {
+        if (!Array.isArray(list)) return list
+        return list.map(item => normalizeImageFields(item, { images: false }))
+      })
   },
 
   /**
@@ -1037,6 +1320,10 @@ const HealthAPI = {
    */
   getByPet(petId) {
     return authRequest(`/api/health/pet/${petId}`, 'GET')
+      .then(list => {
+        if (!Array.isArray(list)) return list
+        return list.map(item => normalizeImageFields(item, { images: false }))
+      })
   },
 
   /**
@@ -1120,6 +1407,13 @@ const PetAPI = {
    */
   getList() {
     return authRequest('/api/pet/list', 'GET')
+      .then(list => {
+        if (!Array.isArray(list)) return list
+        return list.map(pet => ({
+          ...pet,
+          avatarUrl: normalizeUploadUrl(pet.avatarUrl)
+        }))
+      })
   },
 
   /**
@@ -1127,6 +1421,13 @@ const PetAPI = {
    */
   getDetail(id) {
     return authRequest(`/api/pet/${id}`, 'GET')
+      .then(pet => {
+        if (!pet || typeof pet !== 'object') return pet
+        return {
+          ...pet,
+          avatarUrl: normalizeUploadUrl(pet.avatarUrl)
+        }
+      })
   },
 
   /**
@@ -1179,15 +1480,21 @@ const AddressAPI = {
   /**
    * 创建地址
    */
-  create(contactName, contactPhone, province, city, district, detailAddress, isDefault) {
-    return authRequest('/api/address/create', 'POST', { contactName, contactPhone, province, city, district, detailAddress, isDefault })
+  create(payloadOrContactName, contactPhone, province, city, district, detailAddress, isDefault) {
+    const payload = typeof payloadOrContactName === 'object'
+      ? payloadOrContactName
+      : { contactName: payloadOrContactName, contactPhone, province, city, district, detailAddress, isDefault }
+    return authRequest('/api/address/create', 'POST', payload)
   },
 
   /**
    * 更新地址
    */
-  update(id, contactName, contactPhone, province, city, district, detailAddress, isDefault) {
-    return authRequest('/api/address/update', 'PUT', { id, contactName, contactPhone, province, city, district, detailAddress, isDefault })
+  update(idOrPayload, contactName, contactPhone, province, city, district, detailAddress, isDefault) {
+    const payload = typeof idOrPayload === 'object'
+      ? idOrPayload
+      : { id: idOrPayload, contactName, contactPhone, province, city, district, detailAddress, isDefault }
+    return authRequest('/api/address/update', 'PUT', payload)
   },
 
   /**
@@ -1216,13 +1523,13 @@ const AddressAPI = {
 
 const AIAPI = {
   /**
-   * 上传图片文件（可选登录）
+   * 统一上传媒体文件（可选登录）
    */
-  uploadImage(filePath) {
+  uploadMedia(filePath, ownerType = 'diagnosis') {
     return new Promise((resolve, reject) => {
       const token = getToken()
       wx.uploadFile({
-        url: `${API_BASE_URL}/api/upload/image`,
+        url: `${getApiBaseUrl()}/api/media/upload?ownerType=${encodeURIComponent(ownerType)}`,
         filePath: filePath,
         name: 'file',
         header: {
@@ -1255,6 +1562,10 @@ const AIAPI = {
     })
   },
 
+  uploadImage(filePath) {
+    return this.uploadMedia(filePath, 'diagnosis')
+  },
+
   /**
    * QwenMax3 聊天
    */
@@ -1263,7 +1574,7 @@ const AIAPI = {
     return new Promise((resolve, reject) => {
       const token = getToken()
       wx.request({
-        url: `${API_BASE_URL}/api/chat/qwen3Max`,
+        url: `${getApiBaseUrl()}/api/chat/qwen3Max`,
         method: 'POST',
         data: message,
         header: {
@@ -1297,7 +1608,7 @@ const AIAPI = {
     return new Promise((resolve, reject) => {
       const token = getToken()
       wx.request({
-        url: `${API_BASE_URL}/api/chat/deepSeekV3`,
+        url: `${getApiBaseUrl()}/api/chat/deepSeekV3`,
         method: 'POST',
         data: message,
         header: {
@@ -1328,19 +1639,30 @@ const AIAPI = {
    * @param {object} data 诊断数据
    * @param {string} deviceId 设备ID（访客必传）
    */
-  diagnose(data, deviceId = null) {
+  getDiagnosisEntry(deviceId = null) {
     const url = deviceId
-      ? `/api/ai/diagnosis?deviceId=${encodeURIComponent(deviceId)}`
-      : '/api/ai/diagnosis'
+      ? `/api/diagnosis/entry?deviceId=${encodeURIComponent(deviceId)}`
+      : '/api/diagnosis/entry'
+    return publicRequest(url, 'GET')
+  },
+
+  submitDiagnosis(data, deviceId = null) {
+    const url = deviceId
+      ? `/api/diagnosis/submit?deviceId=${encodeURIComponent(deviceId)}`
+      : '/api/diagnosis/submit'
     return publicRequest(url, 'POST', data)
   },
 
-  /**
-   * 获取访客剩余诊断次数
-   * @param {string} deviceId 设备ID
-   */
+  getDiagnosisTask(taskId) {
+    return publicRequest(`/api/diagnosis/tasks/${taskId}`, 'GET')
+  },
+
   getDiagnosisRemainingCount(deviceId) {
-    return publicRequest(`/api/ai/diagnosis/remaining?deviceId=${encodeURIComponent(deviceId)}`, 'GET')
+    return this.getDiagnosisEntry(deviceId).then(res => ({
+      remainingCount: res.remainingCount,
+      limitReached: res.remainingCount <= 0,
+      isLoggedIn: res.loggedIn
+    }))
   },
 
   /**
@@ -1365,7 +1687,7 @@ const ConversationAPI = {
    * 获取消息中心聚合数据
    */
   getCenter() {
-    return authRequest('/api/conversation/center', 'GET')
+    return authRequest('/api/messages/center', 'GET')
   },
 
   /**
@@ -1421,44 +1743,175 @@ const ConversationAPI = {
 // ==================== 商品订阅定期购 API（需登录） ====================
 const SubscriptionAPI = {
   create(data) {
-    return authRequest('/api/subscribe/create', 'POST', data, SHOP_API_BASE_URL)
+    return authRequest('/api/subscribe/create', 'POST', data, getShopApiBaseUrl())
   },
   getList() {
-    return authRequest('/api/subscribe/list', 'GET', null, SHOP_API_BASE_URL)
+    return authRequest('/api/subscribe/list', 'GET', null, getShopApiBaseUrl())
   },
   pause(id) {
-    return authRequest(`/api/subscribe/${id}/pause`, 'PUT', null, SHOP_API_BASE_URL)
+    return authRequest(`/api/subscribe/${id}/pause`, 'PUT', null, getShopApiBaseUrl())
   },
   resume(id) {
-    return authRequest(`/api/subscribe/${id}/resume`, 'PUT', null, SHOP_API_BASE_URL)
+    return authRequest(`/api/subscribe/${id}/resume`, 'PUT', null, getShopApiBaseUrl())
   },
   cancel(id) {
-    return authRequest(`/api/subscribe/${id}/cancel`, 'PUT', null, SHOP_API_BASE_URL)
+    return authRequest(`/api/subscribe/${id}/cancel`, 'PUT', null, getShopApiBaseUrl())
   },
   updateConfig(id, data) {
-    return authRequest(`/api/subscribe/${id}/config`, 'PUT', data, SHOP_API_BASE_URL)
+    return authRequest(`/api/subscribe/${id}/config`, 'PUT', data, getShopApiBaseUrl())
   }
 }
 
 // ==================== 社区模块 API（公开+登录） ====================
 const CommunityAPI = {
-  getPosts(page = 1, pageSize = 20) {
-    return authRequest(`/api/community/posts?page=${page}&pageSize=${pageSize}`, 'GET')
+  // 帖子列表
+  getFeed(page = 1, pageSize = 20, type = 'latest') {
+    return publicRequest(`/api/community/feed?page=${page}&pageSize=${pageSize}&type=${type}`, 'GET')
+      .then(res => normalizePageVO(res))
   },
+  getPosts(page = 1, pageSize = 20, type = 'latest') {
+    return publicRequest(`/api/community/posts?page=${page}&pageSize=${pageSize}&type=${type}`, 'GET')
+      .then(res => normalizePageVO(res))
+  },
+  getHotPosts(page = 1, pageSize = 20) {
+    return publicRequest(`/api/community/posts/hot?page=${page}&pageSize=${pageSize}`, 'GET')
+      .then(res => normalizePageVO(res))
+  },
+  searchPosts(keyword, page = 1, pageSize = 20) {
+    return publicRequest(`/api/community/posts/search?keyword=${encodeURIComponent(keyword)}&page=${page}&pageSize=${pageSize}`, 'GET')
+      .then(res => normalizePageVO(res))
+  },
+  getTopicPosts(topicId, page = 1, pageSize = 20) {
+    return publicRequest(`/api/community/topic/${topicId}/posts?page=${page}&pageSize=${pageSize}`, 'GET')
+      .then(res => normalizePageVO(res))
+  },
+  getUserPosts(userId, page = 1, pageSize = 20) {
+    return publicRequest(`/api/community/user/${userId}/posts?page=${page}&pageSize=${pageSize}`, 'GET')
+      .then(res => normalizePageVO(res))
+  },
+  // 帖子详情
+  getPostDetail(id) {
+    return publicRequest(`/api/community/post/${id}`, 'GET')
+      .then(res => normalizeCommunityPost(res))
+  },
+  // 帖子CRUD
   createPost(data) {
     return authRequest('/api/community/post', 'POST', data)
   },
+  updatePost(id, data) {
+    return authRequest(`/api/community/post/${id}`, 'PUT', data)
+  },
+  deletePost(id) {
+    return authRequest(`/api/community/post/${id}`, 'DELETE')
+  },
+  // 互动功能
   likePost(id) {
     return authRequest(`/api/community/post/${id}/like`, 'POST')
   },
   unlikePost(id) {
     return authRequest(`/api/community/post/${id}/like`, 'DELETE')
   },
-  addComment(id, content) {
-    return authRequest(`/api/community/post/${id}/comment`, 'POST', { content })
+  collectPost(id) {
+    return authRequest(`/api/community/post/${id}/collect`, 'POST')
+  },
+  uncollectPost(id) {
+    return authRequest(`/api/community/post/${id}/collect`, 'DELETE')
+  },
+  sharePost(id, shareType = 'wechat') {
+    return authRequest(`/api/community/post/${id}/share`, 'POST', { shareType })
+  },
+  reportPost(id, reason, reasonType) {
+    return authRequest(`/api/community/post/${id}/report`, 'POST', { reason, reasonType })
+  },
+  // 评论功能
+  addComment(id, content, replyToId, replyToUserId, mediaUrls, mediaType) {
+    const data = { content }
+    if (replyToId) data.replyToId = replyToId
+    if (replyToUserId) data.replyToUserId = replyToUserId
+    if (Array.isArray(mediaUrls) && mediaUrls.length > 0) data.mediaUrls = mediaUrls
+    if (mediaType) data.mediaType = mediaType
+    return authRequest(`/api/community/post/${id}/comment`, 'POST', data)
+  },
+  deleteComment(postId, commentId) {
+    return authRequest(`/api/community/post/${postId}/comment/${commentId}`, 'DELETE')
   },
   getComments(id) {
-    return authRequest(`/api/community/post/${id}/comments`, 'GET')
+    return publicRequest(`/api/community/post/${id}/comments`, 'GET')
+      .then(list => (list || []).map(normalizeCommunityComment))
+  },
+  likeComment(postId, commentId) {
+    return authRequest(`/api/community/post/${postId}/comment/${commentId}/like`, 'POST')
+  },
+  unlikeComment(postId, commentId) {
+    return authRequest(`/api/community/post/${postId}/comment/${commentId}/like`, 'DELETE')
+  },
+  // 话题功能
+  getHotTopics() {
+    return publicRequest('/api/community/topics', 'GET')
+  },
+  searchTopics(keyword) {
+    return publicRequest(`/api/community/topics/search?keyword=${encodeURIComponent(keyword)}`, 'GET')
+  },
+  getTopicDetail(topicId) {
+    return publicRequest(`/api/community/topic/${topicId}`, 'GET')
+  }
+}
+
+// 辅助函数：规范化分页数据
+function normalizePageVO(res) {
+  if (!res || !Array.isArray(res.list)) {
+    return res
+  }
+  return {
+    ...res,
+    list: res.list.map(item => normalizeCommunityPost(item))
+  }
+}
+
+// ==================== 关注模块 API（需登录） ====================
+const FollowAPI = {
+  follow(userId) {
+    return authRequest(`/api/follow/${userId}`, 'POST')
+  },
+  unfollow(userId) {
+    return authRequest(`/api/follow/${userId}`, 'DELETE')
+  },
+  checkFollow(userId) {
+    return authRequest(`/api/follow/check/${userId}`, 'GET')
+  },
+  getFollowers(userId, page = 1, pageSize = 20) {
+    return authRequest(`/api/follow/followers/${userId}?page=${page}&pageSize=${pageSize}`, 'GET')
+  },
+  getFollowings(userId, page = 1, pageSize = 20) {
+    return authRequest(`/api/follow/followings/${userId}?page=${page}&pageSize=${pageSize}`, 'GET')
+  },
+  getFollowStats(userId) {
+    return authRequest(`/api/follow/stats/${userId}`, 'GET')
+  }
+}
+
+// ==================== 私信模块 API（需登录） ====================
+const PrivateMsgAPI = {
+  sendMessage(receiverId, content, msgType = 'text') {
+    return authRequest('/api/private-message/send', 'POST', { receiverId, content, msgType })
+  },
+  getConversations(page = 1, pageSize = 20) {
+    return authRequest(`/api/private-message/conversations?page=${page}&pageSize=${pageSize}`, 'GET')
+  },
+  getMessages(conversationId, page = 1, pageSize = 20) {
+    return authRequest(`/api/private-message/conversation/${conversationId}?page=${page}&pageSize=${pageSize}`, 'GET')
+  },
+  getMessagesWithUser(targetId, page = 1, pageSize = 20) {
+    return authRequest(`/api/private-message/chat/${targetId}?page=${page}&pageSize=${pageSize}`, 'GET')
+  },
+  markAsRead(conversationId) {
+    return authRequest(`/api/private-message/read/${conversationId}`, 'POST')
+  },
+  getUnreadCount() {
+    return authRequest('/api/private-message/unread-count', 'GET')
+  },
+  deleteConversation(conversationId) {
+    return authRequest(`/api/private-message/conversation/${conversationId}`, 'DELETE')
   }
 }
 
@@ -1467,8 +1920,13 @@ module.exports = {
   isLoggedIn,
   navigateToLogin,
   parseDate,
+  // 配置相关（动态获取）
+  getApiBaseUrl,
+  getShopApiBaseUrl,
   // API模块
   AuthAPI,
+  MapAPI,
+  HomeAPI,
   VipAPI,
   CourseAPI,
   BeautyAPI,
@@ -1493,5 +1951,6 @@ module.exports = {
   TaskAPI,
   SubscriptionAPI,
   CommunityAPI,
-  API_BASE_URL
+  FollowAPI,
+  PrivateMsgAPI
 }

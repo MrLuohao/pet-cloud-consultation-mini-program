@@ -1,57 +1,38 @@
-/**
- * ╔══════════════════════════════════════════════════════════════════════════════
- * ║  消息中心逻辑 | Message Center Logic                                          ║
- * ╚══════════════════════════════════════════════════════════════════════════════
- */
 const app = getApp();
 const { MessageAPI, ConversationAPI } = require('../../utils/api');
 
-// 轮询间隔（5分钟）
 const POLLING_INTERVAL = 300000;
+
+const EMPTY_NOTIFICATION_COUNTS = {
+  orderCount: 0,
+  activityCount: 0,
+  systemCount: 0,
+  interactionCount: 0,
+  totalCount: 0
+};
 
 Page({
   data: {
-    // 消息中心数据
     totalUnreadCount: 0,
-    conversations: [],
-    recentNotifications: [],
-    aiUnreadCount: 0,
-    consultationUnreadCount: 0,
-    notificationCounts: {
-      orderCount: 0,
-      activityCount: 0,
-      systemCount: 0,
-      interactionCount: 0,
-      totalCount: 0
+    unreadSummary: {
+      totalUnreadCount: 0,
+      conversationUnreadCount: 0,
+      notificationUnreadCount: 0,
+      aiUnreadCount: 0,
+      consultationUnreadCount: 0,
+      customerServiceUnreadCount: 0
     },
-
-    // UI状态
+    quickEntries: [],
+    conversations: [],
+    topConversations: [],
+    systemNotifications: [],
+    eventSlots: [],
+    notificationCounts: EMPTY_NOTIFICATION_COUNTS,
     isRefreshing: false,
     showActionSheet: false,
-    selectedConversation: null,
-
-    // 颜色映射
-    colorMap: {
-      system: 'purple',
-      consult: 'blue',
-      order: 'green',
-      activity: 'orange',
-      interaction: 'blue',
-      article: 'pink'
-    },
-
-    // 图标映射
-    iconMap: {
-      system: '🔔',
-      consult: '💬',
-      order: '📦',
-      activity: '🎁',
-      article: '📰',
-      interaction: '💬'
-    }
+    selectedConversation: null
   },
 
-  // 轮询定时器
   _pollingTimer: null,
 
   onLoad() {
@@ -71,68 +52,85 @@ Page({
     this.stopPolling();
   },
 
-  // ==================== 数据加载 ====================
-
   async loadMessageCenter() {
-    // 未登录时显示空状态
     if (!app.globalData.token) {
-      this.setData({
-        conversations: [],
-        recentNotifications: [],
-        totalUnreadCount: 0,
-        aiUnreadCount: 0,
-        consultationUnreadCount: 0
-      });
+      this.resetPageData();
       return;
     }
 
     try {
       const centerData = await ConversationAPI.getCenter();
-
-      // 处理会话列表
-      const conversations = (centerData.recentConversations || []).map(conv => ({
-        ...conv,
-        lastMessage: this.truncateMessage(conv.lastMessage)
+      const conversations = (centerData.recentConversations || []).map(item => ({
+        ...item,
+        lastMessage: this.truncateText(item.lastMessage, 34)
       }));
-
-      // 处理通知列表
-      const recentNotifications = (centerData.recentNotifications || []).map(msg => ({
-        ...msg,
-        icon: this.data.iconMap[msg.type] || '📄',
-        color: this.data.colorMap[msg.type] || 'purple'
+      const quickEntries = (centerData.quickEntries || []).map(item => ({
+        ...item,
+        iconSrc: this.getQuickEntryIcon(item.iconKey),
+        badgeText: item.unreadCount > 99 ? '99+' : item.unreadCount,
+        subtitle: item.subtitle || '查看最新消息'
+      }));
+      const systemNotifications = (centerData.systemNotifications || centerData.recentNotifications || []).map(item => ({
+        ...item,
+        preview: this.truncateText(item.content || item.title, 38)
+      }));
+      const eventSlots = (centerData.eventSlots || []).map(item => ({
+        ...item,
+        badgeText: item.unreadCount > 99 ? '99+' : item.unreadCount
       }));
 
       this.setData({
         totalUnreadCount: centerData.totalUnreadCount || 0,
+        unreadSummary: centerData.unreadSummary || this.data.unreadSummary,
+        quickEntries,
         conversations,
-        recentNotifications,
-        aiUnreadCount: centerData.aiUnreadCount || 0,
-        consultationUnreadCount: centerData.consultationUnreadCount || 0,
-        notificationCounts: centerData.notificationCounts || this.data.notificationCounts
+        topConversations: conversations.slice(0, 2),
+        systemNotifications,
+        eventSlots,
+        notificationCounts: centerData.notificationCounts || EMPTY_NOTIFICATION_COUNTS
       });
-
     } catch (error) {
       console.error('加载消息中心失败:', error);
-      this.setData({
-        conversations: [],
-        recentNotifications: [],
-        totalUnreadCount: 0
-      });
+      this.resetPageData();
     }
   },
 
-  truncateMessage(message) {
-    if (!message) return '';
-    return message.length > 30 ? message.substring(0, 30) + '...' : message;
+  resetPageData() {
+    this.setData({
+      totalUnreadCount: 0,
+      unreadSummary: {
+        totalUnreadCount: 0,
+        conversationUnreadCount: 0,
+        notificationUnreadCount: 0,
+        aiUnreadCount: 0,
+        consultationUnreadCount: 0,
+        customerServiceUnreadCount: 0
+      },
+      quickEntries: [],
+      conversations: [],
+      topConversations: [],
+      systemNotifications: [],
+      eventSlots: [],
+      notificationCounts: EMPTY_NOTIFICATION_COUNTS
+    });
   },
 
-  // ==================== 轮询机制 ====================
+  truncateText(text, limit) {
+    if (!text) return '';
+    return text.length > limit ? `${text.slice(0, limit)}...` : text;
+  },
+
+  getQuickEntryIcon(iconKey) {
+    const iconMap = {
+      'msg-ai': '/image/icons/msg-ai.svg',
+      'msg-consult': '/image/icons/msg-consult.svg',
+      'msg-service': '/image/icons/msg-service.svg'
+    };
+    return iconMap[iconKey] || '/image/icons/msg-ai.svg';
+  },
 
   startPolling() {
-    // 先清除可能存在的旧定时器
     this.stopPolling();
-
-    // 只在登录状态下轮询
     if (app.globalData.token) {
       this._pollingTimer = setInterval(() => {
         this.loadMessageCenter();
@@ -147,26 +145,39 @@ Page({
     }
   },
 
-  // ==================== 下拉刷新 ====================
-
   async onRefresh() {
     this.setData({ isRefreshing: true });
     await this.loadMessageCenter();
     this.setData({ isRefreshing: false });
   },
 
-  // ==================== 快捷入口跳转 ====================
+  onQuickEntryTap(e) {
+    const entry = e.currentTarget.dataset.entry || {};
+    if (entry.key === 'ai_assistant') {
+      this.goToAiChat();
+      return;
+    }
+    if (entry.key === 'consultation') {
+      this.goToConsultation();
+      return;
+    }
+    if (entry.key === 'customer_service') {
+      this.goToCustomerService();
+      return;
+    }
+    if (entry.navigateUrl) {
+      wx.navigateTo({ url: entry.navigateUrl });
+    }
+  },
 
   async goToAiChat() {
     try {
-      // 获取或创建AI会话
       const conversation = await ConversationAPI.getOrCreateAi();
       wx.navigateTo({
         url: `/pages/chat/chat?conversationId=${conversation.id}`
       });
     } catch (error) {
       console.error('获取AI会话失败:', error);
-      // 降级处理：直接跳转到聊天页面
       wx.navigateTo({
         url: '/pages/chat/chat'
       });
@@ -182,6 +193,12 @@ Page({
   goToConsultation() {
     wx.navigateTo({
       url: '/pages/consultation/list'
+    });
+  },
+
+  goToConversationList() {
+    wx.navigateTo({
+      url: '/pages/message/conversations'
     });
   },
 
@@ -204,52 +221,35 @@ Page({
     });
   },
 
-  // ==================== 会话操作 ====================
-
   async onConversationTap(e) {
     const conversation = e.currentTarget.dataset.conversation;
-
-    // 根据会话类型跳转
-    if (conversation.type === 'ai_chat') {
-      // AI会话：先获取或创建真实会话，再跳转
-      try {
-        const realConversation = await ConversationAPI.getOrCreateAi();
-        wx.navigateTo({
-          url: `/pages/chat/chat?conversationId=${realConversation.id}`
-        });
-      } catch (error) {
-        console.error('获取AI会话失败:', error);
-        // 降级处理：直接跳转到聊天页面（无会话ID）
-        wx.navigateTo({
-          url: '/pages/chat/chat'
-        });
-      }
+    if (!conversation) {
       return;
     }
 
-    // 标记已读
+    if (conversation.type === 'ai_chat') {
+      await this.goToAiChat();
+      return;
+    }
+
     if (conversation.unreadCount > 0 && app.globalData.token) {
       try {
         await ConversationAPI.markAsRead(conversation.id);
-        // 更新本地状态
-        const conversations = this.data.conversations.map(c => {
-          if (c.id === conversation.id) {
-            return { ...c, unreadCount: 0 };
-          }
-          return c;
-        });
-        this.setData({ conversations });
       } catch (error) {
-        console.error('标记已读失败:', error);
+        console.error('标记会话已读失败:', error);
       }
     }
 
-    // 其他会话类型跳转
     if (conversation.type === 'doctor_consultation') {
       wx.navigateTo({
         url: `/pages/consultation/chat?id=${conversation.targetId}`
       });
+      return;
     }
+
+    wx.navigateTo({
+      url: conversation.navigateUrl || `/pages/chat/chat?conversationId=${conversation.id}`
+    });
   },
 
   onConversationLongPress(e) {
@@ -276,14 +276,7 @@ Page({
 
     try {
       await ConversationAPI.markAsRead(conversation.id);
-      // 更新本地状态
-      const conversations = this.data.conversations.map(c => {
-        if (c.id === conversation.id) {
-          return { ...c, unreadCount: 0 };
-        }
-        return c;
-      });
-      this.setData({ conversations });
+      await this.loadMessageCenter();
       wx.showToast({ title: '已标为已读', icon: 'success' });
     } catch (error) {
       console.error('标记已读失败:', error);
@@ -301,28 +294,10 @@ Page({
     }
 
     try {
-      const newPinned = !conversation.isPinned;
-      await ConversationAPI.togglePin(conversation.id, newPinned);
-
-      // 更新本地状态并重新排序
-      let conversations = this.data.conversations.map(c => {
-        if (c.id === conversation.id) {
-          return { ...c, isPinned: newPinned };
-        }
-        return c;
-      });
-
-      // 按置顶和时间排序
-      conversations.sort((a, b) => {
-        if (a.isPinned !== b.isPinned) {
-          return b.isPinned ? 1 : -1;
-        }
-        return 0;
-      });
-
-      this.setData({ conversations });
+      await ConversationAPI.togglePin(conversation.id, !conversation.isPinned);
+      await this.loadMessageCenter();
       wx.showToast({
-        title: newPinned ? '已置顶' : '已取消置顶',
+        title: conversation.isPinned ? '已取消置顶' : '已置顶',
         icon: 'success'
       });
     } catch (error) {
@@ -342,10 +317,7 @@ Page({
 
     try {
       await ConversationAPI.delete(conversation.id);
-
-      // 从列表中移除
-      const conversations = this.data.conversations.filter(c => c.id !== conversation.id);
-      this.setData({ conversations });
+      await this.loadMessageCenter();
       wx.showToast({ title: '已删除', icon: 'success' });
     } catch (error) {
       console.error('删除会话失败:', error);
@@ -355,46 +327,34 @@ Page({
     this.hideActionSheet();
   },
 
-  // ==================== 通知操作 ====================
-
   async onNotificationTap(e) {
     const notification = e.currentTarget.dataset.notification;
+    if (!notification) {
+      return;
+    }
 
-    // 标记已读
     if (notification.isRead === 0 && app.globalData.token) {
       try {
         await MessageAPI.markAsRead(notification.id);
-        // 更新本地状态
-        const recentNotifications = this.data.recentNotifications.map(n => {
-          if (n.id === notification.id) {
-            return { ...n, isRead: 1 };
-          }
-          return n;
-        });
-        this.setData({ recentNotifications });
+        await this.loadMessageCenter();
       } catch (error) {
-        console.error('标记已读失败:', error);
+        console.error('标记通知已读失败:', error);
       }
     }
 
-    // 根据通知类型跳转
     if (notification.type === 'order') {
-      wx.switchTab({
-        url: '/pages/user/user'
-      });
-    } else if (notification.type === 'activity') {
-      wx.switchTab({
-        url: '/pages/index/index'
-      });
-    } else {
-      wx.showToast({
-        title: notification.title,
-        icon: 'none'
-      });
+      wx.switchTab({ url: '/pages/user/user' });
+      return;
     }
+    if (notification.type === 'activity') {
+      wx.switchTab({ url: '/pages/index/index' });
+      return;
+    }
+    wx.showToast({
+      title: notification.title || '系统通知',
+      icon: 'none'
+    });
   },
-
-  // ==================== 全部已读 ====================
 
   async onReadAll() {
     if (!app.globalData.token) {
@@ -407,32 +367,15 @@ Page({
 
     try {
       await MessageAPI.markAllAsRead();
-
-      // 更新本地状态
-      const conversations = this.data.conversations.map(c => ({ ...c, unreadCount: 0 }));
-      const recentNotifications = this.data.recentNotifications.map(n => ({ ...n, isRead: 1 }));
-
-      this.setData({
-        conversations,
-        recentNotifications,
-        totalUnreadCount: 0,
-        aiUnreadCount: 0,
-        consultationUnreadCount: 0,
-        notificationCounts: {
-          orderCount: 0,
-          activityCount: 0,
-          systemCount: 0,
-          interactionCount: 0,
-          totalCount: 0
-        }
-      });
-
+      const unreadConversations = this.data.conversations.filter(item => item.unreadCount > 0);
+      await Promise.all(unreadConversations.map(item => ConversationAPI.markAsRead(item.id)));
+      await this.loadMessageCenter();
       wx.showToast({
         title: '已全部标记为已读',
         icon: 'success'
       });
     } catch (error) {
-      console.error('标记已读失败:', error);
+      console.error('全部已读失败:', error);
       wx.showToast({
         title: '操作失败',
         icon: 'none'

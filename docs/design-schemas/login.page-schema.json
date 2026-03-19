@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "pageKey": "login",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "52ZbF",
+    "frameName": "登录页 Brand Welcome Login"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [0, 16, 0, 16],
+    "sectionGap": 18,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "heroAccent": "#6D32FF",
+      "heroAccentSoft": "#F5F0FF",
+      "cardBackground": "#FFFFFFD6",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#9B91B3",
+      "buttonPrimary": "#6D32FF"
+    },
+    "radius": {
+      "heroPanel": 42,
+      "card": 34,
+      "button": 27
+    },
+    "typography": {
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 21, "fontWeight": "700" },
+      "sectionTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "button": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "ANpbv", "copy": ["9:41", "5G   100%"] },
+    { "key": "login_card", "type": "login_profile_card", "sourceNodeId": "WKK8P", "copy": ["欢迎登录伴宠云诊", "点击头像设置资料", "填写昵称", "微信一键登录", "微信授权后即可继续"] },
+    { "key": "footer_support", "type": "login_footer_support", "sourceNodeId": "4TUeZ", "copy": ["登录即表示同意", "《用户协议》与《隐私政策》"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "login_card",
+      "api": "client cache + POST /api/auth/login + PUT /api/auth/userinfo",
+      "fields": ["nickname", "avatarUrl", "token", "userId"]
+    }
+  ],
+  "actions": [
+    { "name": "hydrateDraftProfile", "target": "local cache / existing profile", "sectionKey": "login_card" },
+    { "name": "chooseAvatar", "target": "wx.chooseAvatar", "sectionKey": "login_card" },
+    { "name": "wechatLogin", "target": "POST /api/auth/login", "sectionKey": "login_card" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "52ZbF",
+    "criticalCheckpoints": [
+      "single login card remains the only dominant structure on the page",
+      "login title stays inside the card and centered above avatar and nickname field",
+      "footer only keeps agreement copy and never reintroduces guest entry"
+    ]
+  }
+}

@@ -1,45 +1,46 @@
 // pages/pet/edit.js - 宠物编辑页（卡片式分步向导）
-const { PetAPI, isLoggedIn, navigateToLogin, parseDate } = require('../../utils/api')
+const { PetAPI, AIAPI, isLoggedIn, navigateToLogin, parseDate, getApiBaseUrl } = require('../../utils/api')
 
 // 常见品种数据（含图片路径，用于卡片轮播展示）
+const BREED_IMAGE_BASE = `${getApiBaseUrl()}/uploads/breeds`
 const BREED_DATA = {
   1: [
-    { name: '金毛寻回犬', image: '/image/breeds/golden-retriever.jpg' },
-    { name: '拉布拉多', image: '/image/breeds/labrador.jpg' },
-    { name: '柯基', image: '/image/breeds/corgi.jpg' },
-    { name: '泰迪', image: '/image/breeds/poodle.jpg' },
-    { name: '哈士奇', image: '/image/breeds/husky.jpg' },
-    { name: '萨摩耶', image: '/image/breeds/samoyed.jpg' },
-    { name: '边牧', image: '/image/breeds/border-collie.jpg' },
-    { name: '柴犬', image: '/image/breeds/shiba-inu.jpg' },
-    { name: '法斗', image: '/image/breeds/french-bulldog.jpg' },
-    { name: '德牧', image: '/image/breeds/german-shepherd.jpg' },
-    { name: '比熊', image: '/image/breeds/bichon-frise.jpg' },
-    { name: '博美', image: '/image/breeds/pomeranian.jpg' }
+    { name: '金毛寻回犬', image: `${BREED_IMAGE_BASE}/golden-retriever.jpg` },
+    { name: '拉布拉多', image: `${BREED_IMAGE_BASE}/labrador.jpg` },
+    { name: '柯基', image: `${BREED_IMAGE_BASE}/corgi.jpg` },
+    { name: '泰迪', image: `${BREED_IMAGE_BASE}/poodle.jpg` },
+    { name: '哈士奇', image: `${BREED_IMAGE_BASE}/husky.jpg` },
+    { name: '萨摩耶', image: `${BREED_IMAGE_BASE}/samoyed.jpg` },
+    { name: '边牧', image: `${BREED_IMAGE_BASE}/border-collie.jpg` },
+    { name: '柴犬', image: `${BREED_IMAGE_BASE}/shiba-inu.jpg` },
+    { name: '法斗', image: `${BREED_IMAGE_BASE}/french-bulldog.jpg` },
+    { name: '德牧', image: `${BREED_IMAGE_BASE}/german-shepherd.jpg` },
+    { name: '比熊', image: `${BREED_IMAGE_BASE}/bichon-frise.jpg` },
+    { name: '博美', image: `${BREED_IMAGE_BASE}/pomeranian.jpg` }
   ],
   2: [
-    { name: '英短', image: '/image/breeds/british-shorthair.jpg' },
-    { name: '美短', image: '/image/breeds/american-shorthair.jpg' },
-    { name: '布偶', image: '/image/breeds/ragdoll.jpg' },
-    { name: '暹罗', image: '/image/breeds/siamese.jpg' },
-    { name: '橘猫', image: '/image/breeds/orange-tabby.jpg' },
-    { name: '狸花猫', image: '/image/breeds/dragon-li.jpg' },
-    { name: '蓝猫', image: '/image/breeds/russian-blue.jpg' },
-    { name: '加菲', image: '/image/breeds/exotic-shorthair.jpg' },
-    { name: '缅因', image: '/image/breeds/maine-coon.jpg' },
-    { name: '斯芬克斯', image: '/image/breeds/sphynx.jpg' },
-    { name: '曼基康', image: '/image/breeds/munchkin.jpg' },
-    { name: '波斯猫', image: '/image/breeds/persian.jpg' }
+    { name: '英短', image: `${BREED_IMAGE_BASE}/british-shorthair.jpg` },
+    { name: '美短', image: `${BREED_IMAGE_BASE}/american-shorthair.jpg` },
+    { name: '布偶', image: `${BREED_IMAGE_BASE}/ragdoll.jpg` },
+    { name: '暹罗', image: `${BREED_IMAGE_BASE}/siamese.jpg` },
+    { name: '橘猫', image: `${BREED_IMAGE_BASE}/orange-tabby.jpg` },
+    { name: '狸花猫', image: `${BREED_IMAGE_BASE}/dragon-li.jpg` },
+    { name: '蓝猫', image: `${BREED_IMAGE_BASE}/russian-blue.jpg` },
+    { name: '加菲', image: `${BREED_IMAGE_BASE}/exotic-shorthair.jpg` },
+    { name: '缅因', image: `${BREED_IMAGE_BASE}/maine-coon.jpg` },
+    { name: '斯芬克斯', image: `${BREED_IMAGE_BASE}/sphynx.jpg` },
+    { name: '曼基康', image: `${BREED_IMAGE_BASE}/munchkin.jpg` },
+    { name: '波斯猫', image: `${BREED_IMAGE_BASE}/persian.jpg` }
   ],
   3: [
-    { name: '仓鼠', image: '/image/breeds/hamster.jpg' },
-    { name: '兔子', image: '/image/breeds/rabbit.jpg' },
-    { name: '鹦鹉', image: '/image/breeds/parrot.jpg' },
-    { name: '乌龟', image: '/image/breeds/turtle.jpg' },
-    { name: '龙猫', image: '/image/breeds/chinchilla.jpg' },
-    { name: '蜥蜴', image: '/image/breeds/lizard.jpg' },
-    { name: '金鱼', image: '/image/breeds/goldfish.jpg' },
-    { name: '其他', image: '/image/breeds/other-pet.jpg' }
+    { name: '仓鼠', image: `${BREED_IMAGE_BASE}/hamster.jpg` },
+    { name: '兔子', image: `${BREED_IMAGE_BASE}/rabbit.jpg` },
+    { name: '鹦鹉', image: `${BREED_IMAGE_BASE}/parrot.jpg` },
+    { name: '乌龟', image: `${BREED_IMAGE_BASE}/turtle.jpg` },
+    { name: '龙猫', image: `${BREED_IMAGE_BASE}/chinchilla.jpg` },
+    { name: '蜥蜴', image: `${BREED_IMAGE_BASE}/lizard.jpg` },
+    { name: '金鱼', image: `${BREED_IMAGE_BASE}/goldfish.jpg` },
+    { name: '其他', image: `${BREED_IMAGE_BASE}/other-pet.jpg` }
   ]
 }
 
@@ -372,8 +373,21 @@ Page({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
-      success: (res) => {
-        this.setData({ 'formData.avatarUrl': res.tempFilePaths[0] })
+      success: async (res) => {
+        const tempPath = res.tempFilePaths[0]
+        // 先显示临时图片作为预览
+        this.setData({ 'formData.avatarUrl': tempPath })
+        try {
+          wx.showLoading({ title: '上传中...' })
+          const uploadedUrl = await AIAPI.uploadImage(tempPath)
+          this.setData({ 'formData.avatarUrl': uploadedUrl })
+          wx.hideLoading()
+        } catch (err) {
+          wx.hideLoading()
+          console.error('头像上传失败:', err)
+          wx.showToast({ title: '图片上传失败', icon: 'none' })
+          this.setData({ 'formData.avatarUrl': '' })
+        }
       }
     })
   },

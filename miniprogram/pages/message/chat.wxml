@@ -1,0 +1,39 @@
+<!--pages/message/chat.wxml-->
+<view class="chat-page">
+  <!-- 消息列表 -->
+  <scroll-view
+    class="message-list"
+    scroll-y
+    scroll-into-view="{{scrollToView}}"
+    scroll-with-animation
+  >
+    <view class="message-item {{item.isSelf ? 'self' : 'other'}}" wx:for="{{messages}}" wx:key="id" id="msg-{{index}}">
+      <image class="avatar" src="{{item.senderAvatarUrl || '/image/default-avatar.png'}}" mode="aspectFill" wx:if="{{!item.isSelf}}" />
+      <view class="message-content">
+        <view class="bubble">
+          <text class="bubble-text">{{item.content}}</text>
+        </view>
+        <text class="message-time">{{item.createTime}}</text>
+      </view>
+      <image class="avatar" src="{{item.senderAvatarUrl || '/image/default-avatar.png'}}" mode="aspectFill" wx:if="{{item.isSelf}}" />
+    </view>
+
+    <view class="empty-state" wx:if="{{!isLoading && messages.length === 0}}">
+      <text class="empty-icon">👋</text>
+      <text class="empty-text">发送消息开始聊天</text>
+    </view>
+  </scroll-view>
+
+  <!-- 输入栏 -->
+  <view class="input-bar">
+    <input
+      class="message-input"
+      placeholder="输入消息..."
+      value="{{inputContent}}"
+      bindinput="onInput"
+      bindconfirm="sendMessage"
+      confirm-type="send"
+    />
+    <view class="send-btn {{inputContent ? 'active' : ''}}" bindtap="sendMessage">发送</view>
+  </view>
+</view>

@@ -81,6 +81,10 @@ Page({
   },
 
   // ==================== 头像相关 ====================
+  onAvatarLoadError() {
+    this.setData({ 'userInfo.avatarUrl': '' })
+  },
+
   onChooseAvatar() {
     wx.chooseMedia({
       count: 1,

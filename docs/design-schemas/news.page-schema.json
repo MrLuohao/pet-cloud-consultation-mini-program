@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "pageKey": "news",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "RTKu8",
+    "frameName": "消息中心 Community Style"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [4, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "cardBackground": "#FFFFFF",
+      "cardGradientEnd": "#FBF9FF",
+      "brandPrimary": "#6D32FF",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#7A8190",
+      "textMuted": "#9CA3AF",
+      "borderSoft": "#F0EAFE",
+      "panelPurple": "#F7F3FF",
+      "panelBlue": "#F2F8FF",
+      "panelPink": "#FFF3F8"
+    },
+    "radius": {
+      "card": 20,
+      "entry": 16,
+      "pill": 999
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "lineHeight": 1.45 },
+      "chip": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "600" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "1DEKw",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "message_overview",
+      "type": "hero_summary_card",
+      "sourceNodeId": "zMK0M",
+      "title": "消息概览",
+      "copy": [
+        "全部已读",
+        "今天有 7 条待处理消息",
+        "AI 助手与咨询提醒优先，建议先处理未读会话。",
+        "AI助手",
+        "在线客服",
+        "我的咨询"
+      ],
+      "layout": { "padding": 18, "gap": 14, "cornerRadius": 20 }
+    },
+    {
+      "key": "recent_conversations",
+      "type": "conversation_list_card",
+      "sourceNodeId": "PQsT6",
+      "title": "最近会话",
+      "copy": [
+        "查看全部",
+        "AI助手 · 新的诊断结果已生成",
+        "在线客服 · 订单问题已处理完成"
+      ],
+      "layout": { "padding": 16, "gap": 10, "cornerRadius": 20 }
+    },
+    {
+      "key": "notification_categories",
+      "type": "notification_category_card",
+      "sourceNodeId": "Y8XEp",
+      "title": "通知分类",
+      "copy": [
+        "按类型查看",
+        "订单通知",
+        "活动通知",
+        "系统消息"
+      ],
+      "layout": { "padding": 16, "gap": 14, "cornerRadius": 20 }
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "message_overview",
+      "api": "GET /api/messages/center",
+      "fields": [
+        "unreadSummary.totalUnreadCount",
+        "quickEntries[].key",
+        "quickEntries[].title",
+        "quickEntries[].subtitle",
+        "quickEntries[].iconKey",
+        "quickEntries[].unreadCount"
+      ]
+    },
+    {
+      "sectionKey": "recent_conversations",
+      "api": "GET /api/messages/center",
+      "fields": [
+        "recentConversations[].id",
+        "recentConversations[].type",
+        "recentConversations[].targetName",
+        "recentConversations[].targetAvatar",
+        "recentConversations[].lastMessage",
+        "recentConversations[].lastMessageTimeStr",
+        "recentConversations[].unreadCount"
+      ]
+    },
+    {
+      "sectionKey": "notification_categories",
+      "api": "GET /api/messages/center",
+      "fields": [
+        "notificationCounts.orderCount",
+        "notificationCounts.activityCount",
+        "notificationCounts.systemCount"
+      ]
+    }
+  ],
+  "actions": [
+    { "name": "onReadAll", "target": "/api/messages/read-all", "sectionKey": "message_overview" },
+    { "name": "onQuickEntryTap", "target": "page-navigation", "sectionKey": "message_overview" },
+    { "name": "onConversationTap", "target": "conversation-navigation", "sectionKey": "recent_conversations" },
+    { "name": "goToConversationList", "target": "/pages/message/conversations", "sectionKey": "recent_conversations" },
+    { "name": "goToNotificationType", "target": "/pages/news/all-messages/index", "sectionKey": "notification_categories" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "RTKu8",
+    "criticalCheckpoints": [
+      "overview card remains the first and most prominent block",
+      "quick entries remain exactly three equal-width tiles",
+      "conversation list is capped to compact recent items, not a long feed",
+      "notification categories stay as three parallel cards with soft colored panels",
+      "page does not reintroduce extra event reservation modules above the fold"
+    ]
+  }
+}

@@ -1,0 +1,236 @@
+/* pages/community/search.wxss */
+
+page {
+  background: var(--bg-secondary);
+}
+
+.search-page {
+  min-height: 100vh;
+  background: var(--bg-secondary);
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  padding: var(--space-4) var(--space-6);
+  background: var(--bg-primary);
+  gap: var(--space-3);
+}
+
+.search-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 72rpx;
+  padding: 0 var(--space-4);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-full);
+}
+
+.search-icon {
+  font-size: var(--font-lg);
+  margin-right: var(--space-2);
+}
+
+.search-input {
+  flex: 1;
+  font-size: var(--font-base);
+}
+
+.clear-btn {
+  font-size: var(--font-lg);
+  color: var(--text-tertiary);
+  padding: var(--space-2);
+}
+
+.cancel-btn {
+  font-size: var(--font-base);
+  color: var(--primary-500);
+}
+
+/* 搜索历史 */
+.search-history {
+  padding: var(--space-6);
+  background: var(--bg-primary);
+  margin-top: var(--space-4);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.history-title {
+  font-size: var(--font-base);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+}
+
+.clear-history {
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
+}
+
+.history-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.history-tag {
+  padding: var(--space-2) var(--space-4);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-full);
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+/* 热门话题 */
+.hot-topics {
+  padding: var(--space-6);
+  background: var(--bg-primary);
+  margin-top: var(--space-4);
+}
+
+.section-title {
+  font-size: var(--font-base);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.topic-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.topic-item {
+  display: flex;
+  align-items: center;
+  padding: var(--space-4) 0;
+  border-bottom: 1rpx solid var(--border-subtle);
+}
+
+.topic-item:last-child {
+  border-bottom: none;
+}
+
+.topic-icon {
+  font-size: 40rpx;
+  margin-right: var(--space-4);
+}
+
+.topic-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.topic-name {
+  font-size: var(--font-base);
+  color: var(--text-primary);
+  font-weight: var(--font-medium);
+}
+
+.topic-count {
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
+  margin-top: var(--space-1);
+}
+
+/* 搜索结果 */
+.search-result {
+  margin-top: var(--space-4);
+}
+
+.result-tabs {
+  display: flex;
+  background: var(--bg-primary);
+  padding: 0 var(--space-6);
+  border-bottom: 1rpx solid var(--border-subtle);
+}
+
+.tab-item {
+  padding: var(--space-4) var(--space-6);
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  position: relative;
+}
+
+.tab-item.active {
+  color: var(--primary-500);
+  font-weight: var(--font-medium);
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 4rpx;
+  background: var(--primary-500);
+  border-radius: var(--radius-full);
+}
+
+/* 帖子结果 */
+.post-result {
+  background: var(--bg-primary);
+  padding: 0 var(--space-6);
+}
+
+.post-item {
+  display: flex;
+  padding: var(--space-5) 0;
+  border-bottom: 1rpx solid var(--border-subtle);
+}
+
+.post-info {
+  flex: 1;
+  margin-right: var(--space-4);
+}
+
+.post-content {
+  font-size: var(--font-base);
+  color: var(--text-primary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
+}
+
+.post-image {
+  width: 160rpx;
+  height: 120rpx;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+
+/* 空结果 */
+.empty-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-16) 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: var(--space-4);
+}
+
+.empty-text {
+  font-size: var(--font-base);
+  color: var(--text-tertiary);
+}

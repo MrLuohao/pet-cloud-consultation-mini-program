@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "pageKey": "address-edit",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "MRUGD",
+    "frameName": "地址编辑页 Address Edit"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 10,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "surface": "#FFFFFF",
+      "surfaceWarm": "#FBF7F0",
+      "textPrimary": "#20252C",
+      "textSecondary": "#9B948A",
+      "borderSoft": "#ECE4D9",
+      "actionPrimary": "#30343C"
+    },
+    "radius": {
+      "acquireCard": 22,
+      "formPanel": 30,
+      "button": 18
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "button": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "D5M7K", "copy": ["9:41", "5G   100%"] },
+    { "key": "acquire_card", "type": "address_acquire_card", "sourceNodeId": "UEuJe", "copy": ["完善收货资料", "用于下单、配送与到店核验", "地图选点", "粘贴完整地址，自动识别"] },
+    { "key": "form_panel", "type": "address_form_panel", "sourceNodeId": "bNueb", "copy": ["联系人", "手机号", "所在地区", "详细地址", "设为默认地址"] },
+    { "key": "save_action", "type": "address_save_action", "sourceNodeId": "ywasv", "copy": ["保存地址", "保存后可在地址列表页继续切换或设为下单地址"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "form_panel",
+      "api": "GET /api/address/{id}",
+      "fields": ["contactName", "contactPhone", "province", "city", "district", "detailAddress", "isDefault"]
+    },
+    {
+      "sectionKey": "acquire_card",
+      "api": "client location / pasted address parse",
+      "fields": ["location.name", "location.address", "parsed.contactName", "parsed.contactPhone", "parsed.province", "parsed.city", "parsed.district", "parsed.detailAddress"]
+    }
+  ],
+  "actions": [
+    { "name": "chooseLocation", "target": "wx.chooseLocation", "sectionKey": "acquire_card" },
+    { "name": "parsePasteAddress", "target": "client-parse-and-fill", "sectionKey": "acquire_card" },
+    { "name": "saveAddress", "target": "POST/PUT /api/address/*", "sectionKey": "save_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "MRUGD",
+    "criticalCheckpoints": [
+      "map acquisition card stays distinct from the main form panel",
+      "detailed address keeps a clear manual-completion hint",
+      "default toggle remains lightweight and transaction-toned rather than brand-purple"
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 // pages/community/index.js - 宠物社区（Story 5.3）
-const { CommunityAPI, isLoggedIn, navigateToLogin } = require('../../utils/api');
+const { CommunityAPI, AIAPI, isLoggedIn, navigateToLogin } = require('../../utils/api');
+const { formatCommunityPostCard } = require('./post-presenter');
 
 Page({
   data: {
@@ -19,11 +20,22 @@ Page({
     comments: [],
     commentInput: '',
     commentPage: 1,
-    loadingComments: false
+    loadingComments: false,
+
+    // 用于判断是否需要刷新
+    lastLoadTime: 0
   },
 
   onLoad() {
     this.loadPosts(true);
+  },
+
+  onShow() {
+    // 从发布页返回时自动刷新（距离上次加载超过2秒才刷新，避免频繁刷新）
+    const now = Date.now()
+    if (now - this.data.lastLoadTime > 2000) {
+      this.loadPosts(true)
+    }
   },
 
   onPullDownRefresh() {
@@ -42,13 +54,19 @@ Page({
     this.setData({ loading: true });
     try {
       const result = await CommunityAPI.getPosts(page, this.data.pageSize);
-      const newPosts = result.records || result || [];
-      const total = result.total || newPosts.length;
+      const sourcePosts = Array.isArray(result && result.records)
+        ? result.records
+        : (Array.isArray(result && result.list) ? result.list : (Array.isArray(result) ? result : []));
+      const newPosts = Array.isArray(sourcePosts)
+        ? sourcePosts.map(post => formatCommunityPostCard(post))
+        : [];
+      const total = result && result.total ? result.total : newPosts.length;
       const posts = reset ? newPosts : [...this.data.posts, ...newPosts];
       this.setData({
         posts,
         page: page + 1,
-        hasMore: posts.length < total
+        hasMore: posts.length < total,
+        lastLoadTime: Date.now()
       });
     } catch (e) {
       console.error('加载帖子失败:', e);
@@ -105,10 +123,16 @@ Page({
     this.setData({ posting: true });
     wx.showLoading({ title: '发布中...' });
     try {
+      // 先上传所有图片到服务器
+      const uploadedUrls = [];
+      for (const tempPath of newPostImages) {
+        const url = await AIAPI.uploadImage(tempPath);
+        uploadedUrls.push(url);
+      }
       await CommunityAPI.createPost({
         content: newPostContent,
-        mediaUrls: newPostImages,
-        mediaType: newPostImages.length > 0 ? 'image' : 'text'
+        mediaUrls: uploadedUrls,
+        mediaType: uploadedUrls.length > 0 ? 'image' : 'text'
       });
       wx.hideLoading();
       wx.showToast({ title: '发布成功！', icon: 'success' });

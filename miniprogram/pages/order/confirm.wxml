@@ -1,105 +1,196 @@
-<!--pages/order/confirm.wxml-->
-<view class="confirm-container">
-  <!-- 收货地址 -->
-  <view class="address-section" bindtap="selectAddress">
-    <view class="address-content" wx:if="{{address}}">
-      <view class="address-header">
-        <text class="receiver-name">{{address.contactName}}</text>
-        <text class="receiver-phone">{{address.contactPhone}}</text>
+<view class="confirm-page">
+  <view class="confirm-body">
+    <view class="confirm-address" bindtap="selectAddress">
+      <view class="confirm-address__top">
+        <view class="confirm-address__receiver-group">
+          <text class="confirm-address__receiver">{{address ? address.contactName : '请选择收货地址'}}</text>
+          <text wx:if="{{address}}" class="confirm-address__phone">{{address.contactPhoneDisplay || address.contactPhone}}</text>
+        </view>
+        <text class="confirm-address__arrow">›</text>
       </view>
-      <view class="address-detail">{{address.fullAddress}}</view>
+      <text class="confirm-address__detail">
+        {{address ? address.fullAddress : '补充地址后可继续完成支付'}}
+      </text>
+      <view class="confirm-address__divider"></view>
     </view>
-    <view class="no-address" wx:else>
-      <text>请选择收货地址</text>
-    </view>
-    <text class="arrow">›</text>
-  </view>
 
-  <!-- 商品列表 -->
-  <view class="products-section">
-    <view class="section-title">商品信息</view>
-    <view class="product-item" wx:for="{{orderItems}}" wx:key="productId">
-      <image class="product-cover" src="{{item.coverUrl}}" mode="aspectFill"></image>
-      <view class="product-info">
-        <text class="product-name">{{item.productName}}</text>
-        <view class="product-footer">
-          <text class="product-price">¥{{item.price}}</text>
-          <text class="product-quantity">x{{item.quantity}}</text>
+    <view class="confirm-products">
+      <view class="confirm-product" wx:for="{{orderItems}}" wx:key="productId">
+        <image
+          wx:if="{{item.coverUrl}}"
+          class="confirm-product__thumb"
+          src="{{item.coverUrl}}"
+          mode="aspectFill"
+        ></image>
+        <view wx:else class="confirm-product__thumb confirm-product__thumb--placeholder">
+          <image class="confirm-product__fallback-icon" src="{{item.fallbackIcon}}" mode="aspectFit"></image>
+        </view>
+        <view class="confirm-product__info">
+          <text class="confirm-product__name">{{item.productName}}</text>
+          <text class="confirm-product__meta">{{item.spec || '默认规格'}}</text>
+          <view class="confirm-product__price-row">
+            <text class="confirm-product__price">¥{{item.price}}</text>
+            <text class="confirm-product__qty">x{{item.quantity}}</text>
+          </view>
         </view>
       </view>
     </view>
+
+    <view class="confirm-settings">
+      <view class="confirm-settings__row" bindtap="selectCoupon">
+        <text class="confirm-settings__label">优惠</text>
+        <text class="confirm-settings__value">
+          {{couponDiscount !== '0.00' ? '已优惠 ¥' + couponDiscount : selectedCoupon ? selectedCoupon.couponName : '已优惠 ¥0'}}
+        </text>
+      </view>
+      <view class="confirm-settings__row">
+        <text class="confirm-settings__label">备注</text>
+        <input
+          class="confirm-settings__input"
+          placeholder="如需无谷配方可备注"
+          placeholder-class="confirm-settings__placeholder"
+          value="{{remark}}"
+          bindinput="onRemarkInput"
+        />
+      </view>
+      <view class="confirm-settings__row">
+        <text class="confirm-settings__label">配送</text>
+        <text class="confirm-settings__value">{{deliveryText}}</text>
+      </view>
+    </view>
+
+    <view class="confirm-divider"></view>
+
+    <view class="confirm-amounts">
+      <view class="confirm-amounts__row">
+        <text class="confirm-amounts__label">商品金额</text>
+        <text class="confirm-amounts__value">¥{{totalAmount}}</text>
+      </view>
+      <view class="confirm-amounts__row">
+        <text class="confirm-amounts__label">运费</text>
+        <text class="confirm-amounts__value">¥{{freight}}</text>
+      </view>
+      <view class="confirm-amounts__row">
+        <text class="confirm-amounts__label">优惠</text>
+        <text class="confirm-amounts__value">-¥{{couponDiscount}}</text>
+      </view>
+      <view class="confirm-amounts__divider"></view>
+    </view>
+
+    <view class="confirm-hint">
+      <text class="confirm-hint__text">{{orderHint}}</text>
+    </view>
+
+    <view class="confirm-bottom-space"></view>
   </view>
 
-  <!-- 优惠券 -->
-  <view class="coupon-section" bindtap="selectCoupon">
-    <view class="coupon-left">
-      <text class="section-label">优惠券</text>
-      <text class="coupon-info" wx:if="{{selectedCoupon}}">{{selectedCoupon.couponName}}</text>
-      <text class="coupon-info" wx:else>{{availableCoupons.length}}张可用</text>
+  <view class="confirm-submit-bar">
+    <view class="confirm-submit-bar__amount">
+      <text class="confirm-submit-bar__label">合计</text>
+      <text class="confirm-submit-bar__value">¥{{payAmount}}</text>
     </view>
-    <text class="arrow">›</text>
+    <button class="confirm-submit-bar__button" bindtap="submitOrder">确认支付</button>
   </view>
 
-  <!-- 备注 -->
-  <view class="remark-section">
-    <text class="section-label">订单备注</text>
-    <input class="remark-input" placeholder="选填，可填写您的特殊需求" value="{{remark}}" bindinput="onRemarkInput" />
-  </view>
-
-  <!-- 价格明细 -->
-  <view class="price-detail">
-    <view class="price-row">
-      <text class="price-label">商品金额</text>
-      <text class="price-value">¥{{totalAmount}}</text>
-    </view>
-    <view class="price-row">
-      <text class="price-label">运费</text>
-      <text class="price-value">¥{{freight}}</text>
-    </view>
-    <view class="price-row" wx:if="{{couponDiscount > 0}}">
-      <text class="price-label">优惠券</text>
-      <text class="price-value discount">-¥{{couponDiscount}}</text>
-    </view>
-  </view>
-
-  <!-- 底部提交栏 -->
-  <view class="submit-bar">
-    <view class="total-info">
-      <text class="total-label">合计：</text>
-      <text class="total-price">¥{{payAmount}}</text>
-    </view>
-    <button class="submit-btn" bindtap="submitOrder">提交订单</button>
-  </view>
-</view>
-
-<!-- 优惠券弹窗 -->
-<view class="coupon-popup" wx:if="{{showCouponPopup}}">
-  <view class="popup-mask" bindtap="closeCouponPopup"></view>
-  <view class="popup-content">
-    <view class="popup-header">
-      <text class="popup-title">选择优惠券</text>
-      <text class="popup-close" bindtap="closeCouponPopup">×</text>
-    </view>
-    <scroll-view class="coupon-list" scroll-y="{{true}}">
-      <view class="coupon-item" wx:for="{{availableCoupons}}" wx:key="id" bindtap="selectCouponItem" data-id="{{item.id}}">
-        <view class="coupon-amount">
-          <text class="amount-symbol">¥</text>
-          <text class="amount-value">{{item.discountAmount || (item.discountRate / 10) + '折'}}</text>
-        </view>
-        <view class="coupon-info-wrap">
-          <text class="coupon-name">{{item.couponName}}</text>
-          <text class="coupon-desc">满{{item.minAmount}}元可用</text>
-        </view>
-        <view class="coupon-select {{selectedCouponId === item.id ? 'selected' : ''}}">
-          <icon wx:if="{{selectedCouponId === item.id}}" type="success_no_circle" size="16" color="#667eea"></icon>
+  <view wx:if="{{showPaymentSheet}}" class="payment-layer">
+    <view class="payment-layer__mask" bindtap="closePaymentLayers"></view>
+    <view class="payment-sheet">
+      <view class="payment-sheet__handle"></view>
+      <view class="payment-sheet__summary">
+        <text class="payment-sheet__title">确认支付</text>
+        <text class="payment-sheet__sub">订单将以你选择的方式完成支付</text>
+      </view>
+      <view class="payment-sheet__amount">
+        <text class="payment-sheet__amount-value">¥ {{payAmount}}</text>
+        <text class="payment-sheet__merchant">宠云精选 Pet Cloud Store · 冻干主粮订单</text>
+      </view>
+      <view class="payment-sheet__methods">
+        <view
+          class="payment-sheet__method {{selectedPaymentMethod === item.key ? 'payment-sheet__method--active' : ''}}"
+          wx:for="{{paymentMethods}}"
+          wx:key="key"
+          data-method="{{item.key}}"
+          bindtap="selectPaymentMethod"
+        >
+          <view class="payment-sheet__method-left">
+            <view class="payment-sheet__badge payment-sheet__badge--{{item.badgeClass}}">
+              <text>{{item.badge}}</text>
+            </view>
+            <view class="payment-sheet__method-copy">
+              <text class="payment-sheet__method-title">{{item.title}}</text>
+              <text class="payment-sheet__method-sub">{{item.subtitle}}</text>
+            </view>
+          </view>
+          <view wx:if="{{selectedPaymentMethod === item.key}}" class="payment-sheet__check">✓</view>
+          <text wx:else class="payment-sheet__arrow">›</text>
         </view>
       </view>
-      <view class="no-coupon-tip" bindtap="notUseCoupon" wx:if="{{availableCoupons.length === 0}}">
-        <text>暂无可用优惠券</text>
+      <view class="payment-sheet__confirm" bindtap="confirmPaymentMethod">
+        <text>确认支付</text>
       </view>
-      <view class="no-coupon-tip" bindtap="notUseCoupon" wx:else>
-        <text>不使用优惠券</text>
+    </view>
+  </view>
+
+  <view wx:if="{{showVerification}}" class="verify-layer">
+    <view class="verify-layer__mask" bindtap="closePaymentLayers"></view>
+    <view wx:if="{{verificationStage === 'face'}}" class="verify-card">
+      <text class="verify-card__amount">¥ {{payAmount}}</text>
+      <text class="verify-card__method">{{verificationMethodText}}</text>
+      <view class="verify-card__panel" bindtap="completeFaceVerification">
+        <view class="verify-card__panel-glow"></view>
+        <view class="verify-card__panel-ring"></view>
+        <view class="verify-card__panel-frame"></view>
+        <view class="verify-card__panel-line"></view>
       </view>
-    </scroll-view>
+      <text class="verify-card__title">确认支付</text>
+      <text class="verify-card__sub">注视屏幕以完成身份验证</text>
+      <view class="verify-card__dots">
+        <view class="verify-card__dot verify-card__dot--active"></view>
+        <view class="verify-card__dot verify-card__dot--active"></view>
+        <view class="verify-card__dot"></view>
+        <view class="verify-card__dot"></view>
+        <view class="verify-card__dot"></view>
+        <view class="verify-card__dot"></view>
+      </view>
+      <view class="verify-card__switch" bindtap="completeFaceVerification">
+        <text>改用支付密码</text>
+      </view>
+    </view>
+
+    <view wx:else class="verify-password-card">
+      <text class="verify-card__amount">¥ {{payAmount}}</text>
+      <text class="verify-card__method">{{verificationMethodText}}</text>
+
+      <view class="verify-password-card__keypad">
+        <view
+          wx:for="{{passwordKeypadRows}}"
+          wx:key="rowIndex"
+          wx:for-item="row"
+          wx:for-index="rowIndex"
+          class="verify-password-card__row"
+        >
+          <view
+            wx:for="{{row}}"
+            wx:key="key"
+            wx:for-item="keyItem"
+            class="verify-password-card__key"
+            data-key="{{keyItem.key}}"
+            bindtap="handlePasswordKey"
+          >
+            <text class="verify-password-card__key-text {{keyItem.key === 'delete' ? 'verify-password-card__key-text--muted' : ''}}">
+              {{keyItem.label}}
+            </text>
+          </view>
+        </view>
+      </view>
+
+      <text class="verify-card__title">请输入支付密码</text>
+      <text class="verify-card__sub">支持 6 位数字密码验证</text>
+      <view class="verify-password-card__boxes">
+        <view wx:for="{{passwordSlots}}" wx:key="*this" class="verify-password-card__box">
+          <view wx:if="{{index < paymentPassword.length}}" class="verify-password-card__dot"></view>
+        </view>
+      </view>
+    </view>
   </view>
 </view>

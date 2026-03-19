@@ -1,97 +1,369 @@
-/* pages/address/edit.wxss */
-.edit-container {
+.address-edit-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
-  padding: 20rpx;
+  background: #f8f7f4;
 }
 
-.form-section {
-  background: #fff;
-  border-radius: 16rpx;
+.address-edit-body {
+  padding: 24rpx 32rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.address-edit-acquire {
+  border: 2rpx solid #efe8de;
+  border-radius: 44rpx;
+  background: linear-gradient(180deg, #fefcf8 0%, #fbf7f0 100%);
+  padding: 24rpx 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.address-edit-acquire__header,
+.address-edit-parse__top,
+.address-default {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.address-edit-acquire__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.address-edit-acquire__title,
+.address-edit-parse__title,
+.address-default__title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #20252c;
+}
+
+.address-edit-acquire__sub,
+.address-edit-parse__hint,
+.address-default__sub,
+.address-field__hint,
+.address-edit-bottom__sub {
+  font-size: 22rpx;
+  color: #9b948a;
+  line-height: 1.5;
+}
+
+.address-edit-acquire__action,
+.address-edit-parse__button {
+  height: 56rpx;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.address-edit-acquire__action {
+  border: 2rpx solid #ece4d9;
+  background: #f5f0e8;
+}
+
+.address-edit-parse__button {
+  align-self: flex-end;
+  background: #ece8ff;
+}
+
+.address-edit-acquire__action text,
+.address-edit-parse__button text {
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.address-edit-acquire__action text {
+  color: #7d776e;
+}
+
+.address-edit-search {
+  min-height: 68rpx;
+  border-radius: 24rpx;
+  border: 2rpx solid #ece4d9;
+  background: #fdf9f2;
+  padding: 0 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.address-edit-search__input {
+  flex: 1;
+  font-size: 24rpx;
+  color: #353a42;
+}
+
+.address-edit-search__placeholder {
+  color: #b0a79c;
+}
+
+.address-edit-search__state {
+  font-size: 20rpx;
+  color: #8b847a;
+  flex-shrink: 0;
+}
+
+.address-edit-search-list {
+  border-radius: 28rpx;
+  border: 2rpx solid #ece4d9;
+  background: #fffdf9;
   overflow: hidden;
 }
 
-.form-item {
-  padding: 30rpx;
-  border-bottom: 1rpx solid #f5f5f5;
+.address-edit-search-list__item {
+  padding: 18rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.address-edit-search-list__item + .address-edit-search-list__item {
+  border-top: 2rpx solid #f1ebe2;
+}
+
+.address-edit-search-list__title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #22262d;
+}
+
+.address-edit-search-list__detail {
+  font-size: 20rpx;
+  line-height: 1.45;
+  color: #8b847a;
+}
+
+.address-edit-parse__button text {
+  color: #6d32ff;
+}
+
+.address-edit-map {
+  position: relative;
+  height: 264rpx;
+  overflow: hidden;
+  border-radius: 32rpx;
+  border: 2rpx solid #e6ded2;
+  background: #ece8e0;
+}
+
+.address-edit-map__native,
+.address-edit-map__chip,
+.address-edit-map__info {
+  position: absolute;
+}
+
+.address-edit-map__native {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.address-edit-map__chip {
+  left: 24rpx;
+  top: 16rpx;
+  max-width: 220rpx;
+  height: 52rpx;
+  border-radius: 999rpx;
+  padding: 0 20rpx;
+  background: rgba(255, 252, 248, 0.9);
+  color: #70695f;
+  font-size: 20rpx;
+  line-height: 52rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.address-edit-map__info {
+  left: 24rpx;
+  bottom: 16rpx;
+  max-width: 240rpx;
+  height: 52rpx;
+  border-radius: 999rpx;
+  padding: 0 20rpx;
+  background: rgba(255, 252, 248, 0.9);
+  color: #70695f;
+  font-size: 20rpx;
+  line-height: 52rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.address-edit-parse {
+  border-radius: 28rpx;
+  background: #f9f5ee;
+  border: 2rpx solid #ece5da;
+  padding: 18rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.address-edit-parse__badge {
+  height: 44rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: #f2ebe1;
   display: flex;
   align-items: center;
 }
 
-.form-item:last-child {
-  border-bottom: none;
+.address-edit-parse__badge text {
+  font-size: 20rpx;
+  color: #8b847a;
+  font-weight: 600;
 }
 
-.label {
-  width: 150rpx;
-  font-size: 28rpx;
-  color: #333;
-  flex-shrink: 0;
-  margin-right: 20rpx;
+.address-edit-parse__input,
+.address-field__textarea {
+  width: 100%;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #353a42;
 }
 
-.input {
+.address-edit-parse__input {
+  min-height: 92rpx;
+}
+
+.address-edit-parse__hint {
+  margin-top: 4rpx;
+}
+
+.address-edit-parse__placeholder,
+.address-field__placeholder {
+  color: #b0a79c;
+}
+
+.address-edit-form {
+  border: 2rpx solid #ece4d9;
+  border-radius: 52rpx;
+  background: linear-gradient(180deg, #ffffff 0%, #fcfaf6 100%);
+  padding: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+  box-shadow: 0 18rpx 56rpx rgba(24, 17, 10, 0.05);
+}
+
+.address-edit-form__dual {
+  display: flex;
+  gap: 16rpx;
+}
+
+.address-field {
+  background: #f7f3ed;
+  border: 2rpx solid #ece6dc;
+  border-radius: 28rpx;
+  padding: 18rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.address-edit-form__dual .address-field {
   flex: 1;
-  font-size: 28rpx;
-  height: 48rpx;
-  line-height: 48rpx;
-  background: transparent;
-  padding: 0 0 0 10rpx;
-  margin: 0;
-  min-width: 0;
 }
 
-.input::placeholder {
-  color: #999;
+.address-field--region,
+.address-field--detail {
+  background: #f9f6f0;
 }
 
-.textarea {
+.address-field__label {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #6f685f;
+}
+
+.address-field__input,
+.address-field__picker {
+  font-size: 24rpx;
+  color: #353a42;
+  min-height: 40rpx;
+}
+
+.address-field__picker text {
+  display: block;
+}
+
+.address-field__textarea {
+  min-height: 92rpx;
+}
+
+.address-default__copy {
   flex: 1;
-  height: 150rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.address-default__switch {
+  width: 92rpx;
+  height: 52rpx;
+  border-radius: 999rpx;
+  background: #ece6de;
+  padding: 4rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.address-default__switch--on {
+  background: #d9e8dc;
+  justify-content: flex-end;
+}
+
+.address-default__switch-dot {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 8rpx 16rpx rgba(24, 17, 10, 0.08);
+}
+
+.address-edit-safe {
+  height: 160rpx;
+}
+
+.address-edit-bottom {
+  position: fixed;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: calc(24rpx + env(safe-area-inset-bottom));
+  bottom: calc(24rpx + constant(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  z-index: 10;
+}
+
+.address-edit-bottom__button {
+  height: 104rpx;
+  border-radius: 36rpx;
+  background: #30343c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 18rpx 40rpx rgba(24, 17, 10, 0.1);
+}
+
+.address-edit-bottom__button text {
   font-size: 28rpx;
-  line-height: 1.5;
-  background: transparent;
-  padding: 0;
-  margin: 0;
+  color: #ffffff;
+  font-weight: 700;
 }
 
-.textarea::placeholder {
-  color: #999;
-}
-
-.picker {
-  flex: 1;
-  font-size: 28rpx;
-  color: #333;
-  height: 48rpx;
-  line-height: 48rpx;
-}
-
-.picker-placeholder {
-  color: #999;
-}
-
-.textarea-item {
-  align-items: flex-start;
-}
-
-.textarea-item .label {
-  padding-top: 6rpx;
-}
-
-.switch-item {
-  justify-content: space-between;
-}
-
-.save-btn {
-  margin: 40rpx 30rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  padding: 30rpx;
-  border-radius: 50rpx;
-  font-size: 30rpx;
-}
-
-.save-btn::after {
-  border: none;
+.address-edit-bottom__sub {
+  text-align: center;
 }

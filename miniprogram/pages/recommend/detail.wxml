@@ -126,7 +126,7 @@
       <text class="comment-input-close" bindtap="onCancelComment">取消</text>
     </view>
     <view class="comment-input-body">
-      <textarea class="comment-textarea" placeholder="{{replyTo ? '回复 ' + replyTo.nickname + '...' : '说点什么吧...'}}" value="{{commentText}}" bindinput="onCommentInput" maxlength="500" auto-focus></textarea>
+      <textarea class="comment-textarea" placeholder="{{replyTo ? '回复 ' + replyTo.nickname + '...' : '说点什么吧...'}}" value="{{commentText}}" bindinput="onCommentInput" maxlength="500" focus="{{showCommentInput}}"></textarea>
       <view class="comment-input-footer">
         <text class="comment-char-count">{{commentText.length}}/500</text>
         <button class="comment-submit-btn {{commentText.length > 0 ? 'active' : ''}}" disabled="{{isSubmitting || commentText.length === 0}}" bindtap="onSubmitComment">

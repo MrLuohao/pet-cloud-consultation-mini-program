@@ -1,84 +1,98 @@
-<!-- pages/community/index.wxml - 宠物社区（Story 5.3）-->
 <view class="community-page">
+  <scroll-view class="main-scroll" scroll-y enhanced show-scrollbar="{{false}}" bindscrolltolower="onReachBottom">
+    <view class="community-shell">
+      <view class="search-bar">
+        <text>搜索话题、用户、内容</text>
+      </view>
 
-  <!-- 顶部 -->
-  <view class="community-header">
-    <text class="header-title">宠物社区</text>
-    <view class="post-btn" bindtap="onOpenPost">
-      <text class="post-btn-icon">✏️</text>
-      <text class="post-btn-text">发帖</text>
+      <view class="tab-row">
+        <text class="tab-item active">推荐</text>
+        <text class="tab-item">关注</text>
+        <text class="tab-item">热门</text>
+        <text class="tab-item">最新</text>
+      </view>
+
+      <view class="topic-row">
+        <view class="topic-pill active"><text>#晒宠日常</text></view>
+        <view class="topic-pill"><text>#养宠问题</text></view>
+        <view class="topic-pill"><text>#问诊反馈</text></view>
+      </view>
+
+      <view wx:for="{{posts}}" wx:key="id" class="post-card">
+        <view class="post-header">
+          <image wx:if="{{item.identityAvatarUrl}}" class="post-avatar" src="{{item.identityAvatarUrl}}" mode="aspectFill" />
+          <view wx:else class="post-avatar">
+            <text>{{item.identityInitial}}</text>
+          </view>
+          <view class="post-meta">
+            <text class="post-name">{{item.identityName}}</text>
+            <text class="post-subline">{{item.identityMeta}}</text>
+            <text wx:if="{{item.showIdentitySignature}}" class="post-signature">{{item.identitySignature}}</text>
+          </view>
+        </view>
+
+        <text class="post-content">{{item.content}}</text>
+
+        <view wx:if="{{item.mediaType === 'video' && item.mediaUrls && item.mediaUrls.length > 0}}" class="media-box video-box" catchtap="">
+          <video
+            class="post-video"
+            src="{{item.mediaUrls[0]}}"
+            controls
+            show-center-play-btn
+            enable-play-gesture
+            object-fit="contain"
+            show-fullscreen-btn
+            enable-progress-gesture
+          />
+        </view>
+
+        <view wx:elif="{{item.mediaUrls && item.mediaUrls.length > 0}}" class="media-box media-image-wrap">
+          <image
+            class="media-image"
+            src="{{item.mediaUrls[0]}}"
+            mode="aspectFill"
+            bindtap="onPreviewMedia"
+            data-urls="{{item.mediaUrls}}"
+            data-current="{{item.mediaUrls[0]}}"
+          />
+        </view>
+
+        <view class="post-actions">
+          <view
+            class="action-item"
+            bindtap="onToggleLike"
+            data-id="{{item.id}}"
+            data-isliked="{{item.isLiked}}"
+            data-idx="{{index}}"
+          >
+            <text>点赞 {{item.likeCount || 0}}</text>
+          </view>
+          <view
+            class="action-item"
+            bindtap="onOpenComments"
+            data-post="{{item}}"
+            data-idx="{{index}}"
+          >
+            <text>评论 {{item.commentCount || 0}}</text>
+          </view>
+          <view class="action-item subtle"><text>收藏</text></view>
+          <view class="action-item subtle"><text>分享</text></view>
+        </view>
+      </view>
+
+      <view wx:if="{{loading}}" class="loading-more">
+        <text>加载中...</text>
+      </view>
+      <view wx:elif="{{!loading && posts.length === 0}}" class="empty-state">
+        <text>还没有帖子，来发第一篇吧</text>
+      </view>
     </view>
+  </scroll-view>
+
+  <view class="publish-fab" bindtap="onOpenPost">
+    <text>＋</text>
   </view>
 
-  <!-- 帖子列表 -->
-  <view class="post-list">
-    <view wx:for="{{posts}}" wx:key="id" class="post-card">
-      <!-- 用户信息 -->
-      <view class="post-user">
-        <image class="user-avatar" src="{{item.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"/>
-        <view class="user-meta">
-          <text class="user-name">{{item.nickname || '宠物主人'}}</text>
-          <text class="post-time">{{item.createTime}}</text>
-        </view>
-        <view wx:if="{{item.petName}}" class="pet-badge">🐾 {{item.petName}}</view>
-      </view>
-
-      <!-- 帖子内容 -->
-      <text class="post-content">{{item.content}}</text>
-
-      <!-- 图片 -->
-      <view wx:if="{{item.mediaUrls && item.mediaUrls.length > 0}}" class="media-grid media-grid-{{item.mediaUrls.length > 1 ? 'multi' : 'single'}}">
-        <image
-          wx:for="{{item.mediaUrls}}"
-          wx:key="index"
-          wx:for-item="url"
-          class="media-img"
-          src="{{url}}"
-          mode="aspectFill"
-          bindtap="onPreviewMedia"
-          data-urls="{{item.mediaUrls}}"
-          data-current="{{url}}"
-        />
-      </view>
-
-      <!-- 互动区 -->
-      <view class="post-actions">
-        <view
-          class="action-item {{item.isLiked ? 'action-liked' : ''}}"
-          bindtap="onToggleLike"
-          data-id="{{item.id}}"
-          data-isliked="{{item.isLiked}}"
-          data-idx="{{index}}"
-        >
-          <text class="action-icon">{{item.isLiked ? '❤️' : '🤍'}}</text>
-          <text class="action-count">{{item.likeCount || 0}}</text>
-        </view>
-        <view
-          class="action-item"
-          bindtap="onOpenComments"
-          data-post="{{item}}"
-          data-idx="{{index}}"
-        >
-          <text class="action-icon">💬</text>
-          <text class="action-count">{{item.commentCount || 0}}</text>
-        </view>
-      </view>
-    </view>
-
-    <!-- 加载更多 -->
-    <view wx:if="{{loading}}" class="loading-more">
-      <text class="loading-text">加载中...</text>
-    </view>
-    <view wx:elif="{{!hasMore && posts.length > 0}}" class="no-more">
-      <text class="no-more-text">—— 已加载全部 ——</text>
-    </view>
-    <view wx:elif="{{!loading && posts.length === 0}}" class="empty-state">
-      <text class="empty-icon">🐾</text>
-      <text class="empty-text">还没有帖子，来发第一篇吧</text>
-    </view>
-  </view>
-
-  <!-- 发帖弹窗 -->
   <view wx:if="{{showPostModal}}" class="modal-mask" bindtap="onClosePost">
     <view class="modal-content" catchtap="">
       <view class="modal-header">
@@ -114,7 +128,6 @@
     </view>
   </view>
 
-  <!-- 评论弹窗 -->
   <view wx:if="{{showCommentModal}}" class="modal-mask" bindtap="onCloseComments">
     <view class="comment-modal" catchtap="">
       <view class="modal-header">
@@ -126,7 +139,8 @@
         <view wx:elif="{{comments.length === 0}}" class="comment-empty">暂无评论，来说点什么吧</view>
         <view wx:else>
           <view wx:for="{{comments}}" wx:key="id" class="comment-item">
-            <image class="comment-avatar" src="{{item.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"/>
+            <image wx:if="{{item.avatarUrl}}" class="comment-avatar" src="{{item.avatarUrl}}" mode="aspectFill"/>
+            <view wx:else class="comment-avatar comment-avatar-placeholder">{{item.nickname ? item.nickname[0] : '宠'}}</view>
             <view class="comment-body">
               <text class="comment-name">{{item.nickname || '用户'}}</text>
               <text class="comment-text">{{item.content}}</text>
@@ -148,5 +162,4 @@
       </view>
     </view>
   </view>
-
 </view>

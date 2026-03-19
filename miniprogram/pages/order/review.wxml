@@ -1,64 +1,71 @@
-<!--pages/order/review.wxml-->
-<view class="review-container">
-  <!-- 商品信息 -->
-  <view class="product-card" wx:if="{{orderItem}}">
-    <image class="product-cover" src="{{orderItem.coverUrl}}" mode="aspectFill" />
-    <view class="product-info">
-      <text class="product-name">{{orderItem.productName}}</text>
-      <view class="product-meta">
-        <text class="product-price">¥{{orderItem.price}}</text>
-        <text class="product-quantity">x{{orderItem.quantity}}</text>
+<view class="review-page">
+  <view class="review-content">
+    <view class="review-intro-card">
+      <text class="review-intro-card__title">评价订单</text>
+      <text class="review-intro-card__subtitle">分享本次购买体验，帮助其他用户做出选择。</text>
+      <view class="review-intro-card__pill">本单共 {{reviewItems.length}} 件商品</view>
+    </view>
+
+    <view wx:for="{{reviewItems}}" wx:key="orderItemId" class="review-card">
+      <view class="review-card__product">
+        <image class="review-card__thumb" src="{{item.coverUrl}}" mode="aspectFill" />
+        <view class="review-card__product-copy">
+          <text class="review-card__product-name">{{item.productName}}</text>
+          <text class="review-card__product-meta">{{item.metaText}}</text>
+        </view>
+      </view>
+
+      <view class="review-stars">
+        <text
+          wx:for="{{item.starOptions}}"
+          wx:key="value"
+          class="review-star {{item.rating >= starItem.value ? 'review-star--active' : ''}}"
+          data-index="{{index}}"
+          data-rating="{{starItem.value}}"
+          bindtap="setRating"
+          wx:for-item="starItem"
+        >★</text>
+      </view>
+
+      <textarea
+        class="review-card__textarea"
+        placeholder="{{item.placeholder}}"
+        placeholder-class="review-card__placeholder"
+        maxlength="200"
+        value="{{item.content}}"
+        data-index="{{index}}"
+        bindinput="onContentInput"
+      />
+
+      <view class="review-upload-row">
+        <view
+          wx:for="{{item.images}}"
+          wx:key="*this"
+          class="review-upload-box review-upload-box--filled"
+          data-url="{{item}}"
+          data-index="{{index}}"
+          bindtap="previewImage"
+          wx:for-item="imageUrl"
+          wx:for-index="imageIndex"
+        >
+          <image class="review-upload-box__image" src="{{imageUrl}}" mode="aspectFill" />
+          <view class="review-upload-box__delete" catchtap="deleteImage" data-index="{{index}}" data-image-index="{{imageIndex}}">✕</view>
+        </view>
+
+        <view
+          wx:if="{{item.images.length < item.maxImages}}"
+          class="review-upload-box"
+          data-index="{{index}}"
+          bindtap="chooseImage"
+        ></view>
       </view>
     </view>
   </view>
 
-  <!-- 评分 -->
-  <view class="rating-card">
-    <text class="card-title">评分</text>
-    <view class="rating-stars">
-      <text
-        wx:for="{{[1,2,3,4,5]}}"
-        wx:key="*this"
-        class="star {{rating >= item ? 'active' : ''}}"
-        data-rating="{{item}}"
-        bindtap="setRating"
-      >★</text>
-    </view>
-    <text class="rating-text">{{rating === 5 ? '非常好' : rating === 4 ? '很好' : rating === 3 ? '一般' : rating === 2 ? '较差' : '非常差'}}</text>
-  </view>
-
-  <!-- 评价内容 -->
-  <view class="content-card">
-    <textarea
-      class="review-textarea"
-      placeholder="分享您的购买体验，帮助其他用户做出选择~"
-      placeholder-class="textarea-placeholder"
-      maxlength="500"
-      value="{{content}}"
-      bindinput="onContentInput"
-    />
-    <text class="char-count">{{content.length}}/500</text>
-  </view>
-
-  <!-- 图片上传 -->
-  <view class="image-card">
-    <text class="card-title">上传图片（可选，最多{{maxImages}}张）</text>
-    <view class="image-list">
-      <view class="image-item" wx:for="{{images}}" wx:key="*this">
-        <image src="{{item}}" mode="aspectFill" bindtap="previewImage" data-url="{{item}}" />
-        <view class="delete-btn" catchtap="deleteImage" data-index="{{index}}">✕</view>
-      </view>
-      <view class="add-image-btn" wx:if="{{images.length < maxImages}}" bindtap="chooseImage">
-        <text class="add-icon">+</text>
-        <text class="add-text">添加图片</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 提交按钮 -->
-  <view class="submit-section">
-    <button class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="submitReview" disabled="{{submitting}}">
+  <view class="review-submit-bar">
+    <button class="review-submit-bar__button {{submitting ? 'review-submit-bar__button--disabled' : ''}}" bindtap="submitReview" disabled="{{submitting}}">
       {{submitting ? '提交中...' : '提交评价'}}
     </button>
+    <text class="review-submit-bar__hint">提交后可在订单详情中继续查看评价状态</text>
   </view>
 </view>

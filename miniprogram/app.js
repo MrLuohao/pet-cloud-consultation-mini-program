@@ -1,3 +1,5 @@
+const { AuthAPI } = require('./utils/api')
+
 // app.js
 App({
   globalData: {
@@ -14,7 +16,20 @@ App({
     if (token) {
       this.globalData.token = token;
       this.globalData.userId = userId;
-      this.globalData.userInfo = wx.getStorageSync('userInfo');
+      this.globalData.userInfo = null;
+      this.refreshUserInfo();
+    }
+  },
+
+  async refreshUserInfo() {
+    if (!this.globalData.token) return
+    try {
+      const userInfo = await AuthAPI.getUserInfo()
+      if (!userInfo) return
+      this.globalData.userInfo = userInfo
+      wx.setStorageSync('userInfo', userInfo || {})
+    } catch (error) {
+      console.error('刷新用户信息失败:', error)
     }
   },
 

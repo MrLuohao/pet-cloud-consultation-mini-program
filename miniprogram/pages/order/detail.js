@@ -1,9 +1,23 @@
 // pages/order/detail.js
 const { OrderAPI, isLoggedIn, navigateToLogin } = require('../../utils/api')
+const { formatOrderDetail } = require('./order-detail-presenter')
 
 Page({
   data: {
     orderId: null,
+    viewModel: {
+      statusTitle: '',
+      statusHint: '',
+      statusChip: '',
+      receiverLine: '',
+      receiverAddress: '',
+      products: [],
+      amountRows: [],
+      infoRows: [],
+      primaryAction: null,
+      secondaryAction: null
+    },
+    timeline: [],
     order: {
       status: 0,
       statusDesc: '',
@@ -17,12 +31,19 @@ Page({
       orderNo: '',
       createTime: '',
       payTime: '',
-      remark: ''
+      remark: '',
+      freight: '0.00'
     },
-    statusIcon: '⏱',
-    hasUnreviewedItems: false,
     showPayPanel: false,
-    paying: false
+    paying: false,
+    showCancelSheet: false,
+    selectedCancelReason: 'no_need',
+    cancelNote: '',
+    cancelReasonOptions: [
+      { key: 'no_need', label: '不想买了' },
+      { key: 'change_address', label: '收货信息需要调整' },
+      { key: 'change_product', label: '想重新选择商品' }
+    ]
   },
 
   onLoad(options) {
@@ -47,10 +68,12 @@ Page({
     try {
       wx.showLoading({ title: '加载中...' })
       const order = await OrderAPI.getDetail(this.data.orderId)
-      const statusIcon = this.getStatusIcon(order.status)
-      // 检查是否有未评价商品
-      const hasUnreviewedItems = order.status === 3 && order.items.some(item => !item.reviewed)
-      this.setData({ order, statusIcon, hasUnreviewedItems })
+      const timeline = await OrderAPI.getTimeline(this.data.orderId).catch(() => [])
+      this.setData({
+        order,
+        viewModel: formatOrderDetail(order),
+        timeline
+      })
     } catch (error) {
       console.error('加载订单详情失败:', error)
       wx.showToast({ title: '加载失败', icon: 'none' })
@@ -59,37 +82,42 @@ Page({
     }
   },
 
-  // 获取状态图标
-  getStatusIcon(status) {
-    const icons = {
-      0: '⏱',
-      1: '📦',
-      2: '🚚',
-      3: '✅',
-      4: '❌'
-    }
-    return icons[status] || '⏱'
+  openCancelSheet() {
+    this.setData({
+      showCancelSheet: true,
+      selectedCancelReason: this.data.selectedCancelReason || 'no_need'
+    })
   },
 
-  // 取消订单
-  cancelOrder() {
-    wx.showModal({
-      title: '提示',
-      content: '确定要取消订单吗？',
-      success: async (res) => {
-        if (res.confirm) {
-          try {
-            wx.showLoading({ title: '处理中...' })
-            await OrderAPI.cancel(this.data.orderId)
-            wx.showToast({ title: '订单已取消', icon: 'success' })
-            this.loadOrderDetail()
-          } catch (error) {
-            wx.hideLoading()
-            wx.showToast({ title: '取消失败', icon: 'none' })
-          }
-        }
-      }
-    })
+  closeCancelSheet() {
+    this.setData({ showCancelSheet: false })
+  },
+
+  selectCancelReason(e) {
+    const { reason } = e.currentTarget.dataset
+    if (!reason) return
+    this.setData({ selectedCancelReason: reason })
+  },
+
+  onCancelNoteInput(e) {
+    this.setData({ cancelNote: e.detail.value || '' })
+  },
+
+  async confirmCancelOrder() {
+    try {
+      wx.showLoading({ title: '处理中...' })
+      await OrderAPI.cancel(this.data.orderId)
+      wx.hideLoading()
+      this.setData({
+        showCancelSheet: false,
+        cancelNote: ''
+      })
+      wx.showToast({ title: '订单已取消', icon: 'success' })
+      this.loadOrderDetail()
+    } catch (error) {
+      wx.hideLoading()
+      wx.showToast({ title: '取消失败', icon: 'none' })
+    }
   },
 
   // 显示支付面板
@@ -171,8 +199,66 @@ Page({
 
   // 去评价
   goToReview() {
+    const reviewItems = (this.data.order.items || [])
+      .filter(item => !item.reviewed)
+      .map(item => ({
+        orderItemId: item.orderItemId || item.id,
+        productId: item.productId,
+        productName: item.productName || item.name,
+        coverUrl: item.coverUrl,
+        specLabel: item.specLabel || item.spec,
+        price: item.price,
+        quantity: item.quantity
+      }))
+
+    if (reviewItems.length === 0) {
+      wx.showToast({ title: '暂无可评价商品', icon: 'none' })
+      return
+    }
+
+    const itemsData = encodeURIComponent(JSON.stringify(reviewItems))
     wx.navigateTo({
-      url: '/pages/order/pending-review'
+      url: `/pages/order/review?orderId=${this.data.orderId}&itemsData=${itemsData}`
     })
+  },
+
+  requestAfterSale() {
+    wx.showToast({
+      title: '售后功能整理中',
+      icon: 'none'
+    })
+  },
+
+  handleSecondaryAction() {
+    const action = this.data.viewModel.secondaryAction
+    if (!action) return
+
+    if (action.key === 'cancel') {
+      this.openCancelSheet()
+      return
+    }
+
+    if (action.key === 'after_sale') {
+      this.requestAfterSale()
+    }
+  },
+
+  handlePrimaryAction() {
+    const action = this.data.viewModel.primaryAction
+    if (!action) return
+
+    if (action.key === 'pay') {
+      this.showPayPanel()
+      return
+    }
+
+    if (action.key === 'receive') {
+      this.confirmReceive()
+      return
+    }
+
+    if (action.key === 'review') {
+      this.goToReview()
+    }
   }
 })

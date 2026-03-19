@@ -1,82 +1,93 @@
-// pages/address/list.js
 const { AddressAPI, isLoggedIn, navigateToLogin } = require('../../utils/api')
+const { buildAddressListState } = require('./address-presenter')
+
+function buildConfirmCopy(from) {
+  if (from === 'order') {
+    return {
+      buttonText: '确认并使用该地址',
+      subText: '已切换到当前选中的地址'
+    }
+  }
+
+  return {
+    buttonText: '设为默认地址',
+    subText: '可将当前选中的地址设为默认地址'
+  }
+}
 
 Page({
   data: {
+    from: '',
     addressList: [],
-    from: '' // 来自哪个页面
+    defaultAddress: null,
+    otherAddresses: [],
+    activeAddressId: null,
+    activeAddress: null,
+    helperTitle: '默认地址会优先用于下单',
+    helperSub: '从订单进入时，也可以直接切换并确认使用',
+    addressCountText: '0 个地址',
+    confirmButtonText: '设为默认地址',
+    confirmSubText: '可将当前选中的地址设为默认地址'
   },
 
   onLoad(options) {
-    // 地址列表页面必须登录
     if (!isLoggedIn()) {
       navigateToLogin()
       return
     }
-    if (options.from) {
-      this.setData({ from: options.from })
-    }
-    this.loadAddressList()
+
+    const from = options.from || ''
+    const confirmCopy = buildConfirmCopy(from)
+    this.setData({
+      from,
+      confirmButtonText: confirmCopy.buttonText,
+      confirmSubText: confirmCopy.subText
+    })
   },
 
   onShow() {
-    // 未登录时不执行任何操作
     if (!isLoggedIn()) {
       return
     }
     this.loadAddressList()
   },
 
-  // 加载地址列表
   async loadAddressList() {
     try {
       wx.showLoading({ title: '加载中...' })
       const list = await AddressAPI.getList()
-      this.setData({ addressList: list })
+      this.syncAddressState(list, this.data.activeAddressId)
     } catch (error) {
       console.error('加载地址列表失败:', error)
+      wx.showToast({ title: '地址加载失败', icon: 'none' })
     } finally {
       wx.hideLoading()
     }
   },
 
-  // 返回上一页
-  goBack() {
-    const pages = getCurrentPages()
-    if (pages.length > 1) {
-      wx.navigateBack()
-    } else {
-      wx.switchTab({
-        url: '/pages/user/user'
-      })
-    }
+  syncAddressState(addressList, activeAddressId) {
+    const nextState = buildAddressListState(addressList, activeAddressId)
+    this.setData({
+      addressList: nextState.addressList,
+      defaultAddress: nextState.defaultAddress,
+      otherAddresses: nextState.otherAddresses,
+      activeAddress: nextState.activeAddress,
+      activeAddressId: nextState.activeAddressId,
+      addressCountText: `${nextState.addressList.length} 个地址`
+    })
   },
 
-  // 阻止冒泡
-  stopPropagation() {},
-
-  // 选择地址（从订单页进入时）
   selectAddress(e) {
     const { id } = e.currentTarget.dataset
-    if (this.data.from === 'order') {
-      const pages = getCurrentPages()
-      const prevPage = pages[pages.length - 2]
-      if (prevPage) {
-        const address = this.data.addressList.find(a => a.id === id)
-        prevPage.setData({ address })
-        wx.navigateBack()
-      }
-    }
+    this.syncAddressState(this.data.addressList, id)
   },
 
-  // 添加地址
   addAddress() {
     wx.navigateTo({
       url: '/pages/address/edit'
     })
   },
 
-  // 编辑地址
   editAddress(e) {
     const { id } = e.currentTarget.dataset
     wx.navigateTo({
@@ -84,23 +95,42 @@ Page({
     })
   },
 
-  // 删除地址
-  deleteAddress(e) {
-    const { id } = e.currentTarget.dataset
-    wx.showModal({
-      title: '提示',
-      content: '确定要删除这个地址吗？',
-      success: async (res) => {
-        if (res.confirm) {
-          try {
-            await AddressAPI.delete(id)
-            wx.showToast({ title: '删除成功', icon: 'success' })
-            this.loadAddressList()
-          } catch (error) {
-            wx.showToast({ title: '删除失败', icon: 'none' })
-          }
-        }
+  getActiveAddress() {
+    return this.data.activeAddress
+  },
+
+  async confirmAddress() {
+    const address = this.getActiveAddress()
+    if (!address) {
+      wx.showToast({ title: '请先新增地址', icon: 'none' })
+      return
+    }
+
+    if (this.data.from === 'order') {
+      const pages = getCurrentPages()
+      const prevPage = pages[pages.length - 2]
+      if (prevPage) {
+        prevPage.setData({ address })
+        wx.navigateBack()
+        return
       }
-    })
+    }
+
+    if (address.isDefault) {
+      wx.showToast({ title: '当前已是默认地址', icon: 'none' })
+      return
+    }
+
+    try {
+      wx.showLoading({ title: '设置中...' })
+      await AddressAPI.setDefault(address.id)
+      wx.showToast({ title: '默认地址已更新', icon: 'success' })
+      await this.loadAddressList()
+    } catch (error) {
+      console.error('设置默认地址失败:', error)
+      wx.showToast({ title: '设置失败', icon: 'none' })
+    } finally {
+      wx.hideLoading()
+    }
   }
 })

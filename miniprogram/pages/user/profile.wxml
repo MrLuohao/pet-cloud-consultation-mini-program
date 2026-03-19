@@ -13,6 +13,7 @@
         class="avatar-img"
         src="{{userInfo.avatarUrl}}"
         mode="aspectFill"
+        binderror="onAvatarLoadError"
       />
       <view wx:else class="avatar-placeholder">
         <text class="avatar-emoji">🐱</text>

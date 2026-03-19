@@ -1,5 +1,5 @@
 // pages/consultation/urgent/index.js - 紧急问诊快速响应通道（Story 5.1）
-const { ConsultationAPI, PetAPI, isLoggedIn, navigateToLogin } = require('../../../utils/api');
+const { ConsultationAPI, PetAPI, AIAPI, isLoggedIn, navigateToLogin } = require('../../../utils/api');
 
 Page({
   data: {
@@ -110,12 +110,18 @@ Page({
     this.setData({ submitting: true });
     wx.showLoading({ title: '正在为您匹配医生...' });
     try {
+      // 先上传所有图片到服务器
+      const uploadedUrls = [];
+      for (const tempPath of this.data.images) {
+        const url = await AIAPI.uploadImage(tempPath);
+        uploadedUrls.push(url);
+      }
       const consultationId = await ConsultationAPI.create(
         selectedPet.id,
         null,          // 紧急问诊由后端自动分配在线医生
         1,             // 图文类型
         description,
-        JSON.stringify(this.data.images),
+        JSON.stringify(uploadedUrls),
         'urgent'       // 紧急标识
       );
       wx.hideLoading();

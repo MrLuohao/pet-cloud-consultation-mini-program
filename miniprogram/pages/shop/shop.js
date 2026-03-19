@@ -5,6 +5,32 @@
  */
 const { ShopAPI, CartAPI, isLoggedIn, navigateToLogin } = require('../../utils/api');
 
+function splitProductColumns(products) {
+  return products.reduce((columns, product, index) => {
+    if (index % 2 === 0) {
+      columns.left.push(product)
+    } else {
+      columns.right.push(product)
+    }
+    return columns
+  }, { left: [], right: [] })
+}
+
+function buildCategoryTabs(categories) {
+  return [
+    {
+      id: null,
+      name: '推荐',
+      anchorId: 'shop-category-recommend'
+    },
+    ...categories.map((cat, index) => ({
+      id: cat.id,
+      name: cat.name,
+      anchorId: `shop-category-${cat.id || index}`
+    }))
+  ]
+}
+
 Page({
   data: {
     activeCategory: 0,
@@ -20,19 +46,26 @@ Page({
 
     // 分类（初始为空，由接口加载）
     categories: [
-      { id: null, name: '全部', icon: '🏪' }
+      {
+        id: null,
+        name: '推荐',
+        anchorId: 'shop-category-recommend'
+      }
     ],
+    categoryScrollIntoView: 'shop-category-recommend',
 
     // 推广Banner
     promoBanner: {
-      title: '新用户专享',
-      desc: '首单满99减50',
-      emoji: '🎁',
+      title: '今日推荐',
+      desc: '主粮零食专区限时优惠',
+      emoji: '',
       color: 'gradient'
     },
 
     // 商品列表（初始为空，由接口加载）
-    products: []
+    products: [],
+    leftProducts: [],
+    rightProducts: []
   },
 
   onLoad() {
@@ -57,15 +90,15 @@ Page({
     const systemInfo = wx.getSystemInfoSync();
     const screenWidth = systemInfo.windowWidth;
     const screenHeight = systemInfo.windowHeight;
-    // 按钮大小 96rpx，转换为 px
-    const buttonSize = 96 * screenWidth / 750;
-    // 边距 20px
-    const margin = 20;
-    // 底部 tabbar 高度约 100px，再加一些余量
-    const bottomOffset = 120;
+    const buttonSize = 72 * screenWidth / 750;
+    const marginRight = 24 * screenWidth / 750;
+    const safeBottom = systemInfo.safeArea
+      ? Math.max(screenHeight - systemInfo.safeArea.bottom, 0)
+      : 0;
+    const bottomOffset = 112 + safeBottom;
 
     this.setData({
-      cartX: screenWidth - buttonSize - margin,
+      cartX: screenWidth - buttonSize - marginRight,
       cartY: screenHeight - buttonSize - bottomOffset
     });
   },
@@ -74,30 +107,20 @@ Page({
   async loadCategories() {
     try {
       const categories = await ShopAPI.getCategories();
-      const formattedCategories = [
-        { id: null, name: '全部', icon: '🏪' },
-        ...categories.map((cat, index) => ({
-          id: cat.id,
-          name: cat.name,
-          icon: this.getCategoryIcon(index)
-        }))
-      ];
-      this.setData({ categories: formattedCategories });
+      this.setData({ categories: buildCategoryTabs(categories) });
     } catch (error) {
       console.error('加载分类失败:', error);
       wx.showToast({ title: '分类加载失败，请重试', icon: 'none' });
     }
   },
 
-  getCategoryIcon(index) {
-    const icons = ['🍖', '🧸', '🎾', '💊', '👗'];
-    return icons[index % icons.length];
-  },
-
   onCategoryChange(e) {
     const index = parseInt(e.currentTarget.dataset.index);
     const category = this.data.categories[index];
-    this.setData({ activeCategory: index });
+    this.setData({
+      activeCategory: index,
+      categoryScrollIntoView: category.anchorId
+    });
     this.loadProducts(category.id, true);
   },
 
@@ -125,8 +148,12 @@ Page({
         badge: this.getProductBadge(product),
         favorited: false
       }));
+      const mergedProducts = reset ? newProducts : [...this.data.products, ...newProducts]
+      const columns = splitProductColumns(mergedProducts)
       this.setData({
-        products: reset ? newProducts : [...this.data.products, ...newProducts],
+        products: mergedProducts,
+        leftProducts: columns.left,
+        rightProducts: columns.right,
         hasMore: res.hasMore || false,
         loading: false
       });
@@ -199,6 +226,12 @@ Page({
     wx.showToast({
       title: '活动详情页面',
       icon: 'none'
+    });
+  },
+
+  onSearchTap() {
+    wx.navigateTo({
+      url: '/pages/search/result'
     });
   },
 

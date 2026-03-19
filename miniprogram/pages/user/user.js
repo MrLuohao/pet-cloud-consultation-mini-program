@@ -28,29 +28,30 @@ Page({
 
     // 订单数据
     orders: [
-      { type: 'unpaid', name: '待付款', icon: '💳', color: 'purple', count: 0 },
-      { type: 'pendingShipment', name: '待发货', icon: '📦', color: 'blue', count: 0 },
-      { type: 'pendingReceipt', name: '待收货', icon: '🚚', color: 'green', count: 0 },
-      { type: 'completed', name: '已完成', icon: '✅', color: 'orange', count: 0 },
-      { type: 'pendingReview', name: '待评价', icon: '⭐', color: 'gold', count: 0 }
+      { type: 'unpaid', name: '待付款', iconText: '付', count: 0 },
+      { type: 'pendingShipment', name: '待发货', iconText: '发', count: 0 },
+      { type: 'pendingReceipt', name: '待收货', iconText: '收', count: 0 },
+      { type: 'completed', name: '已完成', iconText: '成', count: 0 },
+      { type: 'pendingReview', name: '待评价', iconText: '评', count: 0 }
     ],
 
     // 服务列表
     services: [
-      { id: 1, type: 'pet', name: '我的宠物', icon: '🐾', color: 'purple' },
-      { id: 2, type: 'collection', name: '我的收藏', icon: '💝', color: 'pink' },
-      { id: 3, type: 'address', name: '收货地址', icon: '📍', color: 'blue' },
-      { id: 4, type: 'consult', name: '咨询记录', icon: '💬', color: 'green' },
-      { id: 5, type: 'coupon', name: '优惠券', icon: '🎫', color: 'orange' },
-      { id: 6, type: 'health', name: '健康档案', icon: '📋', color: 'cyan' },
-      { id: 7, type: 'task', name: '每日任务', icon: '📅', color: 'red' },
-      { id: 8, type: 'feedback', name: '意见反馈', icon: '💡', color: 'purple' },
-      { id: 9, type: 'reminder', name: '健康提醒', icon: '🔔', color: 'green' },
-      { id: 10, type: 'insurance', name: '宠物保险', icon: '🛡️', color: 'blue' }
+      { id: 1, type: 'pet', name: '我的宠物', iconText: '宠', desc: '档案与资料' },
+      { id: 2, type: 'collection', name: '我的收藏', iconText: '藏', desc: '内容与商品' },
+      { id: 3, type: 'address', name: '收货地址', iconText: '址', desc: '配送管理' },
+      { id: 4, type: 'consult', name: '咨询记录', iconText: '诊', desc: '问诊历史' },
+      { id: 5, type: 'coupon', name: '优惠券', iconText: '券', desc: '可用权益' },
+      { id: 6, type: 'health', name: '健康档案', iconText: '档', desc: '诊断沉淀' },
+      { id: 7, type: 'task', name: '每日任务', iconText: '任', desc: '积分成长' },
+      { id: 8, type: 'feedback', name: '意见反馈', iconText: '反', desc: '问题建议' },
+      { id: 9, type: 'reminder', name: '健康提醒', iconText: '提', desc: '照护提醒' },
+      { id: 10, type: 'insurance', name: '宠物保险', iconText: '保', desc: '保障服务' }
     ],
 
     // 宠物列表
-    pets: []
+    pets: [],
+    displayPets: []
   },
 
   onLoad() {
@@ -72,6 +73,10 @@ Page({
   },
 
   // ==================== 登录相关 ====================
+  onAvatarLoadError() {
+    this.setData({ 'userInfo.avatar': '' })
+  },
+
   checkLoginStatus() {
     const isLoggedIn = !!app.globalData.token;
     const userInfo = app.globalData.userInfo || {};
@@ -81,7 +86,8 @@ Page({
       'userInfo.avatar': userInfo.avatarUrl || '',
       'userInfo.name': userInfo.nickname || '',
       'userInfo.id': userInfo.id || '',
-      isVip: !!userInfo.isVip
+      isVip: !!userInfo.isVip,
+      displayPets: isLoggedIn ? this.data.displayPets : []
     });
   },
 
@@ -161,11 +167,17 @@ Page({
       if (pets && Array.isArray(pets)) {
         this.setData({
           pets: pets,
-          userPets: pets.length
+          userPets: pets.length,
+          displayPets: pets.slice(0, 3)
         });
       }
     } catch (error) {
       console.error('加载宠物列表失败:', error);
+      this.setData({
+        pets: [],
+        displayPets: [],
+        userPets: 0
+      });
     }
   },
 

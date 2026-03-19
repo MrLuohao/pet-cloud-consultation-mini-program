@@ -1,5 +1,5 @@
 // pages/consultation/create.js
-const { DoctorAPI, ConsultationAPI, PetAPI, isLoggedIn, navigateToLogin } = require('../../utils/api')
+const { DoctorAPI, ConsultationAPI, PetAPI, AIAPI, isLoggedIn, navigateToLogin } = require('../../utils/api')
 
 Page({
   data: {
@@ -104,12 +104,18 @@ Page({
 
     try {
       wx.showLoading({ title: '提交中...' })
+      // 先上传所有图片到服务器
+      const uploadedUrls = []
+      for (const tempPath of this.data.images) {
+        const url = await AIAPI.uploadImage(tempPath)
+        uploadedUrls.push(url)
+      }
       const consultationId = await ConsultationAPI.create(
         this.data.selectedPet.id,
         this.data.doctorId,
         this.data.consultType,
         this.data.description,
-        JSON.stringify(this.data.images)
+        JSON.stringify(uploadedUrls)
       )
       wx.hideLoading()
       wx.showToast({ title: '提交成功', icon: 'success' })

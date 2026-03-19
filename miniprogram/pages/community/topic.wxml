@@ -1,0 +1,63 @@
+<!--pages/community/topic.wxml-->
+<view class="topic-page" wx:if="{{topic}}">
+  <!-- 话题头部 -->
+  <view class="topic-header">
+    <view class="topic-cover" wx:if="{{topic.coverUrl}}">
+      <image src="{{topic.coverUrl}}" mode="aspectFill" />
+      <view class="cover-mask"></view>
+    </view>
+    <view class="topic-info">
+      <text class="topic-icon">{{topic.icon || '📌'}}</text>
+      <text class="topic-name">#{{topic.name}}</text>
+      <text class="topic-desc" wx:if="{{topic.description}}">{{topic.description}}</text>
+      <text class="topic-count">{{topic.postCount}} 讨论</text>
+    </view>
+  </view>
+
+  <!-- 帖子列表 -->
+  <view class="post-list">
+    <view class="post-card" wx:for="{{posts}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="post-header">
+        <image wx:if="{{item.identityAvatarUrl}}" class="user-avatar" src="{{item.identityAvatarUrl}}" mode="aspectFill" />
+        <view wx:else class="user-avatar user-avatar-placeholder">
+          <text>{{item.identityInitial}}</text>
+        </view>
+        <view class="user-info">
+          <text class="user-nickname">{{item.identityName}}</text>
+          <text class="post-time">{{item.identityMeta}}</text>
+          <text wx:if="{{item.showIdentitySignature}}" class="post-signature">{{item.identitySignature}}</text>
+        </view>
+      </view>
+      <text class="post-content">{{item.content}}</text>
+      <view class="media-grid media-grid-{{item.mediaUrls.length || 0}}" wx:if="{{item.mediaUrls && item.mediaUrls.length > 0}}">
+        <image class="media-item" wx:for="{{item.mediaUrls}}" wx:for-item="url" wx:key="*this" src="{{url}}" mode="aspectFill" />
+      </view>
+      <view class="action-bar">
+        <view class="action-item {{item.isLiked ? 'liked' : ''}}" catchtap="toggleLike" data-id="{{item.id}}" data-index="{{index}}">
+          <text>{{item.isLiked ? '❤️' : '🤍'}}</text>
+          <text>{{item.likeCount || 0}}</text>
+        </view>
+        <view class="action-item">
+          <text>💬</text>
+          <text>{{item.commentCount || 0}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="loading-status">
+      <view wx:if="{{isLoading}}">加载中...</view>
+      <view wx:elif="{{!hasMore}}">没有更多了</view>
+    </view>
+
+    <view class="empty-state" wx:if="{{!isLoading && posts.length === 0}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无内容</text>
+      <view class="empty-btn" bindtap="goToPublish">发布第一条动态</view>
+    </view>
+  </view>
+
+  <!-- 发布按钮 -->
+  <view class="publish-btn" bindtap="goToPublish">
+    <text>参与话题</text>
+  </view>
+</view>

@@ -1,0 +1,124 @@
+<view class="community-page">
+  <view class="community-top safe-area-top">
+    <view class="search-shell" bindtap="goToSearch">
+      <text class="search-placeholder">搜索话题、用户、内容</text>
+    </view>
+
+    <view class="tab-row">
+      <view
+        wx:for="{{tabs}}"
+        wx:key="key"
+        class="tab-item {{currentTab === item.key ? 'tab-item-active' : ''}}"
+        data-tab="{{item.key}}"
+        bindtap="switchTab"
+      >
+        <text>{{item.label}}</text>
+      </view>
+    </view>
+
+    <scroll-view class="topic-strip" scroll-x show-scrollbar="{{false}}" wx:if="{{hotTopics.length}}">
+      <view class="topic-list">
+        <view
+          wx:for="{{hotTopics}}"
+          wx:key="id"
+          class="topic-chip"
+          data-id="{{item.id}}"
+          bindtap="goToTopic"
+        >
+          <text>#{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <scroll-view
+    class="feed-scroll"
+    scroll-y
+    bindscrolltolower="loadMore"
+    refresher-enabled
+    refresher-triggered="{{isRefreshing}}"
+    bindrefresherrefresh="onRefresh"
+    show-scrollbar="{{false}}"
+  >
+    <view class="feed-shell safe-area-bottom">
+      <view
+        wx:for="{{posts}}"
+        wx:key="id"
+        class="post-card"
+        bindtap="goToDetail"
+        data-id="{{item.id}}"
+      >
+        <view class="post-header">
+          <image wx:if="{{item.identityAvatarUrl}}" class="identity-avatar" src="{{item.identityAvatarUrl}}" mode="aspectFill" />
+          <view wx:else class="identity-avatar identity-avatar-fallback">
+            <text>{{item.identityInitial}}</text>
+          </view>
+          <view class="identity-main">
+            <text class="identity-name">{{item.identityName}}</text>
+            <text class="identity-meta">{{item.identityMeta}}</text>
+            <text wx:if="{{item.showIdentitySignature}}" class="identity-signature">{{item.identitySignature}}</text>
+          </view>
+        </view>
+
+        <text class="post-content">{{item.previewContent}}</text>
+
+        <view
+          class="post-media post-media-single"
+          wx:if="{{item.mediaUrls.length === 1}}"
+          catchtap="previewImage"
+          data-urls="{{item.mediaUrls}}"
+          data-current="{{item.mediaUrls[0]}}"
+        >
+          <image class="post-media-single-img" src="{{item.mediaUrls[0]}}" mode="aspectFill" />
+        </view>
+
+        <view wx:elif="{{item.mediaUrls.length > 1}}" class="post-media-grid">
+          <image
+            wx:for="{{item.mediaUrls}}"
+            wx:for-item="mediaUrl"
+            wx:key="index"
+            class="post-media-grid-img"
+            src="{{mediaUrl}}"
+            mode="aspectFill"
+            catchtap="previewImage"
+            data-urls="{{item.mediaUrls}}"
+            data-current="{{mediaUrl}}"
+          />
+        </view>
+
+        <view class="topic-row" wx:if="{{item.topicName}}">
+          <text class="topic-label" catchtap="goToTopic" data-id="{{item.topicId}}">#{{item.topicName}}</text>
+        </view>
+
+        <view class="action-row">
+          <view class="action-item {{item.isLiked ? 'action-item-active' : ''}}" catchtap="toggleLike" data-id="{{item.id}}" data-index="{{index}}">
+            <text>点赞 {{item.likeCountText}}</text>
+          </view>
+          <view class="action-item" catchtap="goToDetail" data-id="{{item.id}}">
+            <text>评论 {{item.commentCountText}}</text>
+          </view>
+          <view class="action-item {{item.isCollected ? 'action-item-active' : ''}}" catchtap="toggleCollect" data-id="{{item.id}}" data-index="{{index}}">
+            <text>收藏 {{item.collectCountText}}</text>
+          </view>
+          <view class="action-item" catchtap="handleShare" data-id="{{item.id}}">
+            <text>分享</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{!isLoading && posts.length === 0}}" class="empty-state">
+        <text class="empty-title">还没有新的宠物动态</text>
+        <text class="empty-desc">发布入口保留在右下角，让内容本身先进入视线。</text>
+      </view>
+
+      <view class="list-status">
+        <text wx:if="{{isLoading}}">加载中...</text>
+        <text wx:elif="{{!hasMore && posts.length > 0}}">没有更多了</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="publish-fab" bindtap="goToPublish">
+    <text>+</text>
+  </view>
+</view>

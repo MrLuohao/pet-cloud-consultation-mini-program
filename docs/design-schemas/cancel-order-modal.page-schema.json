@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "pageKey": "cancel-order-modal",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "4XhHR",
+    "frameName": "取消订单原因弹层 Cancel Order Reason Modal"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [0, 0, 0, 0],
+    "sectionGap": 10,
+    "safeAreaTop": false
+  },
+  "tokens": {
+    "colors": {
+      "mask": "#1111111E",
+      "surface": "#FFFDF9",
+      "surfaceSoft": "#FFFEFC",
+      "surfaceWarm": "#FFF7F2",
+      "surfaceNote": "#F7F3ED",
+      "textPrimary": "#1E2229",
+      "textSecondary": "#969188",
+      "textMuted": "#AAA39A",
+      "actionPrimary": "#3A3D45",
+      "actionSecondary": "#F6F2EC",
+      "borderSoft": "#EEE7DE"
+    },
+    "radius": {
+      "sheet": [32, 32, 0, 0],
+      "reason": 20,
+      "note": 18,
+      "button": 10,
+      "pill": 999
+    }
+  },
+  "sections": [
+    { "key": "mask", "type": "modal_mask", "sourceNodeId": "wBRmZ", "copy": [] },
+    { "key": "cancel_sheet", "type": "cancel_order_sheet", "sourceNodeId": "m7kYx", "copy": ["取消订单", "选择一个原因，帮助我们持续优化体验", "不想买了", "收货信息需要调整", "想重新选择商品", "补充说明（可选）", "暂不取消", "确认取消"] }
+  ],
+  "actions": [
+    { "name": "closeCancelSheet", "target": "local-state", "sectionKey": "mask" },
+    { "name": "selectCancelReason", "target": "local-state", "sectionKey": "cancel_sheet" },
+    { "name": "confirmCancelOrder", "target": "PUT /api/order/cancel", "sectionKey": "cancel_sheet" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "4XhHR",
+    "criticalCheckpoints": [
+      "cancel sheet uses a bottom-sheet structure instead of a native confirm dialog",
+      "only one reason stays selected at a time with a dark checkmark affordance",
+      "joint action bar keeps light secondary plus dark primary action hierarchy"
+    ]
+  }
+}
