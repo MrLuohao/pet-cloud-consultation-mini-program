@@ -1,0 +1,642 @@
+.confirm-page {
+  min-height: 100vh;
+  background: #f8f7f4;
+}
+
+.confirm-body {
+  padding: 24rpx 32rpx 4rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.confirm-address {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  padding: 24rpx 0 20rpx;
+}
+
+.confirm-address__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.confirm-address__receiver-group {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 0;
+}
+
+.confirm-address__receiver {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #20242b;
+}
+
+.confirm-address__phone {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #20242b;
+}
+
+.confirm-address__arrow {
+  font-size: 36rpx;
+  color: #9aa1aa;
+}
+
+.confirm-address__detail {
+  font-size: 24rpx;
+  line-height: 1.45;
+  color: #6e7681;
+}
+
+.confirm-address__divider,
+.confirm-divider,
+.confirm-amounts__divider {
+  width: 100%;
+  height: 2rpx;
+  background: #efeae3;
+}
+
+.confirm-products {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.confirm-product {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  min-height: 180rpx;
+}
+
+.confirm-product__thumb {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 16rpx;
+  background: #eee7de;
+  flex-shrink: 0;
+}
+
+.confirm-product__thumb--placeholder {
+  background: #ece6de;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-product__fallback-icon {
+  width: 56rpx;
+  height: 56rpx;
+  opacity: 0.58;
+}
+
+.confirm-product__info {
+  flex: 1;
+  min-height: 160rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.confirm-product__name {
+  font-size: 30rpx;
+  line-height: 1.3;
+  font-weight: 600;
+  color: #1f2329;
+}
+
+.confirm-product__meta {
+  font-size: 24rpx;
+  color: #8a919b;
+}
+
+.confirm-product__price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.confirm-product__price {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1f2329;
+}
+
+.confirm-product__qty {
+  font-size: 20rpx;
+  color: #9b958d;
+}
+
+.confirm-settings {
+  padding-top: 4rpx;
+}
+
+.confirm-settings__row {
+  height: 92rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.confirm-settings__label,
+.confirm-settings__value,
+.confirm-settings__input {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.confirm-settings__label {
+  color: #555d68;
+}
+
+.confirm-settings__value,
+.confirm-settings__input {
+  color: #6f7680;
+}
+
+.confirm-settings__input {
+  width: 320rpx;
+  text-align: right;
+}
+
+.confirm-settings__placeholder {
+  color: #9ea5ae;
+}
+
+.confirm-amounts {
+  padding-top: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.confirm-amounts__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.confirm-amounts__label,
+.confirm-amounts__value {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.confirm-amounts__label {
+  color: #7a828d;
+}
+
+.confirm-amounts__value {
+  color: #2e333a;
+}
+
+.confirm-hint {
+  padding-top: 4rpx;
+}
+
+.confirm-hint__text {
+  font-size: 24rpx;
+  line-height: 1.4;
+  color: #9097a0;
+}
+
+.confirm-bottom-space {
+  height: 128rpx;
+}
+
+.confirm-submit-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 168rpx;
+  padding: 16rpx 32rpx calc(48rpx + env(safe-area-inset-bottom));
+  padding: 16rpx 32rpx calc(48rpx + constant(safe-area-inset-bottom));
+  box-sizing: border-box;
+  background: #f8f7f4;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.confirm-submit-bar__amount {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.confirm-submit-bar__label {
+  font-size: 22rpx;
+  color: #9aa1aa;
+}
+
+.confirm-submit-bar__value {
+  font-size: 48rpx;
+  line-height: 1;
+  font-weight: 600;
+  color: #161a20;
+}
+
+.confirm-submit-bar__button {
+  width: 236rpx;
+  height: 84rpx;
+  line-height: 84rpx;
+  border-radius: 20rpx;
+  background: #43474f;
+  color: #ffffff;
+  font-size: 26rpx;
+  font-weight: 600;
+  padding: 0;
+}
+
+.confirm-submit-bar__button::after {
+  border: none;
+}
+
+.payment-layer,
+.verify-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+}
+
+.payment-layer__mask,
+.verify-layer__mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.12);
+  backdrop-filter: blur(12rpx);
+}
+
+.payment-sheet {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  bottom: 0;
+  border-radius: 64rpx 64rpx 0 0;
+  border: 2rpx solid #eee7de;
+  background: #fffdf9;
+  padding: 28rpx 40rpx calc(60rpx + env(safe-area-inset-bottom));
+  padding: 28rpx 40rpx calc(60rpx + constant(safe-area-inset-bottom));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  box-shadow: 0 -16rpx 56rpx rgba(24, 17, 10, 0.1);
+}
+
+.payment-sheet__handle {
+  width: 108rpx;
+  height: 10rpx;
+  border-radius: 999rpx;
+  background: #d8cec1;
+  align-self: center;
+}
+
+.payment-sheet__summary,
+.payment-sheet__amount {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.payment-sheet__title {
+  font-size: 42rpx;
+  color: #1e2229;
+  font-weight: 600;
+}
+
+.payment-sheet__sub,
+.payment-sheet__merchant,
+.payment-sheet__method-sub {
+  font-size: 22rpx;
+  color: #969188;
+}
+
+.payment-sheet__amount-value {
+  font-size: 60rpx;
+  color: #1f242c;
+  font-weight: 600;
+}
+
+.payment-sheet__methods {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.payment-sheet__method {
+  height: 108rpx;
+  border-radius: 40rpx;
+  border: 2rpx solid #ece5dc;
+  background: #fffefc;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.payment-sheet__method--active {
+  border-color: #dcefd8;
+  background: #f7fbf6;
+}
+
+.payment-sheet__method-left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  flex: 1;
+}
+
+.payment-sheet__badge {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-sheet__badge text {
+  font-size: 32rpx;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.payment-sheet__badge--wechat {
+  background: #2dbe60;
+}
+
+.payment-sheet__badge--alipay {
+  background: #1677ff;
+}
+
+.payment-sheet__badge--bank {
+  background: #efe8dd;
+}
+
+.payment-sheet__badge--bank text {
+  color: #5b564d;
+}
+
+.payment-sheet__badge--credit {
+  background: #f3ecff;
+}
+
+.payment-sheet__badge--credit text {
+  color: #6d56b3;
+}
+
+.payment-sheet__method-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  flex: 1;
+}
+
+.payment-sheet__method-title {
+  font-size: 32rpx;
+  color: #1f242c;
+  font-weight: 600;
+}
+
+.payment-sheet__check {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: #e6f6e8;
+  color: #2dbe60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.payment-sheet__arrow {
+  font-size: 32rpx;
+  color: #a29c93;
+}
+
+.payment-sheet__confirm {
+  margin-top: 8rpx;
+  height: 100rpx;
+  border-radius: 36rpx;
+  background: #30343c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-sheet__confirm text {
+  font-size: 32rpx;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.verify-card {
+  position: absolute;
+  left: 50%;
+  top: 236rpx;
+  transform: translateX(-50%);
+  width: 592rpx;
+  border-radius: 72rpx;
+  border: 2rpx solid #f3ece3;
+  background: rgba(255, 253, 249, 0.88);
+  backdrop-filter: blur(18rpx);
+  padding: 48rpx 44rpx 52rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18rpx;
+}
+
+.verify-card__amount {
+  font-size: 60rpx;
+  color: #1f242c;
+  font-weight: 600;
+}
+
+.verify-card__method,
+.verify-card__sub {
+  font-size: 24rpx;
+  color: #7f7a72;
+  line-height: 1;
+  text-align: center;
+}
+
+.verify-card__panel {
+  width: 352rpx;
+  height: 352rpx;
+  border-radius: 56rpx;
+  border: 2rpx solid #e7ede7;
+  background: #fbfcfb;
+  position: relative;
+}
+
+.verify-card__panel-glow {
+  position: absolute;
+  left: 40rpx;
+  top: 40rpx;
+  width: 272rpx;
+  height: 272rpx;
+  border-radius: 50%;
+  background: rgba(78, 167, 114, 0.06);
+}
+
+.verify-card__panel-ring {
+  position: absolute;
+  left: 56rpx;
+  top: 56rpx;
+  width: 240rpx;
+  height: 240rpx;
+  border-radius: 50%;
+  border: 16rpx solid #cae8d3;
+  box-sizing: border-box;
+}
+
+.verify-card__panel-frame {
+  position: absolute;
+  left: 112rpx;
+  top: 112rpx;
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 36rpx;
+  border: 2rpx solid #dde7e0;
+  background: #ffffff;
+}
+
+.verify-card__panel-line {
+  position: absolute;
+  left: 112rpx;
+  top: 170rpx;
+  width: 128rpx;
+  height: 16rpx;
+  border-radius: 999rpx;
+  background: rgba(78, 167, 114, 0.4);
+}
+
+.verify-card__title {
+  font-size: 40rpx;
+  color: #1d232a;
+  font-weight: 600;
+}
+
+.verify-card__dots {
+  display: flex;
+  gap: 20rpx;
+  align-items: center;
+}
+
+.verify-card__dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  background: #d9d3ca;
+}
+
+.verify-card__dot--active {
+  background: #30343c;
+}
+
+.verify-card__switch {
+  height: 60rpx;
+  padding: 0 24rpx;
+  border-radius: 999rpx;
+  background: #f5f1ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.verify-card__switch text {
+  font-size: 22rpx;
+  color: #8f887e;
+  font-weight: 600;
+}
+
+.verify-password-card {
+  position: absolute;
+  left: 50%;
+  top: 224rpx;
+  transform: translateX(-50%);
+  width: 612rpx;
+  border-radius: 72rpx;
+  border: 2rpx solid #f3ece3;
+  background: rgba(255, 253, 249, 0.88);
+  backdrop-filter: blur(18rpx);
+  padding: 44rpx 40rpx 52rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18rpx;
+}
+
+.verify-password-card__keypad {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.verify-password-card__row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.verify-password-card__key {
+  width: 128rpx;
+  height: 92rpx;
+  border-radius: 36rpx;
+  border: 2rpx solid #ece5da;
+  background: #fbfcfb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.verify-password-card__key-text {
+  width: 100%;
+  font-size: 30rpx;
+  line-height: 1;
+  text-align: center;
+  color: #1f242c;
+  font-weight: 600;
+}
+
+.verify-password-card__key-text--muted {
+  font-size: 22rpx;
+  line-height: 1;
+  color: #8f887e;
+}
+
+.verify-password-card__boxes {
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+}
+
+.verify-password-card__box {
+  width: 68rpx;
+  height: 72rpx;
+  border-radius: 20rpx;
+  border: 2rpx solid #e8e1d7;
+  background: #f7f3ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.verify-password-card__dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #30343c;
+}

@@ -1,0 +1,23 @@
+<!--pages/user/followers.wxml-->
+<view class="followers-page">
+  <view class="user-list">
+    <view class="user-item" wx:for="{{users}}" wx:key="userId">
+      <image class="avatar" src="{{item.avatarUrl || '/image/default-avatar.png'}}" mode="aspectFill" bindtap="goToProfile" data-id="{{item.userId}}" />
+      <view class="user-info" bindtap="goToProfile" data-id="{{item.userId}}">
+        <text class="nickname">{{item.nickname}}</text>
+        <text class="bio">{{item.bio || '这个人很懒，什么都没写'}}</text>
+      </view>
+      <view class="follow-btn {{item.isFollowed ? 'followed' : ''}}" wx:if="{{!item.isSelf}}" bindtap="toggleFollow" data-id="{{item.userId}}" data-index="{{index}}">
+        {{item.isFollowed ? '已关注' : '关注'}}
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{!isLoading && users.length === 0}}">
+      <text class="empty-icon">👥</text>
+      <text class="empty-text">暂无粉丝</text>
+    </view>
+
+    <view class="loading-status" wx:if="{{isLoading}}">加载中...</view>
+    <view class="loading-status" wx:if="{{!isLoading && !hasMore && users.length > 0}}">没有更多了</view>
+  </view>
+</view>

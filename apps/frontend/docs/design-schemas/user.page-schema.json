@@ -1,0 +1,174 @@
+{
+  "meta": {
+    "pageKey": "user",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "S9U5p",
+    "frameName": "我的页面优化版 Profile Style"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [4, 16, 20, 16],
+    "sectionGap": 10,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "cardBackground": "#FFFFFF",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#8B879A",
+      "textMuted": "#9CA3AF",
+      "brandPrimary": "#6D32FF",
+      "panelSoft": "#FAFAFC",
+      "panelPurple": "#F7F3FF",
+      "borderSoft": "#F0EAFE"
+    },
+    "radius": {
+      "card": 20,
+      "chip": 16,
+      "avatar": 32
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "lineHeight": 1.5 },
+      "stat": { "fontFamily": "Inter", "fontSize": 18, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "9KIV1",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "profile_card",
+      "type": "profile_summary_card",
+      "sourceNodeId": "cAQ1z",
+      "copy": [
+        "宠物达人",
+        "ID: 888888 · 点击查看和编辑资料",
+        "1250",
+        "6",
+        "2"
+      ],
+      "layout": { "padding": 14, "gap": 14, "cornerRadius": 20 }
+    },
+    {
+      "key": "vip_card",
+      "type": "membership_card",
+      "sourceNodeId": "vwlhM",
+      "title": "会员中心",
+      "copy": [
+        "专属权益、问诊折扣、成长礼包，一处统一查看。",
+        "查看权益"
+      ],
+      "layout": { "padding": 14, "gap": 8, "cornerRadius": 20 }
+    },
+    {
+      "key": "orders",
+      "type": "order_status_grid",
+      "sourceNodeId": "Mbeug",
+      "title": "我的订单",
+      "copy": [
+        "全部订单",
+        "待付款",
+        "待发货",
+        "待收货",
+        "已完成",
+        "待评价"
+      ],
+      "layout": { "padding": 14, "gap": 12, "cornerRadius": 20 }
+    },
+    {
+      "key": "services",
+      "type": "service_matrix",
+      "sourceNodeId": "YZMZc",
+      "title": "我的服务",
+      "copy": [
+        "我的宠物",
+        "我的收藏",
+        "收货地址",
+        "咨询记录",
+        "更多服务",
+        "优惠券",
+        "健康档案",
+        "每日任务",
+        "意见反馈",
+        "健康提醒",
+        "宠物保险"
+      ],
+      "layout": { "padding": 16, "gap": 12, "cornerRadius": 20 }
+    },
+    {
+      "key": "pets",
+      "type": "pet_card_row",
+      "sourceNodeId": "xhKaA",
+      "title": "我的宠物",
+      "copy": [
+        "管理"
+      ],
+      "layout": { "padding": 14, "gap": 12, "cornerRadius": 20 }
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "profile_card",
+      "api": "GET /api/user/info + GET /api/task/points + GET /api/coupon/my + GET /api/pet/list",
+      "fields": [
+        "userInfo.avatar",
+        "userInfo.name",
+        "userInfo.id",
+        "userPoints",
+        "userCoupons",
+        "userPets"
+      ]
+    },
+    {
+      "sectionKey": "orders",
+      "api": "GET /api/order/count",
+      "fields": [
+        "orders[].type",
+        "orders[].name",
+        "orders[].count"
+      ]
+    },
+    {
+      "sectionKey": "services",
+      "api": "local page state",
+      "fields": [
+        "services[].type",
+        "services[].name"
+      ]
+    },
+    {
+      "sectionKey": "pets",
+      "api": "GET /api/pet/list",
+      "fields": [
+        "displayPets[].id",
+        "displayPets[].name",
+        "displayPets[].type",
+        "displayPets[].breed"
+      ]
+    }
+  ],
+  "actions": [
+    { "name": "onProfileTap", "target": "/pages/user/profile", "sectionKey": "profile_card" },
+    { "name": "onVipTap", "target": "/pages/vip/index", "sectionKey": "vip_card" },
+    { "name": "onOrderTap", "target": "/pages/order/detail", "sectionKey": "orders" },
+    { "name": "onServiceTap", "target": "service-navigation", "sectionKey": "services" },
+    { "name": "onPetDetail", "target": "/pages/pet/edit", "sectionKey": "pets" },
+    { "name": "onAddPet", "target": "/pages/pet/edit", "sectionKey": "pets" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "S9U5p",
+    "criticalCheckpoints": [
+      "profile card stays as one compact summary block with inline stats",
+      "vip card remains lightweight, not promotional banner-heavy",
+      "orders stay in a single five-item row",
+      "services remain a two-layer matrix with four primary items and six compact secondary items",
+      "pets section remains a three-card row, not a scroll list"
+    ]
+  }
+}

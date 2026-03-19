@@ -1,0 +1,124 @@
+<view class="diagnosis-page">
+  <scroll-view class="diagnosis-scroll" scroll-y>
+    <view class="diagnosis-shell">
+      <view class="hero-card">
+        <text class="hero-title">AI健康诊断</text>
+        <text class="hero-desc">描述症状并补充照片，获得可信的初步建议。</text>
+      </view>
+
+      <view class="section-card">
+        <view class="section-head">
+          <text class="section-title">健康档案摘要</text>
+          <text class="section-link">查看完整病历</text>
+        </view>
+        <text class="record-meta">{{isLoggedIn ? '已登录用户 · 可无限次使用' : ('访客模式 · 剩余 ' + (remainingCount < 0 ? 0 : remainingCount) + ' 次')}}</text>
+        <text class="record-line">上次关注：{{symptomTags.length ? symptomTags.join('、') : '食欲下降、皮肤瘙痒'}}</text>
+        <text class="record-hint">本次建议补充：持续时间、是否加重、是否出现新症状</text>
+      </view>
+
+      <view class="section-card">
+        <text class="section-title">症状描述</text>
+        <view class="tag-row">
+          <view class="symptom-tag {{symptomTags.includes('食欲不振') ? 'active' : ''}}" bindtap="toggleSymptom" data-symptom="食欲不振">
+            <text>食欲不振</text>
+          </view>
+          <view class="symptom-tag {{symptomTags.includes('呕吐') ? 'active' : ''}}" bindtap="toggleSymptom" data-symptom="呕吐">
+            <text>呕吐</text>
+          </view>
+          <view class="symptom-tag {{symptomTags.includes('精神萎靡') ? 'active' : ''}}" bindtap="toggleSymptom" data-symptom="精神萎靡">
+            <text>精神萎靡</text>
+          </view>
+          <view class="symptom-tag {{symptomTags.includes('腹泻') ? 'active' : ''}}" bindtap="toggleSymptom" data-symptom="腹泻">
+            <text>腹泻</text>
+          </view>
+          <view class="symptom-tag {{symptomTags.includes('皮肤瘙痒') ? 'active' : ''}}" bindtap="toggleSymptom" data-symptom="皮肤瘙痒">
+            <text>皮肤瘙痒</text>
+          </view>
+        </view>
+        <view class="textarea-wrap">
+          <textarea
+            class="symptom-textarea"
+            placeholder="请详细描述持续时间、严重程度、近期饮食或精神状态变化..."
+            value="{{symptoms}}"
+            bindinput="onSymptomsInput"
+            maxlength="500"
+            show-confirm-bar="{{false}}"
+            auto-height
+          />
+          <text class="textarea-count">{{symptoms.length}}/500</text>
+        </view>
+      </view>
+
+      <view class="section-card">
+        <text class="section-title">症状相关图片</text>
+        <view class="upload-area" bindtap="uploadImage">
+          <view class="upload-glyph"><text>+</text></view>
+          <text class="upload-label">上传患处照片</text>
+          <text class="upload-hint">最多上传 6 张图片，如有可见症状，建议补充不同角度与患处细节，提高判断准确性。</text>
+        </view>
+        <view wx:if="{{uploadedAssets.length > 0}}" class="uploaded-grid">
+          <view wx:for="{{uploadedAssets}}" wx:key="assetId" class="uploaded-item">
+            <image class="uploaded-image" src="{{item.url}}" mode="aspectFill" />
+            <view class="remove-image" bindtap="removeImage" data-index="{{index}}">
+              <text>×</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="section-card section-card-soft">
+        <text class="section-title subtle">宠物基本信息</text>
+        <view class="pet-type-row">
+          <view class="pet-type-pill {{petType === 1 ? 'active' : ''}}" bindtap="selectPetType" data-type="1">
+            <text>狗狗</text>
+          </view>
+          <view class="pet-type-pill {{petType === 2 ? 'active' : ''}}" bindtap="selectPetType" data-type="2">
+            <text>猫咪</text>
+          </view>
+          <view class="pet-type-pill {{petType === 3 ? 'active' : ''}}" bindtap="selectPetType" data-type="3">
+            <text>其他</text>
+          </view>
+        </view>
+        <view class="field-row">
+          <text class="field-label">宠物年龄（月）</text>
+          <input class="field-input" type="number" placeholder="请输入" value="{{petAge}}" bindinput="onPetAgeInput" />
+        </view>
+      </view>
+
+      <view class="note-card">
+        <text class="note-title">诊断说明</text>
+        <text class="note-text">AI 诊断仅提供初步建议，不能替代专业兽医诊断。如症状持续或明显加重，请尽快就医。</text>
+      </view>
+
+      <view class="cta-wrap">
+        <button class="submit-btn {{isLoading ? 'is-loading' : ''}}" bindtap="submitDiagnosis" disabled="{{isLoading}}">
+          {{isLoading ? '诊断中...' : '开始诊断'}}
+        </button>
+        <text class="cta-hint">已完善症状描述后，即可开始生成初步建议</text>
+      </view>
+
+      <view wx:if="{{diagnosisResult}}" class="result-card">
+        <view class="section-head">
+          <text class="section-title">诊断结果</text>
+          <text class="result-risk risk-{{diagnosisResult.riskLevel}}">{{diagnosisResult.riskLevel}}</text>
+        </view>
+        <view class="result-block">
+          <text class="result-label">诊断摘要</text>
+          <text class="result-text">{{diagnosisResult.summary}}</text>
+        </view>
+        <view wx:if="{{diagnosisResult.possibleCauses && diagnosisResult.possibleCauses.length}}" class="result-block">
+          <text class="result-label">可能原因</text>
+          <text wx:for="{{diagnosisResult.possibleCauses}}" wx:key="*this" class="result-list-item">• {{item}}</text>
+        </view>
+        <view wx:if="{{diagnosisResult.careSuggestions && diagnosisResult.careSuggestions.length}}" class="result-block">
+          <text class="result-label">护理建议</text>
+          <text wx:for="{{diagnosisResult.careSuggestions}}" wx:key="*this" class="result-list-item">• {{item}}</text>
+        </view>
+        <view wx:if="{{diagnosisResult.nextActions && diagnosisResult.nextActions.length}}" class="result-block">
+          <text class="result-label">后续动作</text>
+          <text wx:for="{{diagnosisResult.nextActions}}" wx:key="*this" class="result-list-item">• {{item}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

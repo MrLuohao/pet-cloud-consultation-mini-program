@@ -1,0 +1,158 @@
+/* pages/health/list.wxss */
+.health-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: calc(140rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
+}
+
+/* 宠物选择器 */
+.pet-selector {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 20rpx 30rpx;
+  padding-top: calc(20rpx + constant(safe-area-inset-top));
+  padding-top: calc(20rpx + env(safe-area-inset-top));
+  white-space: nowrap;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.06);
+}
+
+.pet-item {
+  display: inline-block;
+  padding: 16rpx 36rpx;
+  margin-right: 16rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: #f5f5f5;
+  transition: all 0.2s ease;
+}
+
+.pet-item.active {
+  background: linear-gradient(135deg, #6D32FF 0%, #A855F7 100%);
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(109, 50, 255, 0.25);
+}
+
+/* 健康档案列表 */
+.health-list {
+  padding: 20rpx 30rpx;
+}
+
+.health-item {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.record-type {
+  font-size: 24rpx;
+  padding: 5rpx 15rpx;
+  border-radius: 20rpx;
+}
+
+.record-type.vaccine {
+  background: #e3f2fd;
+  color: #2196f3;
+}
+
+.record-type.checkup {
+  background: #e8f5e9;
+  color: #4caf50;
+}
+
+.record-type.medicine {
+  background: #fff3e0;
+  color: #ff9800;
+}
+
+.record-type.surgery {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.record-type.other {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.record-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.record-title {
+  display: block;
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 10rpx;
+}
+
+.record-content {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 15rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.record-footer {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+.record-footer text {
+  margin-right: 20rpx;
+}
+
+.record-next {
+  font-size: 24rpx;
+  color: #ff6b6b;
+}
+
+/* 空状态 */
+.empty-state {
+  padding-top: 200rpx;
+  text-align: center;
+}
+
+.empty-text {
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 添加按钮 */
+.add-btn {
+  position: fixed;
+  bottom: calc(30rpx + constant(safe-area-inset-bottom));
+  bottom: calc(30rpx + env(safe-area-inset-bottom));
+  left: 30rpx;
+  right: 30rpx;
+  background: linear-gradient(135deg, #6D32FF 0%, #A855F7 100%);
+  color: #fff;
+  padding: 32rpx;
+  border-radius: 50rpx;
+  text-align: center;
+  font-size: 30rpx;
+  font-weight: 500;
+  box-shadow: 0 8rpx 24rpx rgba(109, 50, 255, 0.35);
+  transition: all 0.2s ease;
+}
+
+.add-btn:active {
+  transform: scale(0.98);
+}

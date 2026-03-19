@@ -1,0 +1,70 @@
+<!--pages/consultation/doctor-detail.wxml-->
+<view class="doctor-detail-container">
+  <!-- 医生信息卡片 -->
+  <view class="doctor-card">
+    <view class="doctor-header">
+      <view class="doctor-avatar-wrapper">
+        <image wx:if="{{doctor.avatar}}" class="doctor-avatar-img" src="{{doctor.avatar}}" mode="aspectFill"></image>
+        <view wx:else class="doctor-avatar-text">{{doctor.name ? doctor.name.charAt(0) : '医'}}</view>
+      </view>
+      <view class="doctor-basic">
+        <text class="doctor-name">{{doctor.name}}</text>
+        <text class="doctor-title">{{doctor.title}}</text>
+        <view class="doctor-rating">
+          <text class="star">★</text>
+          <text>{{doctor.rating}}</text>
+          <text class="count">{{doctor.consultationCount}}次咨询</text>
+        </view>
+      </view>
+    </view>
+    <view class="doctor-hospital">{{doctor.hospitalName}} · {{doctor.department}}</view>
+  </view>
+
+  <!-- 详细信息 -->
+  <view class="detail-section">
+    <view class="section-title">医生简介</view>
+    <text class="detail-text">{{doctor.description}}</text>
+  </view>
+
+  <view class="detail-section">
+    <view class="section-title">擅长领域</view>
+    <view class="tags">
+      <text class="tag">{{doctor.specialty}}</text>
+    </view>
+  </view>
+
+  <view class="detail-section">
+    <view class="section-title">从业年限</view>
+    <text class="detail-text">{{doctor.experience}}年</text>
+  </view>
+
+  <view class="detail-section">
+    <view class="section-title">服务标签</view>
+    <view class="tags">
+      <text class="tag" wx:for="{{doctor.tags}}" wx:key="*this">{{tag}}</text>
+    </view>
+  </view>
+
+  <!-- 咨询方式 -->
+  <view class="consult-type-section">
+    <view class="type-item" bindtap="selectType" data-type="1">
+      <view class="type-icon">💬</view>
+      <view class="type-info">
+        <text class="type-name">图文咨询</text>
+        <text class="type-price">¥{{doctor.consultationFee}}</text>
+      </view>
+    </view>
+    <view class="type-item" bindtap="selectType" data-type="2">
+      <view class="type-icon">📹</view>
+      <view class="type-info">
+        <text class="type-name">视频咨询</text>
+        <text class="type-price">¥{{doctor.consultationFee * 2}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-bar">
+    <button class="consult-btn" bindtap="startConsultation">立即咨询</button>
+  </view>
+</view>

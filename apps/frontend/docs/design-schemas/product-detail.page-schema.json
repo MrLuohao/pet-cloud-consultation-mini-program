@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "pageKey": "product-detail",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "2QVFo",
+    "frameName": "商品详情页 Poster Style"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [4, 16, 24, 16],
+    "sectionGap": 16,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "surface": "#FCFBF8",
+      "textPrimary": "#1F232B",
+      "textSecondary": "#858A95",
+      "textMuted": "#5B536C",
+      "actionPrimary": "#3A3D45",
+      "actionSecondary": "#F6F2EC",
+      "borderSoft": "#EEEAE3"
+    },
+    "radius": {
+      "hero": 22,
+      "card": 16,
+      "button": 10
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 22, "fontWeight": "600" },
+      "sectionTitle": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "600" },
+      "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    { "key": "hero_poster", "type": "poster_hero", "sourceNodeId": "PrMS6", "copy": ["低温烘焙鸡肉主粮", "稳定、轻负担的日常主食选择。", "¥129"] },
+    { "key": "specs", "type": "spec_option_groups", "sourceNodeId": "yJGK1" },
+    { "key": "highlights", "type": "text_highlights", "sourceNodeId": "aH2b5" },
+    { "key": "story", "type": "editorial_story_stack", "sourceNodeId": "NoftD" },
+    { "key": "usage_note", "type": "usage_note", "sourceNodeId": "eVe0a", "copy": ["适用对象 / 使用建议"] },
+    { "key": "bottom_bar", "type": "product_action_bar", "sourceNodeId": "ftyvq", "copy": ["加入购物袋", "立即购买"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "hero_poster",
+      "api": "GET /api/product/detail",
+      "fields": ["product.id", "product.name", "product.summary", "product.price", "product.coverUrl"]
+    },
+    {
+      "sectionKey": "specs",
+      "api": "GET /api/product/detail",
+      "fields": ["product.specGroups[].key", "product.specGroups[].label", "product.specGroups[].selectedValue", "product.specGroups[].options[].value", "product.specGroups[].options[].label", "product.specGroups[].options[].hint"]
+    },
+    {
+      "sectionKey": "highlights",
+      "api": "GET /api/product/detail",
+      "fields": ["product.highlights[]"]
+    },
+    {
+      "sectionKey": "story",
+      "api": "GET /api/product/detail",
+      "fields": ["product.storySections[].title", "product.storySections[].description", "product.storySections[].imageUrl"]
+    },
+    {
+      "sectionKey": "usage_note",
+      "api": "GET /api/product/detail",
+      "fields": ["product.usageNote.title", "product.usageNote.content"]
+    },
+    {
+      "sectionKey": "bottom_bar",
+      "api": "cart + order flow",
+      "fields": ["product.id", "selectedSpecLabel", "quantity", "cart.specLabel", "order.specLabels[]"]
+    }
+  ],
+  "actions": [
+    { "name": "selectSpec", "target": "local-state", "sectionKey": "specs" },
+    { "name": "addToCart", "target": "/pages/cart/cart", "sectionKey": "bottom_bar" },
+    { "name": "buyNow", "target": "/pages/order/confirm", "sectionKey": "bottom_bar" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "2QVFo",
+    "criticalCheckpoints": [
+      "hero remains poster-like and centered",
+      "spec selectors stay compact under hero",
+      "editorial story sections remain long vertical narrative blocks",
+      "bottom bar reads as one connected dual-action group with a quiet left action and dominant right action"
+    ]
+  }
+}

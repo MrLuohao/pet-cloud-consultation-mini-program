@@ -1,0 +1,410 @@
+.product-detail-page {
+  min-height: 100vh;
+  background: #f8f7f4;
+  color: #1f232b;
+}
+
+.detail-body {
+  padding: 24rpx 32rpx 48rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.hero-poster {
+  border-radius: 44rpx;
+  background: #fcfbf8;
+  height: 1000rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 48rpx;
+  box-sizing: border-box;
+}
+
+.hero-poster__stage {
+  width: 520rpx;
+  height: 620rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hero-poster__image {
+  width: 420rpx;
+  height: 520rpx;
+}
+
+.hero-poster__fallback {
+  width: 520rpx;
+  height: 620rpx;
+  position: relative;
+}
+
+.hero-poster__shape {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hero-poster__shape--large {
+  top: 48rpx;
+  width: 288rpx;
+  height: 392rpx;
+  border-radius: 68rpx 68rpx 56rpx 56rpx;
+  background: #e8ddff;
+}
+
+.hero-poster__shape--pill {
+  top: 92rpx;
+  width: 216rpx;
+  height: 28rpx;
+  border-radius: 999rpx;
+  background: #f7f1ff;
+}
+
+.hero-poster__shape--small {
+  top: 188rpx;
+  width: 168rpx;
+  height: 128rpx;
+  border-radius: 48rpx;
+  background: #f0e7ff;
+}
+
+.hero-poster__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 86rpx;
+  transform: translateX(-50%);
+  width: 352rpx;
+  height: 44rpx;
+  border-radius: 999rpx;
+  background: #eee7db;
+}
+
+.hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  padding-top: 8rpx;
+}
+
+.hero-info__title {
+  font-size: 44rpx;
+  line-height: 1.35;
+  font-weight: 600;
+  color: #1f232b;
+}
+
+.hero-info__subtitle {
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #858a95;
+}
+
+.hero-info__price {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #5b536c;
+}
+
+.hero-gap {
+  width: 100%;
+  height: 12rpx;
+}
+
+.spec-section {
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+}
+
+.spec-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.spec-group__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spec-group__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #2a2e36;
+}
+
+.spec-group__value {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #8a8f98;
+}
+
+.spec-group__options {
+  display: flex;
+  gap: 20rpx;
+}
+
+.spec-option {
+  flex: 1;
+  height: 124rpx;
+  border-radius: 20rpx;
+  background: #f6f2ec;
+  border: 2rpx solid #ece6dd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  box-sizing: border-box;
+}
+
+.spec-option--active {
+  background: #fbf8f3;
+  border-color: #d8d1c5;
+}
+
+.spec-option__label {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #2b2f37;
+}
+
+.spec-option__hint {
+  font-size: 20rpx;
+  color: #9a978f;
+}
+
+.highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  padding-top: 8rpx;
+}
+
+.highlights__item {
+  font-size: 26rpx;
+  line-height: 1.7;
+  color: #555b66;
+}
+
+.story-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 48rpx;
+  padding-top: 12rpx;
+}
+
+.story-card {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.story-card__visual {
+  width: 100%;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.story-card__visual--0 {
+  height: 640rpx;
+  background: #fbfaf7;
+}
+
+.story-card__visual--1 {
+  height: 600rpx;
+  background: #f6f1ea;
+}
+
+.story-card__visual--2 {
+  height: 560rpx;
+  background: #faf6ef;
+}
+
+.story-card__image {
+  width: 420rpx;
+  height: 456rpx;
+}
+
+.story-card__art {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.story-card__art-shape {
+  position: absolute;
+  bottom: 88rpx;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 32rpx;
+}
+
+.story-card__art-shape--left {
+  left: 148rpx;
+  background: #f2dfb8;
+}
+
+.story-card__art-shape--right {
+  left: 296rpx;
+  background: #e7d8ff;
+}
+
+.story-card__title {
+  font-size: 40rpx;
+  line-height: 1.4;
+  font-weight: 600;
+  color: #20242c;
+}
+
+.story-card__desc {
+  font-size: 26rpx;
+  line-height: 1.7;
+  color: #858a95;
+}
+
+.note-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  padding-top: 4rpx;
+}
+
+.note-section__title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #232730;
+}
+
+.note-section__content {
+  font-size: 26rpx;
+  line-height: 1.8;
+  color: #828893;
+}
+
+.review-section {
+  border-radius: 32rpx;
+  border: 2rpx solid #ece5da;
+  background: #fffefb;
+  padding: 24rpx 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.review-section__header,
+.review-section__headline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.review-section__title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #20242c;
+}
+
+.review-section__score {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #5b536c;
+}
+
+.review-section__arrow {
+  font-size: 32rpx;
+  color: #9a978f;
+}
+
+.review-section__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.review-section__stat {
+  height: 52rpx;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  background: #f6f2ec;
+  color: #7d776e;
+  font-size: 22rpx;
+  line-height: 52rpx;
+}
+
+.review-section__action {
+  align-self: flex-start;
+  height: 64rpx;
+  padding: 0 24rpx;
+  border-radius: 999rpx;
+  background: #3a3d45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-section__action text {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #f7f6f3;
+}
+
+.bottom-spacer {
+  height: 132rpx;
+}
+
+.detail-bottom-bar {
+  position: fixed;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: env(safe-area-inset-bottom);
+  bottom: constant(safe-area-inset-bottom);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding-top: 0;
+  background: transparent;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.detail-bottom-bar__secondary,
+.detail-bottom-bar__primary {
+  height: 96rpx;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.detail-bottom-bar__secondary {
+  width: 176rpx;
+  background: #f6f2ec;
+}
+
+.detail-bottom-bar__secondary text {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #767c87;
+}
+
+.detail-bottom-bar__primary {
+  flex: 1;
+  background: #3a3d45;
+}
+
+.detail-bottom-bar__primary text {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #f7f6f3;
+}

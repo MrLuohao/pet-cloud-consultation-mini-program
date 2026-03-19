@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "pageKey": "checkout",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "0fx0p",
+    "frameName": "结算页 Summary Confirm Style"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [6, 16, 2, 16],
+    "sectionGap": 10,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "textPrimary": "#20242B",
+      "textSecondary": "#6E7681",
+      "textMuted": "#9AA1AA",
+      "borderSoft": "#EFEAE3",
+      "actionPrimary": "#43474F"
+    },
+    "radius": {
+      "button": 10
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "600" },
+      "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "500" },
+      "amount": { "fontFamily": "Inter", "fontSize": 24, "fontWeight": "600" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "rGipP", "copy": ["9:41", "5G   100%"] },
+    { "key": "address", "type": "checkout_address", "sourceNodeId": "nzYLp" },
+    { "key": "products", "type": "checkout_product_summary", "sourceNodeId": "UC5ve" },
+    { "key": "settings", "type": "checkout_settings", "sourceNodeId": "Tt9ex", "copy": ["优惠", "备注", "配送"] },
+    { "key": "amount_summary", "type": "checkout_amount_summary", "sourceNodeId": "KsAhP", "copy": ["商品金额", "运费", "优惠"] },
+    { "key": "hint", "type": "checkout_hint", "sourceNodeId": "DBh09", "copy": ["订单将于提交后创建，请在 30 分钟内完成支付。"] },
+    { "key": "submit_bar", "type": "checkout_submit_bar", "sourceNodeId": "U9LHa", "copy": ["合计", "确认支付"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "address",
+      "api": "GET /api/address/default",
+      "fields": ["receiverName", "receiverPhone", "fullAddress"]
+    },
+    {
+      "sectionKey": "products",
+      "api": "checkout order draft",
+      "fields": ["items[].id", "items[].name", "items[].price", "items[].quantity", "items[].coverUrl"]
+    },
+    {
+      "sectionKey": "submit_bar",
+      "api": "checkout order draft",
+      "fields": ["payAmount"]
+    }
+  ],
+  "actions": [
+    { "name": "chooseAddress", "target": "/pages/address/list", "sectionKey": "address" },
+    { "name": "confirmPay", "target": "payment-sheet-open", "sectionKey": "submit_bar" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "0fx0p",
+    "criticalCheckpoints": [
+      "address stays first and lightweight",
+      "bottom submit bar remains visually separated",
+      "amount summary stays calm and ledger-like"
+    ]
+  }
+}

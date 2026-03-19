@@ -1,0 +1,70 @@
+{
+  "meta": {
+    "pageKey": "cart",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "7DLIo",
+    "frameName": "购物车页 Curated Cart Style"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [6, 16, 24, 16],
+    "sectionGap": 18,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "textPrimary": "#2E333A",
+      "textSecondary": "#8E949D",
+      "textMuted": "#B0B5BC",
+      "surface": "#F8F5F0",
+      "actionPrimary": "#454851"
+    },
+    "radius": {
+      "thumb": 8,
+      "button": 9
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "600" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "ktMI7", "copy": ["9:41", "5G   100%"] },
+    { "key": "shop_group_a", "type": "merchant_cart_group", "sourceNodeId": "uPW3l", "copy": ["伴宠云诊自营", "包邮 · 正品保障"] },
+    { "key": "shop_group_b", "type": "merchant_cart_group", "sourceNodeId": "QW1vc", "copy": ["合作品牌馆", "极速达"] },
+    { "key": "recommend", "type": "cart_recommendation", "sourceNodeId": "N0w4q", "copy": ["你也许还需要"] },
+    { "key": "checkout_bar", "type": "cart_checkout_bar", "sourceNodeId": "viDE8", "copy": ["去结算"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "shop_group_a",
+      "api": "GET /api/cart/list",
+      "fields": ["cartGroups[].merchantName", "cartGroups[].items[].id", "cartGroups[].items[].name", "cartGroups[].items[].quantity", "cartGroups[].items[].price"]
+    },
+    {
+      "sectionKey": "recommend",
+      "api": "GET /api/product/recommendations",
+      "fields": ["recommendations[].id", "recommendations[].name", "recommendations[].price"]
+    },
+    {
+      "sectionKey": "checkout_bar",
+      "api": "GET /api/cart/summary",
+      "fields": ["selectedCount", "totalAmount"]
+    }
+  ],
+  "actions": [
+    { "name": "changeQuantity", "target": "cart-item-update", "sectionKey": "shop_group_a" },
+    { "name": "removeCartItem", "target": "cart-item-delete", "sectionKey": "shop_group_a" },
+    { "name": "goCheckout", "target": "/pages/order/confirm", "sectionKey": "checkout_bar" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "7DLIo",
+    "criticalCheckpoints": [
+      "cart groups are split by merchant blocks",
+      "recommendation remains compact and secondary",
+      "checkout bar stays fixed-feel and calm"
+    ]
+  }
+}

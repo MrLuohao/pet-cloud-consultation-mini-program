@@ -1,0 +1,212 @@
+.page {
+  min-height: 100vh;
+  background: #f5f5f7;
+  padding: 16rpx 16rpx 160rpx;
+}
+
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 160rpx 0;
+}
+
+.loading-dot {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  border: 4rpx solid #f0f0f0;
+  border-top-color: #10b981;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 提醒卡片 */
+.reminder-card {
+  background: #fff;
+  border-radius: 20rpx;
+  margin-bottom: 16rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  border-left: 6rpx solid #e5e5ea;
+}
+
+.reminder-card.today { border-left-color: #f59e0b; }
+.reminder-card.overdue { border-left-color: #ef4444; }
+.reminder-card.done { opacity: 0.6; }
+
+.card-left {
+  flex-shrink: 0;
+}
+
+.type-icon {
+  font-size: 48rpx;
+}
+
+.card-body {
+  flex: 1;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 8rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.status-tag {
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 10rpx;
+}
+
+.overdue-tag { background: #fef2f2; color: #ef4444; }
+.today-tag { background: #fffbeb; color: #f59e0b; }
+.done-tag { background: #f0fdf4; color: #10b981; }
+
+.card-pet, .card-date, .card-note {
+  font-size: 24rpx;
+  color: #86868b;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.done-btn { background: #f0fdf4; color: #10b981; }
+.del-btn { background: #fef2f2; color: #ef4444; }
+
+/* 空状态 */
+.empty-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0;
+  gap: 20rpx;
+}
+
+.empty-icon { font-size: 100rpx; }
+.empty-text { font-size: 30rpx; color: #3c3c43; font-weight: 600; }
+.empty-sub { font-size: 26rpx; color: #86868b; }
+
+/* 悬浮按钮 */
+.fab {
+  position: fixed;
+  bottom: 80rpx;
+  right: 48rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: #10b981;
+  color: #fff;
+  font-size: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(16,185,129,0.4);
+}
+
+/* 弹窗 */
+.modal-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+}
+
+.add-modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+  z-index: 101;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1d1d1f;
+  display: block;
+  text-align: center;
+  margin-bottom: 32rpx;
+}
+
+.form-item {
+  margin-bottom: 24rpx;
+}
+
+.form-label {
+  font-size: 26rpx;
+  color: #86868b;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.form-input, .picker-value {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e5e5ea;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  color: #1d1d1f;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.modal-btns {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 32rpx;
+}
+
+.btn-cancel {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: #f5f5f7;
+  color: #3c3c43;
+  font-size: 28rpx;
+  border: none;
+}
+
+.btn-submit {
+  flex: 2;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: #10b981;
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 600;
+  border: none;
+}

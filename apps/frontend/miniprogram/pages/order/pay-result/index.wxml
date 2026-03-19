@@ -1,0 +1,27 @@
+<view class="pay-result-page" bindtap="closeSuccess">
+  <view class="pay-result-base">
+    <view class="pay-result-base__card"></view>
+    <view class="pay-result-base__list">
+      <view class="pay-result-base__thumb"></view>
+      <view class="pay-result-base__copy">
+        <view class="pay-result-base__line pay-result-base__line--title"></view>
+        <view class="pay-result-base__line pay-result-base__line--meta"></view>
+      </view>
+    </view>
+    <view class="pay-result-base__bar"></view>
+  </view>
+
+  <view class="pay-result-mask"></view>
+
+  <view class="pay-result-card">
+    <view class="pay-result-card__ring">
+      <view class="pay-result-card__ring-glow"></view>
+      <view class="pay-result-card__ring-outer"></view>
+      <view class="pay-result-card__ring-main"></view>
+      <view class="pay-result-card__disc"></view>
+      <text class="pay-result-card__check">{{status === 'success' ? '✓' : status === 'fail' ? '!' : '...'}}</text>
+      <view class="pay-result-card__spark"></view>
+    </view>
+    <text class="pay-result-card__title">{{feedbackTitle}}</text>
+  </view>
+</view>

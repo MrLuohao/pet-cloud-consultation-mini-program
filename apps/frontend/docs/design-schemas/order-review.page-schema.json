@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "pageKey": "order-review",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "BBaGr",
+    "frameName": "订单评价页 Order Review"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "sections": [
+    { "key": "intro_card", "type": "review_intro_card", "sourceNodeId": "rqau9", "copy": ["评价订单", "分享本次购买体验，帮助其他用户做出选择。"] },
+    { "key": "review_cards", "type": "per_item_review_cards", "sourceNodeId": "8H7oQ", "copy": ["★", "★", "★", "★", "★"] },
+    { "key": "bottom_action", "type": "review_submit_bar", "sourceNodeId": "UxGWM", "copy": ["提交评价", "提交后可在订单详情中继续查看评价状态"] }
+  ],
+  "actions": [
+    { "name": "setRating", "target": "local-state", "sectionKey": "review_cards" },
+    { "name": "onContentInput", "target": "local-state", "sectionKey": "review_cards" },
+    { "name": "chooseImage", "target": "wx.chooseMedia", "sectionKey": "review_cards" },
+    { "name": "submitReview", "target": "POST /api/product/review", "sectionKey": "bottom_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "BBaGr",
+    "criticalCheckpoints": [
+      "intro card stays compact and appears above all review cards",
+      "each product gets its own star row, text area and upload area",
+      "submit action stays fixed at the bottom with a dark single CTA"
+    ]
+  }
+}

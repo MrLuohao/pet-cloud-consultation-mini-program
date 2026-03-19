@@ -1,0 +1,271 @@
+.news-page {
+  min-height: 100vh;
+  background: #f8f8f8;
+}
+
+.main-scroll {
+  height: 100vh;
+}
+
+.news-shell {
+  padding: 24rpx 32rpx 40rpx;
+}
+
+.hero-top,
+.section-head,
+.conversation-card {
+  display: flex;
+  align-items: center;
+}
+
+.hero-card,
+.section-card {
+  margin-top: 20rpx;
+  padding: 32rpx;
+  background: linear-gradient(180deg, #ffffff 0%, #fbf9ff 100%);
+  border-radius: 40rpx;
+  border: 1rpx solid #f0eafe;
+}
+
+.hero-top,
+.section-head {
+  justify-content: space-between;
+}
+
+.hero-kicker,
+.section-link,
+.conversation-time,
+.notification-count,
+.empty-desc {
+  color: #9ca3af;
+}
+
+.hero-kicker {
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.hero-read-all {
+  padding: 12rpx 18rpx;
+  border-radius: 999rpx;
+  background: #f6f2ff;
+}
+
+.hero-read-all text {
+  color: #6d32ff;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.hero-title,
+.section-title,
+.conversation-copy,
+.notification-name,
+.empty-title {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.hero-title {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 40rpx;
+  line-height: 1.25;
+}
+
+.hero-desc {
+  display: block;
+  margin-top: 12rpx;
+  color: #7a8190;
+  font-size: 22rpx;
+  line-height: 1.45;
+}
+
+.quick-grid,
+.notification-grid {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 22rpx;
+}
+
+.quick-item,
+.notification-item {
+  flex: 1;
+  min-width: 0;
+  border-radius: 28rpx;
+  text-align: center;
+}
+
+.quick-item {
+  padding: 24rpx 16rpx;
+  background: #f7f3ff;
+}
+
+.quick-icon-wrap {
+  width: 64rpx;
+  height: 64rpx;
+  margin: 0 auto;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quick-icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.quick-title {
+  display: block;
+  margin-top: 16rpx;
+  color: #4b5563;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.quick-subtitle {
+  display: block;
+  margin-top: 6rpx;
+  color: #8c93a5;
+  font-size: 20rpx;
+  line-height: 1.45;
+}
+
+.section-title {
+  font-size: 30rpx;
+}
+
+.section-link {
+  font-size: 22rpx;
+}
+
+.conversation-card {
+  gap: 16rpx;
+  margin-top: 16rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 32rpx;
+  background: #f7f3ff;
+}
+
+.conversation-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+}
+
+.fallback-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d8cbff;
+  color: #6d32ff;
+  font-size: 24rpx;
+}
+
+.ai-avatar {
+  background: #d8cbff;
+}
+
+.conversation-copy {
+  flex: 1;
+  min-width: 0;
+  font-size: 24rpx;
+  line-height: 1.4;
+}
+
+.conversation-badge {
+  min-width: 34rpx;
+  height: 34rpx;
+  padding: 0 10rpx;
+  border-radius: 999rpx;
+  background: #6d32ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.conversation-badge text {
+  color: #ffffff;
+  font-size: 18rpx;
+  font-weight: 700;
+}
+
+.conversation-time {
+  font-size: 20rpx;
+}
+
+.notification-item {
+  padding: 24rpx 12rpx 18rpx;
+  background: #fafafc;
+}
+
+.notification-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin: 0 auto;
+  border-radius: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-icon text {
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.notification-icon.blue {
+  background: #eaf2ff;
+}
+
+.notification-icon.blue text {
+  color: #3b82f6;
+}
+
+.notification-icon.pink {
+  background: #fff3f8;
+}
+
+.notification-icon.pink text {
+  color: #ec4899;
+}
+
+.notification-icon.violet {
+  background: #f7f3ff;
+}
+
+.notification-icon.violet text {
+  color: #7c63d7;
+}
+
+.notification-name {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 22rpx;
+}
+
+.notification-count {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 20rpx;
+}
+
+.empty-state {
+  margin-top: 24rpx;
+  padding: 48rpx 24rpx;
+  text-align: center;
+}
+
+.empty-title {
+  display: block;
+  font-size: 28rpx;
+}
+
+.empty-desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+}

@@ -1,0 +1,165 @@
+<view class="community-page">
+  <scroll-view class="main-scroll" scroll-y enhanced show-scrollbar="{{false}}" bindscrolltolower="onReachBottom">
+    <view class="community-shell">
+      <view class="search-bar">
+        <text>搜索话题、用户、内容</text>
+      </view>
+
+      <view class="tab-row">
+        <text class="tab-item active">推荐</text>
+        <text class="tab-item">关注</text>
+        <text class="tab-item">热门</text>
+        <text class="tab-item">最新</text>
+      </view>
+
+      <view class="topic-row">
+        <view class="topic-pill active"><text>#晒宠日常</text></view>
+        <view class="topic-pill"><text>#养宠问题</text></view>
+        <view class="topic-pill"><text>#问诊反馈</text></view>
+      </view>
+
+      <view wx:for="{{posts}}" wx:key="id" class="post-card">
+        <view class="post-header">
+          <image wx:if="{{item.identityAvatarUrl}}" class="post-avatar" src="{{item.identityAvatarUrl}}" mode="aspectFill" />
+          <view wx:else class="post-avatar">
+            <text>{{item.identityInitial}}</text>
+          </view>
+          <view class="post-meta">
+            <text class="post-name">{{item.identityName}}</text>
+            <text class="post-subline">{{item.identityMeta}}</text>
+            <text wx:if="{{item.showIdentitySignature}}" class="post-signature">{{item.identitySignature}}</text>
+          </view>
+        </view>
+
+        <text class="post-content">{{item.content}}</text>
+
+        <view wx:if="{{item.mediaType === 'video' && item.mediaUrls && item.mediaUrls.length > 0}}" class="media-box video-box" catchtap="">
+          <video
+            class="post-video"
+            src="{{item.mediaUrls[0]}}"
+            controls
+            show-center-play-btn
+            enable-play-gesture
+            object-fit="contain"
+            show-fullscreen-btn
+            enable-progress-gesture
+          />
+        </view>
+
+        <view wx:elif="{{item.mediaUrls && item.mediaUrls.length > 0}}" class="media-box media-image-wrap">
+          <image
+            class="media-image"
+            src="{{item.mediaUrls[0]}}"
+            mode="aspectFill"
+            bindtap="onPreviewMedia"
+            data-urls="{{item.mediaUrls}}"
+            data-current="{{item.mediaUrls[0]}}"
+          />
+        </view>
+
+        <view class="post-actions">
+          <view
+            class="action-item"
+            bindtap="onToggleLike"
+            data-id="{{item.id}}"
+            data-isliked="{{item.isLiked}}"
+            data-idx="{{index}}"
+          >
+            <text>点赞 {{item.likeCount || 0}}</text>
+          </view>
+          <view
+            class="action-item"
+            bindtap="onOpenComments"
+            data-post="{{item}}"
+            data-idx="{{index}}"
+          >
+            <text>评论 {{item.commentCount || 0}}</text>
+          </view>
+          <view class="action-item subtle"><text>收藏</text></view>
+          <view class="action-item subtle"><text>分享</text></view>
+        </view>
+      </view>
+
+      <view wx:if="{{loading}}" class="loading-more">
+        <text>加载中...</text>
+      </view>
+      <view wx:elif="{{!loading && posts.length === 0}}" class="empty-state">
+        <text>还没有帖子，来发第一篇吧</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="publish-fab" bindtap="onOpenPost">
+    <text>＋</text>
+  </view>
+
+  <view wx:if="{{showPostModal}}" class="modal-mask" bindtap="onClosePost">
+    <view class="modal-content" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">发布动态</text>
+        <text class="modal-close" bindtap="onClosePost">✕</text>
+      </view>
+      <textarea
+        class="post-textarea"
+        placeholder="分享你和宠物的精彩时刻..."
+        value="{{newPostContent}}"
+        bindinput="onPostInput"
+        maxlength="500"
+        auto-height
+        focus="{{showPostModal}}"
+      />
+      <view class="img-upload-row">
+        <view wx:for="{{newPostImages}}" wx:key="index" class="upload-thumb">
+          <image class="thumb-img" src="{{item}}" mode="aspectFill"/>
+          <view class="thumb-remove" bindtap="onRemovePostImage" data-index="{{index}}">×</view>
+        </view>
+        <view wx:if="{{newPostImages.length < 6}}" class="add-thumb" bindtap="onAddPostImage">
+          <text class="add-thumb-icon">+</text>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <text class="char-hint">{{newPostContent.length}}/500</text>
+        <button
+          class="publish-btn {{posting ? 'btn-disabled' : ''}}"
+          bindtap="onSubmitPost"
+          disabled="{{posting}}"
+        >{{posting ? '发布中...' : '发布'}}</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showCommentModal}}" class="modal-mask" bindtap="onCloseComments">
+    <view class="comment-modal" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">评论 ({{activePost.commentCount || 0}})</text>
+        <text class="modal-close" bindtap="onCloseComments">✕</text>
+      </view>
+      <scroll-view class="comment-list" scroll-y>
+        <view wx:if="{{loadingComments}}" class="comment-loading">加载中...</view>
+        <view wx:elif="{{comments.length === 0}}" class="comment-empty">暂无评论，来说点什么吧</view>
+        <view wx:else>
+          <view wx:for="{{comments}}" wx:key="id" class="comment-item">
+            <image wx:if="{{item.avatarUrl}}" class="comment-avatar" src="{{item.avatarUrl}}" mode="aspectFill"/>
+            <view wx:else class="comment-avatar comment-avatar-placeholder">{{item.nickname ? item.nickname[0] : '宠'}}</view>
+            <view class="comment-body">
+              <text class="comment-name">{{item.nickname || '用户'}}</text>
+              <text class="comment-text">{{item.content}}</text>
+              <text class="comment-time">{{item.createTime}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="comment-input-bar">
+        <input
+          class="comment-input"
+          placeholder="说点什么..."
+          value="{{commentInput}}"
+          bindinput="onCommentInput"
+          confirm-type="send"
+          bindconfirm="onSendComment"
+        />
+        <button class="send-btn" bindtap="onSendComment">发送</button>
+      </view>
+    </view>
+  </view>
+</view>

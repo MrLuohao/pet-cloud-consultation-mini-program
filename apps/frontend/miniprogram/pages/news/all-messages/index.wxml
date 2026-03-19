@@ -1,0 +1,49 @@
+<view class="page">
+  <!-- 类型筛选 Tab -->
+  <scroll-view class="type-tabs" scroll-x>
+    <view class="tabs-inner">
+      <view
+        wx:for="{{types}}"
+        wx:key="key"
+        class="tab-item {{activeType === item.key ? 'active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onTypeChange"
+      >
+        <text wx:if="{{item.icon}}">{{item.icon}} </text>{{item.label}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <view class="loading-dot"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 消息列表 -->
+  <view wx:elif="{{messages.length > 0}}" class="msg-list">
+    <view
+      wx:for="{{messages}}"
+      wx:key="id"
+      class="msg-item {{item.isRead ? 'read' : 'unread'}}"
+      data-msg="{{item}}"
+      bindtap="onMessageTap"
+    >
+      <view class="msg-icon bg-{{item.color}}">{{item.icon}}</view>
+      <view class="msg-body">
+        <view class="msg-header">
+          <text class="msg-title">{{item.title}}</text>
+          <text class="msg-time">{{item.createTimeStr || ''}}</text>
+        </view>
+        <text class="msg-content">{{item.content}}</text>
+      </view>
+      <view wx:if="{{!item.isRead}}" class="unread-dot"></view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:else class="empty-wrap">
+    <text class="empty-icon">📭</text>
+    <text class="empty-text">暂无消息</text>
+  </view>
+</view>

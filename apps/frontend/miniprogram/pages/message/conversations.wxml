@@ -1,0 +1,25 @@
+<!--pages/message/conversations.wxml-->
+<view class="conversations-page">
+  <view class="conversation-list">
+    <view class="conversation-item" wx:for="{{conversations}}" wx:key="id" bindtap="goToChat" data-id="{{item.targetUserId}}">
+      <view class="avatar-wrap">
+        <image class="avatar" src="{{item.targetAvatarUrl || '/image/default-avatar.png'}}" mode="aspectFill" />
+        <view class="unread-badge" wx:if="{{item.unreadCount > 0}}">{{item.unreadCount > 99 ? '99+' : item.unreadCount}}</view>
+      </view>
+      <view class="conversation-info">
+        <view class="info-header">
+          <text class="nickname">{{item.targetNickname}}</text>
+          <text class="time">{{item.lastTime}}</text>
+        </view>
+        <text class="last-message">{{item.lastMessage}}</text>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{!isLoading && conversations.length === 0}}">
+      <text class="empty-icon">💬</text>
+      <text class="empty-text">暂无私信</text>
+    </view>
+
+    <view class="loading-status" wx:if="{{isLoading}}">加载中...</view>
+  </view>
+</view>

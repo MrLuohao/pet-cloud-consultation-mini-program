@@ -1,0 +1,238 @@
+/* pages/beauty/booking-detail/index.wxss */
+.page {
+  min-height: 100vh;
+  background: #f5f5f7;
+  padding-bottom: 160rpx;
+}
+
+/* 加载 */
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+  gap: 20rpx;
+}
+.loading-dot {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  border: 4rpx solid #007aff;
+  border-top-color: transparent;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 26rpx; color: #999; }
+
+/* 顶部状态英雄区 */
+.status-hero {
+  padding: 48rpx 32rpx 40rpx;
+  background: linear-gradient(135deg, #007aff, #5ac8fa);
+  color: #fff;
+}
+.status-hero.status-orange { background: linear-gradient(135deg, #ff9500, #ffcc02); }
+.status-hero.status-blue   { background: linear-gradient(135deg, #007aff, #5ac8fa); }
+.status-hero.status-green  { background: linear-gradient(135deg, #34c759, #30d158); }
+.status-hero.status-gray   { background: linear-gradient(135deg, #8e8e93, #aeaeb2); }
+
+.status-hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+.status-icon-big { font-size: 64rpx; }
+.status-label { font-size: 36rpx; font-weight: 700; }
+.store-name-hero { font-size: 26rpx; opacity: 0.85; }
+
+/* 通用卡片 */
+.card {
+  background: #fff;
+  margin: 24rpx 32rpx 0;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
+}
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+/* 预约信息行 */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid #f5f5f7;
+}
+.info-row:last-child { border-bottom: none; }
+.info-label { font-size: 28rpx; color: #86868b; flex-shrink: 0; width: 100rpx; }
+.info-value { font-size: 28rpx; color: #1d1d1f; text-align: right; flex: 1; }
+.order-no { color: #007aff; font-family: monospace; }
+
+/* 状态时间轴 */
+.timeline { padding: 8rpx 0; }
+.timeline-item {
+  display: flex;
+  gap: 24rpx;
+  position: relative;
+}
+.timeline-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 56rpx;
+}
+.timeline-dot {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
+}
+.dot-done    { background: #34c759; }
+.dot-active  { background: #007aff; animation: pulse 1.5s ease-in-out infinite; }
+.dot-pending { background: #e5e5ea; }
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,122,255,0.3); }
+  50% { box-shadow: 0 0 0 8rpx rgba(0,122,255,0); }
+}
+.dot-icon { font-size: 24rpx; }
+
+.timeline-line {
+  width: 4rpx;
+  flex: 1;
+  min-height: 40rpx;
+  background: #e5e5ea;
+  border-radius: 2rpx;
+  margin: 4rpx 0;
+}
+.timeline-line.line-done { background: #34c759; }
+
+.timeline-content {
+  flex: 1;
+  padding-bottom: 36rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+.timeline-label { font-size: 30rpx; font-weight: 600; color: #1d1d1f; }
+.timeline-item.done .timeline-label { color: #34c759; }
+.timeline-item.active .timeline-label { color: #007aff; }
+.timeline-desc { font-size: 26rpx; color: #86868b; }
+.timeline-time { font-size: 24rpx; color: #aeaeb2; }
+
+/* 照片网格 */
+.photo-count { font-size: 24rpx; color: #86868b; font-weight: 400; }
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+}
+.photo-item { border-radius: 12rpx; overflow: hidden; aspect-ratio: 1; }
+.photo-img { width: 100%; height: 100%; display: block; }
+
+/* 对比图 */
+.contrast-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.contrast-item {
+  flex: 1;
+  position: relative;
+  border-radius: 16rpx;
+  overflow: hidden;
+  aspect-ratio: 1;
+}
+.contrast-img { width: 100%; height: 100%; display: block; }
+.contrast-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10rpx;
+  text-align: center;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #fff;
+}
+.before-label { background: rgba(142,142,147,0.7); }
+.after-label  { background: rgba(52,199,89,0.7); }
+.contrast-divider { text-align: center; flex-shrink: 0; }
+.contrast-arrow { font-size: 36rpx; color: #007aff; }
+
+.share-btn {
+  margin-top: 24rpx;
+  padding: 20rpx;
+  background: #f5f5f7;
+  border-radius: 12rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #007aff;
+}
+
+/* 底部操作 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #f0f0f0;
+}
+.action-row { display: flex; gap: 20rpx; }
+.btn-cancel-booking {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  border-radius: 44rpx;
+  border: 2rpx solid #ff3b30;
+  color: #ff3b30;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+.btn-review {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  border-radius: 44rpx;
+  background: linear-gradient(135deg, #34c759, #30d158);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+/* 空状态 */
+.empty-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0;
+  gap: 20rpx;
+}
+.empty-icon { font-size: 80rpx; }
+.empty-text { font-size: 28rpx; color: #86868b; }
+.btn-back {
+  margin-top: 20rpx;
+  padding: 16rpx 48rpx;
+  background: #007aff;
+  color: #fff;
+  border-radius: 32rpx;
+  font-size: 28rpx;
+}

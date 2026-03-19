@@ -1,0 +1,100 @@
+/* pages/health/edit.wxss */
+.health-edit-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 150rpx;
+}
+
+.form-section {
+  background: #fff;
+  margin: 20rpx;
+}
+
+.form-item {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  display: flex;
+  align-items: center;
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.form-item-vertical {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.label {
+  width: 150rpx;
+  font-size: 28rpx;
+  color: #333;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
+
+.input {
+  flex: 1;
+  font-size: 28rpx;
+  text-align: right;
+  height: 48rpx;
+  line-height: 48rpx;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.input::placeholder {
+  color: #999;
+}
+
+.picker {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  text-align: right;
+  height: 48rpx;
+  line-height: 48rpx;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 150rpx;
+  padding: 15rpx;
+  background: #f5f5f5;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  line-height: 1.5;
+}
+
+.textarea::placeholder {
+  color: #999;
+}
+
+.delete-btn {
+  margin: 40rpx 30rpx 20rpx;
+  background: #fff;
+  color: #ff6b6b;
+  padding: 30rpx;
+  border-radius: 50rpx;
+  font-size: 28rpx;
+}
+
+.delete-btn::after {
+  border: none;
+}
+
+.save-btn {
+  margin: 0 30rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 30rpx;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+}
+
+.save-btn::after {
+  border: none;
+}

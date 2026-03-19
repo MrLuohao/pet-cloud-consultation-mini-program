@@ -1,0 +1,36 @@
+<view class="page">
+  <!-- 视频播放器 -->
+  <view class="video-wrap" wx:if="{{videoUrl}}">
+    <video
+      id="courseVideo"
+      class="video-player"
+      src="{{videoUrl}}"
+      controls
+      show-progress
+      show-fullscreen-btn
+      enable-progress-gesture
+      bindplay="onVideoPlay"
+      bindpause="onVideoPause"
+      bindended="onVideoEnded"
+      bindtimeupdate="onTimeUpdate"
+      binderror="onVideoError"
+    />
+  </view>
+
+  <!-- 无视频占位 -->
+  <view class="no-video" wx:else>
+    <text class="no-video-icon">📖</text>
+    <text class="no-video-text">本章节为图文内容</text>
+  </view>
+
+  <!-- 章节信息 -->
+  <view class="info-card">
+    <text class="chapter-title">{{chapterTitle}}</text>
+    <view class="progress-row" wx:if="{{duration > 0}}">
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{progress}}%"></view>
+      </view>
+      <text class="progress-text">{{progress}}%</text>
+    </view>
+  </view>
+</view>

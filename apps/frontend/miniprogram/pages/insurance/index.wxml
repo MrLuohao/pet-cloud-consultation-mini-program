@@ -1,0 +1,81 @@
+<!-- pages/insurance/index.wxml -->
+<view class="insurance-page">
+  <!-- 顶部 Hero -->
+  <view class="hero-section">
+    <view class="hero-bg"></view>
+    <view class="hero-content">
+      <view class="coming-badge">即将上线</view>
+      <view class="hero-title">宠物保险</view>
+      <view class="hero-subtitle">为您的毛孩子提供全方位保障</view>
+      <view class="hero-icons">
+        <text>🐶</text>
+        <text>🐱</text>
+        <text>🐹</text>
+        <text>🐰</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 保障亮点 -->
+  <view class="highlights-section">
+    <view class="section-title">保障亮点</view>
+    <view class="highlights-grid">
+      <view class="highlight-item">
+        <text class="highlight-icon">⚡</text>
+        <text class="highlight-name">极速理赔</text>
+        <text class="highlight-desc">最快1小时</text>
+      </view>
+      <view class="highlight-item">
+        <text class="highlight-icon">🏥</text>
+        <text class="highlight-name">全国门诊</text>
+        <text class="highlight-desc">5000+合作医院</text>
+      </view>
+      <view class="highlight-item">
+        <text class="highlight-icon">📱</text>
+        <text class="highlight-name">线上理赔</text>
+        <text class="highlight-desc">手机一键申请</text>
+      </view>
+      <view class="highlight-item">
+        <text class="highlight-icon">🔄</text>
+        <text class="highlight-name">续保优惠</text>
+        <text class="highlight-desc">连续投保享折扣</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 险种列表（预览/锁定状态） -->
+  <view class="products-section">
+    <view class="section-title">险种预览</view>
+    <view class="product-card" wx:for="{{products}}" wx:key="id" bindtap="onProductTap">
+      <view class="product-lock">
+        <view class="product-left">
+          <text class="product-icon">{{item.icon}}</text>
+          <view class="product-info">
+            <view class="product-name-row">
+              <text class="product-name">{{item.name}}</text>
+              <text class="product-tag" wx:if="{{item.tag}}">{{item.tag}}</text>
+            </view>
+            <text class="product-desc">{{item.desc}}</text>
+          </view>
+        </view>
+        <view class="product-price-wrap">
+          <text class="product-price">¥{{item.price}}</text>
+          <text class="product-unit">/{{item.unit}}</text>
+        </view>
+      </view>
+      <view class="lock-mask">
+        <text class="lock-icon">🔒</text>
+        <text class="lock-text">即将开放</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 预约通知 -->
+  <view class="notify-section">
+    <view class="notify-card">
+      <text class="notify-title">🔔 抢先预约</text>
+      <text class="notify-desc">上线后第一时间获得通知，还可享受首月8折优惠</text>
+      <button class="notify-btn" bindtap="onPreRegister">立即预约</button>
+    </view>
+  </view>
+</view>

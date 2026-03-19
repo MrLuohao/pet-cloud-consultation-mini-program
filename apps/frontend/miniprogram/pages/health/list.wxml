@@ -1,0 +1,43 @@
+<!--pages/health/list.wxml-->
+<view class="health-container">
+  <!-- 顶部选择宠物 -->
+  <scroll-view class="pet-selector" scroll-x="{{true}}" wx:if="{{petList.length > 0}}">
+    <view class="pet-item {{selectedPetId === null ? 'active' : ''}}" bindtap="selectPet" data-id="null">
+      全部
+    </view>
+    <view class="pet-item {{selectedPetId === item.id ? 'active' : ''}}" wx:for="{{petList}}" wx:key="id" bindtap="selectPet" data-id="{{item.id}}">
+      {{item.name}}
+    </view>
+  </scroll-view>
+
+  <!-- 健康档案列表 -->
+  <view class="health-list">
+    <view class="health-item" wx:for="{{healthList}}" wx:key="id" bindtap="editHealth" data-id="{{item.id}}">
+      <view class="item-header">
+        <view class="record-type {{item.recordType}}">
+          {{item.recordTypeDesc}}
+        </view>
+        <text class="record-date">{{item.recordDate}}</text>
+      </view>
+      <text class="record-title">{{item.title}}</text>
+      <view class="record-content">{{item.content}}</view>
+      <view class="record-footer" wx:if="{{item.hospitalName || item.doctorName}}">
+        <text wx:if="{{item.hospitalName}}">🏥 {{item.hospitalName}}</text>
+        <text wx:if="{{item.doctorName}}">👨‍⚕️ {{item.doctorName}}</text>
+      </view>
+      <view class="record-next" wx:if="{{item.nextDate}}">
+        <text>下次：{{item.nextDate}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{healthList.length === 0}}">
+    <text class="empty-text">暂无健康档案</text>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn" bindtap="addHealth">
+    <text>+ 添加档案</text>
+  </view>
+</view>

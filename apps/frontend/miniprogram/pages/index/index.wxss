@@ -1,0 +1,538 @@
+.index-page {
+  min-height: 100vh;
+  background: #f8f8f8;
+}
+
+.main-scroll {
+  height: 100vh;
+}
+
+.page-shell {
+  padding: 24rpx 32rpx 48rpx;
+  background:
+    radial-gradient(circle at top, rgba(109, 50, 255, 0.08), transparent 28%),
+    #f8f8f8;
+}
+
+.section-head,
+.pet-header,
+.pet-footer-strip,
+.reminder-row,
+.hero-actions,
+.pet-body,
+.search-bar {
+  display: flex;
+  align-items: center;
+}
+
+.search-bar {
+  min-height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: 44rpx;
+  background: #ffffff;
+  border: 1rpx solid #f1eef5;
+}
+
+.search-focused {
+  border-color: #e2d6ff;
+}
+
+.search-icon,
+.search-clear {
+  color: #a7acb7;
+  font-size: 28rpx;
+}
+
+.search-icon {
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  height: 88rpx;
+  font-size: 24rpx;
+  color: #4b5563;
+}
+
+.search-placeholder {
+  color: #a7acb7;
+}
+
+.search-clear {
+  width: 40rpx;
+  text-align: center;
+}
+
+.hero-card,
+.pet-card-wrap,
+.simple-card {
+  margin-top: 20rpx;
+  background: #ffffff;
+}
+
+.hero-card {
+  padding: 40rpx;
+  border-radius: 48rpx;
+  border: 1rpx solid #eee7fb;
+  background: linear-gradient(180deg, #ffffff 0%, #faf8ff 100%);
+  box-shadow: 0 16rpx 40rpx rgba(109, 50, 255, 0.06);
+}
+
+.hero-chip,
+.hero-trust-chip,
+.pet-chip,
+.pet-count-pill,
+.service-pill,
+.featured-badge {
+  border-radius: 999rpx;
+}
+
+.hero-chip,
+.pet-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10rpx 18rpx;
+  background: #f5f1ff;
+}
+
+.hero-chip text,
+.pet-chip text {
+  color: #6d32ff;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.hero-title,
+.featured-primary-title {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.hero-title {
+  display: block;
+  margin-top: 22rpx;
+  font-size: 42rpx;
+  line-height: 1.25;
+}
+
+.hero-desc,
+.pet-desc,
+.featured-secondary-desc,
+.state-inline-desc,
+.care-summary-subtitle {
+  color: #7c8395;
+}
+
+.hero-desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.hero-trust-row,
+.service-row,
+.pet-header-right,
+.pet-pager {
+  display: flex;
+  align-items: center;
+}
+
+.hero-trust-row {
+  gap: 12rpx;
+  margin-top: 18rpx;
+}
+
+.hero-trust-chip {
+  padding: 12rpx 20rpx;
+  background: #f7f7fa;
+}
+
+.hero-trust-chip.primary {
+  background: #f6f3ff;
+}
+
+.hero-trust-chip text {
+  color: #8c93a5;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.hero-trust-chip.primary text {
+  color: #7a62cc;
+}
+
+.hero-actions {
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.hero-action {
+  height: 88rpx;
+  border-radius: 42rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-action text {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.hero-action-primary {
+  flex: 1;
+  background: #6d32ff;
+}
+
+.hero-action-primary text {
+  color: #ffffff;
+}
+
+.hero-action-secondary {
+  width: 184rpx;
+  background: #f6f2ff;
+}
+
+.hero-action-secondary text {
+  color: #6d32ff;
+}
+
+.pet-card-wrap {
+  padding: 36rpx;
+  border-radius: 48rpx;
+  border: 1rpx solid #eee6fb;
+  background: linear-gradient(180deg, #ffffff 0%, #fbf8ff 100%);
+  box-shadow: 0 12rpx 36rpx rgba(109, 50, 255, 0.05);
+}
+
+.pet-header {
+  justify-content: space-between;
+  margin-top: 18rpx;
+}
+
+.section-title,
+.pet-section-title {
+  color: #1f2937;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.pet-header-right {
+  gap: 12rpx;
+}
+
+.pet-count-pill {
+  min-width: 40rpx;
+  padding: 8rpx 14rpx;
+  background: #f6f3ff;
+}
+
+.pet-count-pill text {
+  color: #6d32ff;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.pet-header-link,
+.section-meta,
+.section-link {
+  color: #b1a7c9;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.pet-body {
+  gap: 24rpx;
+  margin-top: 22rpx;
+}
+
+.pet-avatar-card {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 32rpx;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #f8f5ff 0%, #f0e8ff 100%);
+  border: 1rpx solid #e8ddff;
+}
+
+.pet-avatar-image {
+  width: 100%;
+  height: 100%;
+}
+
+.pet-avatar-fallback {
+  font-size: 56rpx;
+}
+
+.pet-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.pet-name {
+  display: block;
+  color: #1f2937;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.pet-meta {
+  display: block;
+  margin-top: 8rpx;
+  color: #9ca3af;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.pet-desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.pet-footer-strip {
+  justify-content: space-between;
+  margin-top: 20rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 28rpx;
+  background: #f7f4ff;
+  border: 1rpx solid #ede5ff;
+}
+
+.pet-footer-left {
+  color: #6d32ff;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.pet-footer-right {
+  color: #9ca3af;
+  font-size: 22rpx;
+}
+
+.pet-pager {
+  justify-content: center;
+  gap: 12rpx;
+  margin-top: 18rpx;
+}
+
+.pet-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 999rpx;
+  background: #e7e2f2;
+}
+
+.pet-dot-active {
+  width: 36rpx;
+  background: #cdbcff;
+}
+
+.simple-card {
+  padding: 32rpx;
+  border-radius: 40rpx;
+  border: 1rpx solid #f2edf8;
+}
+
+.section-head {
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.service-row {
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.service-pill {
+  flex: 1;
+  padding: 24rpx 16rpx;
+  text-align: center;
+  background: #f7f4ff;
+}
+
+.service-pill text {
+  color: #4b5563;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.reminder-row {
+  gap: 20rpx;
+}
+
+.reminder-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+  background: #fff5f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reminder-text {
+  flex: 1;
+  color: #374151;
+  font-size: 24rpx;
+  line-height: 1.45;
+}
+
+.compact-card {
+  padding-top: 28rpx;
+}
+
+.progress-track {
+  height: 16rpx;
+  border-radius: 8rpx;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #d8cbff;
+  border-radius: inherit;
+}
+
+.care-summary {
+  margin-top: 18rpx;
+}
+
+.care-summary-title {
+  display: block;
+  color: #374151;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.care-summary-subtitle {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 22rpx;
+}
+
+.featured-primary {
+  margin-top: 10rpx;
+  border-radius: 32rpx;
+  overflow: hidden;
+  background: #f4f0ff;
+}
+
+.featured-primary-cover {
+  width: 100%;
+  height: 296rpx;
+  display: block;
+}
+
+.featured-primary-cover.fallback {
+  position: relative;
+  height: 296rpx;
+  background: linear-gradient(135deg, #f4f0ff 0%, #ece8ff 58%, #f7f6ff 100%);
+}
+
+.featured-badge {
+  position: absolute;
+  top: 24rpx;
+  left: 24rpx;
+  padding: 10rpx 18rpx;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.featured-badge text {
+  color: #6d32ff;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.featured-primary-title {
+  position: absolute;
+  left: 28rpx;
+  bottom: 30rpx;
+  right: 28rpx;
+  font-size: 34rpx;
+  line-height: 1.25;
+  color: #5a36d6;
+}
+
+.featured-secondary {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 16rpx;
+  padding: 24rpx;
+  border-radius: 28rpx;
+  background: #fafafc;
+  border: 1rpx solid #eeeaf5;
+}
+
+.featured-secondary-thumb {
+  width: 184rpx;
+  height: 184rpx;
+  border-radius: 28rpx;
+  flex-shrink: 0;
+}
+
+.featured-secondary-thumb.fallback {
+  background: linear-gradient(135deg, #fff7ef 0%, #f9eeda 100%);
+}
+
+.featured-secondary-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.featured-secondary-tag {
+  display: block;
+  color: #b07a2b;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.featured-secondary-title {
+  display: block;
+  margin-top: 8rpx;
+  color: #1f2937;
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.featured-secondary-desc {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+}
+
+.state-inline {
+  margin-top: 22rpx;
+  padding: 28rpx;
+  border-radius: 28rpx;
+  background: #fafafc;
+}
+
+.state-inline-soft {
+  margin-top: 16rpx;
+}
+
+.state-inline-title {
+  display: block;
+  color: #1f2937;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.state-inline-desc {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+}

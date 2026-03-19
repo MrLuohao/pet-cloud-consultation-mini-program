@@ -1,0 +1,108 @@
+<view class="product-detail-page">
+  <view class="detail-body">
+    <view class="hero-poster">
+      <view class="hero-poster__stage">
+        <image
+          wx:if="{{product.coverUrl}}"
+          class="hero-poster__image"
+          src="{{product.coverUrl}}"
+          mode="aspectFit"
+        />
+        <view wx:else class="hero-poster__fallback">
+          <view class="hero-poster__shape hero-poster__shape--large"></view>
+          <view class="hero-poster__shape hero-poster__shape--pill"></view>
+          <view class="hero-poster__shape hero-poster__shape--small"></view>
+          <view class="hero-poster__shadow"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="hero-info">
+      <text class="hero-info__title">{{product.name || heroCopy.title}}</text>
+      <text class="hero-info__subtitle">{{product.summary || heroCopy.subtitle}}</text>
+      <text class="hero-info__price">¥{{displayPrice}}</text>
+    </view>
+
+    <view class="hero-gap"></view>
+
+    <view class="spec-section">
+      <view class="spec-group" wx:for="{{specGroups}}" wx:key="key">
+        <view class="spec-group__head">
+          <text class="spec-group__title">{{item.label}}</text>
+          <text class="spec-group__value">{{item.selectedLabel}}</text>
+        </view>
+        <view class="spec-group__options">
+          <view
+            class="spec-option {{option.selected ? 'spec-option--active' : ''}}"
+            wx:for="{{item.options}}"
+            wx:key="value"
+            wx:for-item="option"
+            data-group="{{item.key}}"
+            data-value="{{option.value}}"
+            bindtap="selectSpec"
+          >
+            <text class="spec-option__label">{{option.label}}</text>
+            <text class="spec-option__hint">{{option.hint}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="highlights">
+      <text class="highlights__item" wx:for="{{highlights}}" wx:key="*this">{{item}}</text>
+    </view>
+
+    <view class="story-sections">
+      <view class="story-card" wx:for="{{storySections}}" wx:key="title">
+        <view class="story-card__visual story-card__visual--{{index}}">
+          <image
+            wx:if="{{item.imageUrl || (product.coverUrl && index === 0)}}"
+            class="story-card__image"
+            src="{{item.imageUrl || product.coverUrl}}"
+            mode="aspectFit"
+          />
+          <view wx:else class="story-card__art">
+            <view class="story-card__art-shape story-card__art-shape--left"></view>
+            <view class="story-card__art-shape story-card__art-shape--right"></view>
+          </view>
+        </view>
+        <text class="story-card__title">{{item.title}}</text>
+        <text class="story-card__desc">{{item.description}}</text>
+      </view>
+    </view>
+
+    <view class="note-section">
+      <text class="note-section__title">{{usageNote.title}}</text>
+      <text class="note-section__content">{{usageNote.content}}</text>
+    </view>
+
+    <view class="review-section" bindtap="goToReviews">
+      <view class="review-section__header">
+        <view class="review-section__headline">
+          <text class="review-section__title">用户评价</text>
+          <text class="review-section__score">{{reviewSummary.avgRatingDisplay}}</text>
+        </view>
+        <text class="review-section__arrow">›</text>
+      </view>
+      <view class="review-section__stats">
+        <text class="review-section__stat">全部 {{reviewSummary.total}}</text>
+        <text class="review-section__stat">好评 {{reviewSummary.goodCount}}</text>
+        <text class="review-section__stat">有图 {{reviewSummary.withImagesCount}}</text>
+      </view>
+      <view wx:if="{{reviewableOrderItem}}" class="review-section__action" catchtap="goToWriteReview">
+        <text>写评价</text>
+      </view>
+    </view>
+
+    <view class="bottom-spacer"></view>
+  </view>
+
+  <view class="detail-bottom-bar">
+    <view class="detail-bottom-bar__secondary" bindtap="addToCart">
+      <text>加入购物袋</text>
+    </view>
+    <view class="detail-bottom-bar__primary" bindtap="buyNow">
+      <text>立即购买</text>
+    </view>
+  </view>
+</view>

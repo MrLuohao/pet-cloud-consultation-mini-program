@@ -1,0 +1,154 @@
+<view class="index-page">
+  <scroll-view class="main-scroll" scroll-y show-scrollbar="{{false}}">
+    <view class="page-shell safe-area-bottom">
+      <view class="search-bar {{searchFocused ? 'search-focused' : ''}}" bindtap="focusSearch">
+        <text class="search-icon">⌕</text>
+        <input
+          class="search-input"
+          placeholder="搜索商品、服务、内容"
+          placeholder-class="search-placeholder"
+          value="{{keyword}}"
+          bindinput="onSearchInput"
+          bindfocus="onSearchFocus"
+          bindblur="onSearchBlur"
+          bindconfirm="onSearch"
+        />
+        <view wx:if="{{keyword}}" class="search-clear" catchtap="onClearSearch">
+          <text>×</text>
+        </view>
+      </view>
+
+      <view class="hero-card" bindtap="goToDiagnosis">
+        <view class="hero-chip"><text>AI健康初诊</text></view>
+        <text class="hero-title">上传照片，快速初步判断宠物健康状态</text>
+        <text class="hero-desc">支持皮肤、精神与饮食异常的初步识别，建议结合在线问诊协同判断。</text>
+        <view class="hero-trust-row">
+          <view class="hero-trust-chip primary"><text>AI初步判断</text></view>
+          <view class="hero-trust-chip"><text>问诊协同</text></view>
+        </view>
+        <view class="hero-actions">
+          <view class="hero-action hero-action-primary" catchtap="goToDiagnosis">
+            <text>立即诊断</text>
+          </view>
+          <view class="hero-action hero-action-secondary" catchtap="goToChat">
+            <text>问医生</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="pet-card-wrap">
+        <view class="pet-chip"><text>宠物身份卡</text></view>
+        <view class="pet-header">
+          <text class="pet-section-title">我的宠物</text>
+          <view class="pet-header-right">
+            <view class="pet-count-pill"><text>{{petCard && petCard.petCount ? petCard.petCount : 0}}</text></view>
+            <text class="pet-header-link" bindtap="goToAddPet">宠物档案</text>
+          </view>
+        </view>
+
+        <view wx:if="{{currentPet}}" class="pet-body" bindtap="goToPetCardDetail">
+          <view class="pet-avatar-card">
+            <image wx:if="{{currentPet.avatarUrl}}" class="pet-avatar-image" src="{{currentPet.avatarUrl}}" mode="aspectFill" />
+            <text wx:else class="pet-avatar-fallback">🐱</text>
+          </view>
+          <view class="pet-main">
+            <text class="pet-name">{{currentPet.name}}</text>
+            <text class="pet-meta">{{currentPet.breed || '品种待补充'}}{{currentPet.ageText ? ' · ' + currentPet.ageText : ''}}</text>
+            <text class="pet-desc">{{petHighlightText}}</text>
+          </view>
+        </view>
+
+        <view wx:else class="state-inline" bindtap="handlePetEntryTap">
+          <text class="state-inline-title">{{loggedIn ? '还没有宠物档案' : '登录后查看宠物档案'}}</text>
+          <text class="state-inline-desc">{{loggedIn ? '补充宠物资料后，这里会展示当前宠物状态与照护信息。' : '同步宠物资料、提醒和照护记录，首页信息会跟随当前宠物自动更新。'}}</text>
+        </view>
+
+        <view class="pet-footer-strip" bindtap="handlePetEntryTap">
+          <text class="pet-footer-left">{{currentPet ? '专属档案已同步' : (loggedIn ? '添加第一只宠物' : '立即登录同步档案')}}</text>
+          <text class="pet-footer-right">查看详情</text>
+        </view>
+
+        <view class="pet-pager">
+          <view
+            wx:for="{{petCard && petCard.pets ? petCard.pets : [1]}}"
+            wx:key="index"
+            class="pet-dot {{index === currentPetIndex ? 'pet-dot-active' : ''}}"
+            data-index="{{index}}"
+            bindtap="switchPet"
+          ></view>
+        </view>
+      </view>
+
+      <view class="simple-card">
+        <text class="section-title">常用服务</text>
+        <view wx:for="{{serviceRows}}" wx:key="index" class="service-row">
+          <view
+            wx:for="{{item}}"
+            wx:key="key"
+            class="service-pill"
+            data-action="{{item.action}}"
+            bindtap="handleServiceTap"
+          >
+            <text>{{item.title}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="simple-card">
+        <view class="section-head">
+          <text class="section-title">健康提醒</text>
+          <text class="section-meta">{{reminderSummary && reminderSummary.pendingCount ? reminderSummary.pendingCount + '条待处理' : '暂无待办'}}</text>
+        </view>
+        <view class="reminder-row" bindtap="handleReminderTap">
+          <view class="reminder-icon"><text>💉</text></view>
+          <text class="reminder-text">{{loggedIn ? reminderHeadline + ' · ' + reminderSubline : '登录后同步疫苗、驱虫、复查和日常观察提醒。'}}</text>
+        </view>
+      </view>
+
+      <view class="simple-card compact-card">
+        <view class="section-head">
+          <text class="section-title">今日照护</text>
+          <text class="section-meta">{{todayCareSummary ? '进行中' : '待开始'}}</text>
+        </view>
+        <view class="progress-track">
+          <view class="progress-fill" style="width: {{todayCareSummary ? todayCareSummary.completionRate : 0}}%;"></view>
+        </view>
+        <view class="care-summary">
+          <text class="care-summary-title">{{loggedIn ? careSummaryTitle : '登录后查看今日照护'}}</text>
+          <text class="care-summary-subtitle">{{loggedIn ? careSummarySubtitle : '待关注：签到、日常记录和 AI 诊断任务'}}</text>
+        </view>
+      </view>
+
+      <view class="simple-card featured-card">
+        <view class="section-head">
+          <text class="section-title">精选内容</text>
+          <text wx:if="{{featuredPrimary}}" class="section-link" bindtap="goToArticleDetail" data-id="{{featuredPrimary.id}}">查看全部</text>
+          <text wx:else class="section-link">查看全部</text>
+        </view>
+
+        <view wx:if="{{featuredPrimary}}" class="featured-primary" bindtap="goToArticleDetail" data-id="{{featuredPrimary.id}}">
+          <image wx:if="{{featuredPrimary.coverUrl}}" class="featured-primary-cover" src="{{featuredPrimary.coverUrl}}" mode="aspectFill" />
+          <view wx:else class="featured-primary-cover fallback">
+            <view class="featured-badge"><text>{{featuredPrimary.tag || '护理指南'}}</text></view>
+            <text class="featured-primary-title">{{featuredPrimary.title}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{featuredSecondary}}" class="featured-secondary" bindtap="goToArticleDetail" data-id="{{featuredSecondary.id}}">
+          <image wx:if="{{featuredSecondary.coverUrl}}" class="featured-secondary-thumb" src="{{featuredSecondary.coverUrl}}" mode="aspectFill" />
+          <view wx:else class="featured-secondary-thumb fallback"></view>
+          <view class="featured-secondary-meta">
+            <text class="featured-secondary-tag">{{featuredSecondary.tag || '养护建议'}}</text>
+            <text class="featured-secondary-title">{{featuredSecondary.title}}</text>
+            <text class="featured-secondary-desc">{{featuredSecondary.summary}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{!featuredPrimary}}" class="state-inline state-inline-soft">
+          <text class="state-inline-title">内容正在准备中</text>
+          <text class="state-inline-desc">后续会在这里持续补充护理、饮食和行为训练主题内容。</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

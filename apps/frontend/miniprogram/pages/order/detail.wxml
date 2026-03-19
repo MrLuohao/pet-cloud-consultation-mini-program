@@ -1,0 +1,154 @@
+<view class="order-detail-page">
+  <view class="order-detail-body">
+    <view class="order-status-card order-status-card--{{viewModel.statusVariant}}">
+      <view class="order-status-card__top">
+        <text class="order-status-card__title">{{viewModel.statusTitle}}</text>
+        <view class="order-status-card__chip">
+          <text>{{viewModel.statusChip}}</text>
+        </view>
+      </view>
+      <text class="order-status-card__hint">{{viewModel.statusHint}}</text>
+      <view class="order-status-card__progress">
+        <view class="order-status-card__progress-track">
+          <view class="order-status-card__progress-fill order-status-card__progress-fill--{{viewModel.statusVariant}}"></view>
+        </view>
+        <text class="order-status-card__progress-text">{{viewModel.statusProgressText}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{viewModel.receiverLine}}" class="order-card">
+      <view class="order-card__header">
+        <text class="order-card__title">收货信息</text>
+        <text wx:if="{{viewModel.statusVariant !== 'completed'}}" class="order-card__hint">待付款后确认</text>
+      </view>
+      <text class="order-address__receiver">{{viewModel.receiverLine}}</text>
+      <text class="order-address__detail">{{viewModel.receiverAddress}}</text>
+    </view>
+
+    <view class="order-card">
+      <text class="order-card__title">商品信息</text>
+      <view class="order-products">
+        <view wx:for="{{viewModel.products}}" wx:key="index" class="order-product">
+          <image wx:if="{{item.coverUrl}}" class="order-product__thumb" src="{{item.coverUrl}}" mode="aspectFill"></image>
+          <view wx:else class="order-product__thumb order-product__thumb--placeholder"></view>
+          <view class="order-product__info">
+            <text class="order-product__name">{{item.title}}</text>
+            <text class="order-product__meta">{{item.meta}}</text>
+            <text class="order-product__price">{{item.priceText}}</text>
+          </view>
+          <text class="order-product__quantity">{{item.quantityText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="order-card">
+      <text class="order-card__title">{{viewModel.amountTitle}}</text>
+      <view class="order-amounts">
+        <view wx:for="{{viewModel.amountRows}}" wx:key="label" class="order-amounts__row">
+          <text class="order-amounts__label">{{item.label}}</text>
+          <text class="order-amounts__value {{item.emphasis ? 'order-amounts__value--emphasis' : ''}}">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="order-card">
+      <text class="order-card__title">订单信息</text>
+      <view class="order-info">
+        <view wx:for="{{viewModel.infoRows}}" wx:key="label" class="order-info__row">
+          <text class="order-info__label">{{item.label}}</text>
+          <text class="order-info__value">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{viewModel.showTimeline && timeline.length > 0}}" class="order-card">
+      <text class="order-card__title">状态轨迹</text>
+      <view class="order-timeline">
+        <view wx:for="{{timeline}}" wx:key="index" class="order-timeline__item">
+          <view class="order-timeline__dot"></view>
+          <view class="order-timeline__content">
+            <text class="order-timeline__title">{{item.toStatusDesc || item.action}}</text>
+            <text class="order-timeline__meta">{{item.operatorName || item.operatorType || '系统'}} · {{item.operateTime}}</text>
+            <text wx:if="{{item.remark}}" class="order-timeline__remark">{{item.remark}}</text>
+            <text wx:if="{{item.trackingNo}}" class="order-timeline__remark">运单号：{{item.trackingNo}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="order-detail-safe"></view>
+  </view>
+
+<view wx:if="{{viewModel.primaryAction || viewModel.secondaryAction}}" class="order-detail-bottom">
+  <view wx:if="{{viewModel.secondaryAction}}" class="order-detail-bottom__secondary" bindtap="handleSecondaryAction">
+      <text>{{viewModel.secondaryAction.label}}</text>
+    </view>
+    <view wx:if="{{viewModel.primaryAction}}" class="order-detail-bottom__primary" bindtap="handlePrimaryAction">
+      <text>{{viewModel.primaryAction.label}}</text>
+    </view>
+  </view>
+</view>
+
+<view class="pay-overlay" wx:if="{{showPayPanel || showCancelSheet}}" bindtap="{{showCancelSheet ? 'closeCancelSheet' : 'hidePayPanel'}}"></view>
+
+<view class="pay-panel {{showPayPanel ? 'pay-panel-show' : ''}}">
+  <view class="pay-panel-handle"></view>
+  <view class="pay-panel-title">确认支付</view>
+  <view class="pay-amount-wrap">
+    <text class="pay-amount-num">{{order.payAmount}}</text>
+  </view>
+  <view class="pay-method-row">
+    <view class="pay-method-left">
+      <view class="pay-method-icon"><text>微</text></view>
+      <text class="pay-method-name">微信支付</text>
+    </view>
+    <view class="pay-method-check">✓</view>
+  </view>
+  <view class="pay-divider"></view>
+  <button class="pay-confirm-btn" loading="{{paying}}" bindtap="confirmPay">确认支付</button>
+  <view class="pay-cancel-text" bindtap="hidePayPanel">取消</view>
+</view>
+
+<view class="cancel-sheet {{showCancelSheet ? 'cancel-sheet--show' : ''}}">
+  <view class="cancel-sheet__handle"></view>
+  <view class="cancel-sheet__summary">
+    <text class="cancel-sheet__title">取消订单</text>
+    <text class="cancel-sheet__subtitle">选择一个原因，帮助我们持续优化体验</text>
+  </view>
+
+  <view class="cancel-sheet__reasons">
+    <view
+      wx:for="{{cancelReasonOptions}}"
+      wx:key="key"
+      class="cancel-reason {{selectedCancelReason === item.key ? 'cancel-reason--active' : ''}}"
+      bindtap="selectCancelReason"
+      data-reason="{{item.key}}"
+    >
+      <text class="cancel-reason__label">{{item.label}}</text>
+      <view wx:if="{{selectedCancelReason === item.key}}" class="cancel-reason__check">
+        <text>✓</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="cancel-sheet__note">
+    <text class="cancel-sheet__note-label">补充说明（可选）</text>
+    <textarea
+      class="cancel-sheet__note-input"
+      placeholder="如果愿意，也可以补充取消原因"
+      placeholder-class="cancel-sheet__note-placeholder"
+      maxlength="100"
+      value="{{cancelNote}}"
+      bindinput="onCancelNoteInput"
+    />
+  </view>
+
+  <view class="cancel-sheet__actions">
+    <view class="cancel-sheet__secondary" bindtap="closeCancelSheet">
+      <text>暂不取消</text>
+    </view>
+    <view class="cancel-sheet__primary" bindtap="confirmCancelOrder">
+      <text>确认取消</text>
+    </view>
+  </view>
+</view>

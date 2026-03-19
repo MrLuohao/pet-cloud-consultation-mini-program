@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "pageKey": "cart-empty",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "erpuu",
+    "frameName": "购物车页 Empty State"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [0, 32, 40, 32],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "textPrimary": "#22262E",
+      "textSecondary": "#8A8F98",
+      "actionPrimary": "#3A3D45"
+    },
+    "radius": {
+      "button": 10
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 18, "fontWeight": "600" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "y5XNl", "copy": ["9:41", "5G   100%"] },
+    { "key": "empty_state", "type": "centered_empty_state", "sourceNodeId": "JZ3hu", "copy": ["还没有加入商品", "从日常主粮或护理好物开始看看。", "去逛逛"] }
+  ],
+  "dataBindings": [
+    { "sectionKey": "empty_state", "api": "GET /api/cart/list", "fields": ["items.length"] }
+  ],
+  "actions": [
+    { "name": "goShopping", "target": "/pages/shop/shop", "sectionKey": "empty_state" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "erpuu",
+    "criticalCheckpoints": [
+      "empty state remains vertically centered",
+      "illustration stays understated and neutral",
+      "single CTA remains the only strong action"
+    ]
+  }
+}

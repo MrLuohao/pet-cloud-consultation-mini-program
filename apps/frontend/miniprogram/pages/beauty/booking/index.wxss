@@ -1,0 +1,175 @@
+.page {
+  min-height: 100vh;
+  background: #f5f5f7;
+  padding-bottom: 140rpx;
+}
+
+.store-bar {
+  background: #fff;
+  padding: 20rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.store-bar-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.section {
+  background: #fff;
+  border-radius: 24rpx;
+  margin: 16rpx;
+  padding: 24rpx 28rpx;
+}
+
+.section-header {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 20rpx;
+}
+
+.picker-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+}
+
+.picker-label {
+  font-size: 28rpx;
+  color: #3c3c43;
+}
+
+.picker-arrow {
+  font-size: 32rpx;
+  color: #86868b;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #86868b;
+  padding: 12rpx 0;
+}
+
+.service-check-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f5f5f7;
+}
+
+.service-check-item:last-child {
+  border-bottom: none;
+}
+
+.check-box {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  border: 3rpx solid #d1d1d6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: #fff;
+}
+
+.check-box.checked {
+  background: #667eea;
+  border-color: #667eea;
+}
+
+.service-info-wrap {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.service-name {
+  font-size: 28rpx;
+  color: #1d1d1f;
+}
+
+.service-price {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+.slots-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.slot-item {
+  border: 2rpx solid #e5e5ea;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  text-align: center;
+}
+
+.slot-item.selected {
+  border-color: #667eea;
+  background: #f3f0ff;
+}
+
+.slot-item.unavailable {
+  opacity: 0.4;
+}
+
+.slot-time {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 6rpx;
+}
+
+.slot-remaining {
+  display: block;
+  font-size: 22rpx;
+  color: #6e6e73;
+}
+
+.remark-input {
+  width: 100%;
+  height: 160rpx;
+  font-size: 28rpx;
+  color: #1d1d1f;
+  border: none;
+  background: #f5f5f7;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 20rpx 32rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -2rpx 20rpx rgba(0,0,0,0.06);
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  text-align: center;
+  padding: 28rpx;
+  border-radius: 24rpx;
+}
+
+.btn-submit.disabled {
+  opacity: 0.6;
+}

@@ -1,0 +1,216 @@
+<!--pages/product/reviews.wxml-->
+<wxs module="utils">
+module.exports = {
+  getStars: function(rating, type) {
+    var result = ''
+    var count = type === 'full' ? rating : (5 - rating)
+    var char = type === 'full' ? '★' : '☆'
+    for (var i = 0; i < count; i++) {
+      result += char
+    }
+    return result
+  }
+}
+</wxs>
+<view class="reviews-container">
+  <!-- 筛选Tab -->
+  <view class="filter-tabs">
+    <view
+      wx:for="{{filterTabs}}"
+      wx:key="key"
+      class="tab-item {{currentFilter === item.key ? 'active' : ''}}"
+      data-filter="{{item.key}}"
+      bindtap="switchFilter"
+    >
+      <text>{{item.name}}</text>
+      <text class="tab-count" wx:if="{{item.key === 'all'}}">({{summary.total}})</text>
+      <text class="tab-count" wx:if="{{item.key === 'good'}}">({{summary.goodCount}})</text>
+      <text class="tab-count" wx:if="{{item.key === 'bad'}}">({{summary.badCount}})</text>
+      <text class="tab-count" wx:if="{{item.key === 'withImages'}}">({{summary.withImagesCount}})</text>
+    </view>
+  </view>
+
+  <!-- 评价列表 -->
+  <view class="review-list">
+    <view class="review-item" wx:for="{{reviews}}" wx:key="id">
+      <!-- 用户信息行 -->
+      <view class="review-header">
+        <view class="user-info">
+          <image
+            class="user-avatar"
+            src="{{item.userAvatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'}}"
+            mode="aspectFill"
+          />
+          <view class="user-meta">
+            <text class="user-name">{{item.userNickname || '匿名用户'}}</text>
+            <view class="rating-row">
+              <text class="stars">{{utils.getStars(item.rating, 'full')}}{{utils.getStars(item.rating, 'empty')}}</text>
+              <text class="review-time">{{item.createTimeText}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 评价内容 -->
+      <view class="review-content">
+        <text class="content-text">{{item.content}}</text>
+        <text class="edited-tag" wx:if="{{item.isEdited}}">（已编辑）</text>
+      </view>
+
+      <!-- 评价图片 -->
+      <view class="review-images" wx:if="{{item.images && item.images.length > 0}}">
+        <image
+          wx:for="{{item.images}}"
+          wx:for-item="img"
+          wx:for-index="imgIndex"
+          wx:key="imgIndex"
+          class="review-image"
+          src="{{img}}"
+          mode="aspectFill"
+          data-url="{{img}}"
+          data-urls="{{item.images}}"
+          bindtap="previewImage"
+        />
+      </view>
+
+      <!-- 追评内容 -->
+      <view class="follow-up" wx:if="{{item.followUpContent}}">
+        <view class="follow-up-header">
+          <text class="follow-up-tag">追评</text>
+          <text class="follow-up-time">{{item.followUpTime}}</text>
+        </view>
+        <text class="follow-up-content">{{item.followUpContent}}</text>
+      </view>
+
+      <!-- 商家回复 -->
+      <view class="merchant-reply" wx:if="{{item.replyContent}}">
+        <view class="reply-header">
+          <text class="reply-tag">商家回复</text>
+        </view>
+        <text class="reply-content">{{item.replyContent}}</text>
+      </view>
+
+      <!-- 底部操作栏 -->
+      <view class="review-footer">
+        <!-- 自己的评价显示编辑/追评按钮 -->
+        <view class="owner-actions" wx:if="{{item.userId === currentUserId}}">
+          <!-- 编辑按钮（未追评时显示） -->
+          <view class="action-btn edit-btn" wx:if="{{!item.followUpContent}}" data-index="{{index}}" bindtap="openEditPopup">
+            <text class="action-icon">✏️</text>
+            <text>编辑</text>
+          </view>
+          <!-- 追评按钮（未追评时显示） -->
+          <view class="action-btn followup-btn" wx:if="{{!item.followUpContent}}" data-index="{{index}}" bindtap="openFollowUpPopup">
+            <text class="action-icon">💬</text>
+            <text>追评</text>
+          </view>
+        </view>
+        <!-- 点赞按钮 -->
+        <view class="like-btn {{item.isLiked ? 'liked' : ''}}" data-id="{{item.id}}" data-index="{{index}}" bindtap="toggleLike">
+          <text class="like-icon">{{item.isLiked ? '❤️' : '🤍'}}</text>
+          <text class="like-count">{{item.likeCount || 0}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && reviews.length === 0}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">暂无评价</text>
+      <text class="empty-hint">成为第一个评价的用户吧</text>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+    <view class="no-more" wx:if="{{!hasMore && reviews.length > 0}}">
+      <text>没有更多了</text>
+    </view>
+  </view>
+
+  <!-- 底部占位 -->
+  <view class="bottom-placeholder"></view>
+</view>
+
+<!-- 编辑评价弹窗 -->
+<view class="popup-mask" wx:if="{{showEditPopup}}" bindtap="closeEditPopup">
+  <view class="popup-container" catchtap="stopPropagation">
+    <view class="popup-header">
+      <text class="popup-title">编辑评价</text>
+      <view class="popup-close" bindtap="closeEditPopup">✕</view>
+    </view>
+
+    <!-- 评分 -->
+    <view class="rating-section">
+      <text class="section-label">评分</text>
+      <view class="rating-stars">
+        <text
+          wx:for="{{[1,2,3,4,5]}}"
+          wx:key="*this"
+          class="star {{editForm.rating >= item ? 'active' : ''}}"
+          data-rating="{{item}}"
+          bindtap="setEditRating"
+        >★</text>
+      </view>
+    </view>
+
+    <!-- 评价内容 -->
+    <view class="content-section">
+      <textarea
+        class="content-textarea"
+        placeholder="分享您的购买体验吧~"
+        maxlength="500"
+        value="{{editForm.content}}"
+        bindinput="onEditInput"
+      />
+      <text class="char-count">{{editForm.content.length}}/500</text>
+    </view>
+
+    <!-- 图片 -->
+    <view class="image-section">
+      <view class="image-list">
+        <view class="image-item" wx:for="{{editForm.images}}" wx:key="*this">
+          <image src="{{item}}" mode="aspectFill" bindtap="previewEditImage" data-url="{{item}}" />
+          <view class="delete-btn" catchtap="deleteEditImage" data-index="{{index}}">✕</view>
+        </view>
+        <view class="add-image-btn" wx:if="{{editForm.images.length < 9}}" bindtap="chooseEditImage">
+          <text class="add-icon">+</text>
+          <text class="add-text">添加图片</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="popup-submit-btn" bindtap="submitEdit">保存修改</view>
+  </view>
+</view>
+
+<!-- 追评弹窗 -->
+<view class="popup-mask" wx:if="{{showFollowUpPopup}}" bindtap="closeFollowUpPopup">
+  <view class="popup-container" catchtap="stopPropagation">
+    <view class="popup-header">
+      <text class="popup-title">追加评价</text>
+      <view class="popup-close" bindtap="closeFollowUpPopup">✕</view>
+    </view>
+
+    <!-- 原评价内容 -->
+    <view class="original-review" wx:if="{{followUpReview}}">
+      <text class="original-label">原评价：</text>
+      <text class="original-content">{{followUpReview.content}}</text>
+    </view>
+
+    <!-- 追评内容 -->
+    <view class="content-section">
+      <textarea
+        class="content-textarea"
+        placeholder="追加您使用一段时间后的感受~"
+        maxlength="300"
+        value="{{followUpContent}}"
+        bindinput="onFollowUpInput"
+      />
+      <text class="char-count">{{followUpContent.length}}/300</text>
+    </view>
+
+    <view class="popup-submit-btn" bindtap="submitFollowUp">提交追评</view>
+  </view>
+</view>

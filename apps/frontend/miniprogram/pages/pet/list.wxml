@@ -1,0 +1,90 @@
+<view class="pet-page">
+  <view class="pet-shell">
+    <view class="pet-content">
+      <text class="pet-page__title">宠物档案</text>
+
+      <view wx:if="{{hasPets}}" class="pet-stage">
+        <view class="pet-hero-card pet-hero-card--{{primaryPetCard.themeClass}}">
+          <view class="pet-media pet-media--{{primaryPetCard.themeClass}}">
+            <view class="pet-orb pet-orb--one"></view>
+            <view class="pet-orb pet-orb--two"></view>
+            <view class="pet-count-chip">{{primaryPetCard.countChip}}</view>
+            <view class="pet-portrait">
+              <image wx:if="{{primaryPetCard.avatarUrl}}" class="pet-portrait__image" src="{{primaryPetCard.avatarUrl}}" mode="aspectFill"></image>
+              <text wx:else class="pet-portrait__glyph">{{primaryPetCard.avatarText}}</text>
+            </view>
+          </view>
+
+          <view class="pet-card__info">
+            <view class="pet-card__name-row">
+              <text class="pet-card__name">{{primaryPetCard.name}}</text>
+              <view class="pet-gender pet-gender--{{primaryPetCard.themeClass}}">
+                <text class="pet-gender__icon">{{primaryPetCard.genderIcon}}</text>
+                <text>{{primaryPetCard.genderText}}</text>
+              </view>
+            </view>
+
+            <text class="pet-card__meta">{{primaryPetCard.metaText}}</text>
+
+            <view class="pet-status-chip">
+              <text class="pet-status-chip__icon">♥</text>
+              <text>{{primaryPetCard.summaryText}}</text>
+            </view>
+
+            <view class="pet-card__actions">
+              <button class="pet-primary-action pet-primary-action--{{primaryPetCard.themeClass}}" bindtap="openArchive" data-id="{{primaryPetCard.id}}">
+                查看档案
+              </button>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{nextPetCard}}" class="pet-preview-card pet-preview-card--{{nextPetCard.themeClass}}">
+          <view class="pet-preview-card__frost"></view>
+          <view class="pet-media pet-media--{{nextPetCard.themeClass}} pet-media--preview">
+            <view class="pet-orb pet-orb--one"></view>
+            <view class="pet-orb pet-orb--two"></view>
+            <view class="pet-count-chip pet-count-chip--secondary">{{nextPetCard.countChip}}</view>
+            <view class="pet-portrait pet-portrait--preview">
+              <image wx:if="{{nextPetCard.avatarUrl}}" class="pet-portrait__image" src="{{nextPetCard.avatarUrl}}" mode="aspectFill"></image>
+              <text wx:else class="pet-portrait__glyph pet-portrait__glyph--secondary">{{nextPetCard.avatarText}}</text>
+            </view>
+          </view>
+
+          <view class="pet-card__info">
+            <view class="pet-card__name-row">
+              <text class="pet-card__name">{{nextPetCard.name}}</text>
+              <view class="pet-gender pet-gender--{{nextPetCard.themeClass}}">
+                <text class="pet-gender__icon">{{nextPetCard.genderIcon}}</text>
+                <text>{{nextPetCard.genderText}}</text>
+              </view>
+            </view>
+
+            <text class="pet-card__meta">{{nextPetCard.metaText}}</text>
+
+            <view class="pet-status-chip">
+              <text class="pet-status-chip__icon">♥</text>
+              <text>{{nextPetCard.summaryText}}</text>
+            </view>
+
+            <view class="pet-card__actions">
+              <button class="pet-primary-action pet-primary-action--{{nextPetCard.themeClass}}" bindtap="openArchive" data-id="{{nextPetCard.id}}">
+                查看档案
+              </button>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:else class="pet-empty">
+        <view class="pet-empty__halo"></view>
+        <text class="pet-empty__title">还没有宠物档案</text>
+        <text class="pet-empty__text">开始记录成长与健康信息</text>
+      </view>
+    </view>
+
+    <view class="pet-bottom-action">
+      <button class="pet-add-button" bindtap="addPet">新增宠物</button>
+    </view>
+  </view>
+</view>

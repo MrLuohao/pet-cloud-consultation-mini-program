@@ -1,0 +1,123 @@
+{
+  "entryPagePath": "pages/index/index",
+  "pages": [
+    "pages/index/index",
+    "pages/shop/shop",
+    "pages/news/news",
+    "pages/user/user",
+    "pages/login/login",
+    "pages/course/course",
+    "pages/beauty/beauty",
+    "pages/recommend/detail",
+    "pages/chat/chat",
+    "pages/diagnosis/diagnosis",
+    "pages/cart/cart",
+    "pages/product/detail",
+    "pages/order/confirm",
+    "pages/order/detail",
+    "pages/user/profile",
+    "pages/coupon/center",
+    "pages/coupon/my",
+    "pages/pet/list",
+    "pages/pet/edit",
+    "pages/address/list",
+    "pages/address/edit",
+    "pages/consultation/doctor-list",
+    "pages/consultation/doctor-detail",
+    "pages/consultation/create",
+    "pages/consultation/chat",
+    "pages/consultation/list",
+    "pages/health/list",
+    "pages/health/edit",
+    "pages/search/result",
+    "pages/collection/list",
+    "pages/task/index",
+    "pages/vip/index",
+    "pages/settings/settings",
+    "pages/feedback/feedback",
+    "pages/product/reviews",
+    "pages/order/pending-review",
+    "pages/order/review",
+    "pages/news/all-messages/index",
+    "pages/beauty/detail/index",
+    "pages/beauty/booking/index",
+    "pages/beauty/booking-list/index",
+    "pages/course/detail/index",
+    "pages/course/player/index",
+    "pages/health/reminder/index",
+    "pages/pet/timeline/index",
+    "pages/order/pay-result/index",
+    "pages/insurance/index",
+    "pages/beauty/booking-detail/index",
+    "pages/consultation/urgent/index",
+    "pages/shop/subscription/index",
+    "pages/community/index",
+    "pages/community/tab",
+    "pages/community/detail",
+    "pages/community/search",
+    "pages/community/topic",
+    "pages/community/publish",
+    "pages/message/conversations",
+    "pages/message/chat",
+    "pages/user/followers",
+    "pages/user/followings"
+  ],
+  "window": {
+    "backgroundColor": "#F8F8F8",
+    "backgroundColorTop": "#F8F8F8",
+    "backgroundColorBottom": "#F8F8F8",
+    "backgroundTextStyle": "dark",
+    "navigationBarTitleText": "伴宠云诊",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTextStyle": "black",
+    "homeButton": false
+  },
+  "tabBar": {
+    "color": "#86868B",
+    "selectedColor": "#6D32FF",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "/image/首页.png",
+        "selectedIconPath": "/image/首页.png"
+      },
+      {
+        "pagePath": "pages/shop/shop",
+        "text": "商城",
+        "iconPath": "/image/商城.png",
+        "selectedIconPath": "/image/商城.png"
+      },
+      {
+        "pagePath": "pages/community/tab",
+        "text": "社区",
+        "iconPath": "/image/社区.png",
+        "selectedIconPath": "/image/社区-active.png"
+      },
+      {
+        "pagePath": "pages/news/news",
+        "text": "消息",
+        "iconPath": "/image/消息.png",
+        "selectedIconPath": "/image/消息.png"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "我的",
+        "iconPath": "/image/我的.png",
+        "selectedIconPath": "/image/我的.png"
+      }
+    ]
+  },
+  "debug": false,
+  "requiredBackgroundModes": ["audio", "location"],
+  "requiredPrivateInfos": ["getLocation", "onLocationChange", "startLocationUpdateBackground", "chooseAddress"],
+  "resizable": true,
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于为您提供更精确的服务"
+    }
+  },
+  "style": "v2"
+}

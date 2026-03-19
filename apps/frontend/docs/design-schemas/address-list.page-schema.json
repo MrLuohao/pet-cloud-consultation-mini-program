@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "pageKey": "address-list",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "13Bdg",
+    "frameName": "地址管理页 Address List"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "surface": "#FFFEFB",
+      "surfaceSoft": "#FFFCF8",
+      "textPrimary": "#20252C",
+      "textSecondary": "#958F84",
+      "borderSoft": "#ECE5DA",
+      "actionPrimary": "#30343C"
+    },
+    "radius": {
+      "helper": 18,
+      "card": 26,
+      "button": 18
+    },
+    "typography": {
+      "sectionTitle": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "button": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "YLgat", "copy": ["9:41", "5G   100%"] },
+    { "key": "helper_card", "type": "address_helper_card", "sourceNodeId": "8sm4e", "copy": ["默认地址会优先用于下单", "从订单进入时，也可以直接切换并确认使用", "新增地址"] },
+    { "key": "default_section", "type": "address_default_section", "sourceNodeId": "iPFZq", "copy": ["默认地址"] },
+    { "key": "other_section", "type": "address_other_section", "sourceNodeId": "NKqr3", "copy": ["其他地址", "点击即可切换"] },
+    { "key": "bottom_action", "type": "address_confirm_action", "sourceNodeId": "btj35", "copy": ["确认并使用该地址", "已切换到当前选中的地址"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "default_section",
+      "api": "GET /api/address/list",
+      "fields": ["[].id", "[].contactName", "[].contactPhone", "[].province", "[].district", "[].fullAddress", "[].isDefault"]
+    },
+    {
+      "sectionKey": "other_section",
+      "api": "GET /api/address/list",
+      "fields": ["[].id", "[].contactName", "[].contactPhone", "[].province", "[].district", "[].fullAddress"]
+    }
+  ],
+  "actions": [
+    { "name": "selectAddress", "target": "address-active-change", "sectionKey": "default_section" },
+    { "name": "selectAddress", "target": "address-active-change", "sectionKey": "other_section" },
+    { "name": "editAddress", "target": "/pages/address/edit", "sectionKey": "default_section" },
+    { "name": "editAddress", "target": "/pages/address/edit", "sectionKey": "other_section" },
+    { "name": "addAddress", "target": "/pages/address/edit", "sectionKey": "helper_card" },
+    { "name": "confirmAddress", "target": "order-return-or-set-default", "sectionKey": "bottom_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "13Bdg",
+    "criticalCheckpoints": [
+      "default address card stays visually dominant over other addresses",
+      "helper card and bottom CTA use the same warm neutral transaction tone",
+      "address cards keep edit affordance without regressing into plain list rows"
+    ]
+  }
+}

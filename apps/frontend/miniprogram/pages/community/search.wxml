@@ -1,0 +1,87 @@
+<!--pages/community/search.wxml-->
+<view class="search-page">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索话题、用户、内容"
+        value="{{keyword}}"
+        bindinput="onInput"
+        bindconfirm="doSearch"
+        focus="{{true}}"
+      />
+      <text class="clear-btn" wx:if="{{keyword}}" bindtap="clearKeyword">✕</text>
+    </view>
+    <text class="cancel-btn" bindtap="goBack">取消</text>
+  </view>
+
+  <!-- 搜索历史 -->
+  <view class="search-history" wx:if="{{!hasSearched && historyList.length > 0}}">
+    <view class="history-header">
+      <text class="history-title">搜索历史</text>
+      <text class="clear-history" bindtap="clearHistory">清空</text>
+    </view>
+    <view class="history-tags">
+      <view class="history-tag" wx:for="{{historyList}}" wx:key="*this" bindtap="searchHistory" data-keyword="{{item}}">
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 热门话题 -->
+  <view class="hot-topics" wx:if="{{!hasSearched}}">
+    <view class="section-title">热门话题</view>
+    <view class="topic-list">
+      <view class="topic-item" wx:for="{{hotTopics}}" wx:key="id" bindtap="goToTopic" data-id="{{item.id}}">
+        <text class="topic-icon">{{item.icon || '📌'}}</text>
+        <view class="topic-info">
+          <text class="topic-name">#{{item.name}}</text>
+          <text class="topic-count">{{item.postCount}} 讨论</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view class="search-result" wx:if="{{hasSearched}}">
+    <view class="result-tabs">
+      <view class="tab-item {{currentTab === 'posts' ? 'active' : ''}}" bindtap="switchTab" data-tab="posts">帖子</view>
+      <view class="tab-item {{currentTab === 'topics' ? 'active' : ''}}" bindtap="switchTab" data-tab="topics">话题</view>
+    </view>
+
+    <!-- 帖子结果 -->
+    <view class="post-result" wx:if="{{currentTab === 'posts'}}">
+      <view class="post-item" wx:for="{{posts}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+        <view class="post-info">
+          <text class="post-content">{{item.content}}</text>
+          <view class="post-meta">
+            <text class="post-author">{{item.nickname}}</text>
+            <text class="post-stats">❤️ {{item.likeCount}} 💬 {{item.commentCount}}</text>
+          </view>
+        </view>
+        <image class="post-image" wx:if="{{item.mediaUrls && item.mediaUrls[0]}}" src="{{item.mediaUrls[0]}}" mode="aspectFill" />
+      </view>
+      <view class="empty-result" wx:if="{{posts.length === 0 && !isLoading}}">
+        <text class="empty-icon">🔍</text>
+        <text class="empty-text">没有找到相关内容</text>
+      </view>
+    </view>
+
+    <!-- 话题结果 -->
+    <view class="topic-result" wx:if="{{currentTab === 'topics'}}">
+      <view class="topic-item" wx:for="{{topics}}" wx:key="id" bindtap="goToTopic" data-id="{{item.id}}">
+        <text class="topic-icon">{{item.icon || '📌'}}</text>
+        <view class="topic-info">
+          <text class="topic-name">#{{item.name}}</text>
+          <text class="topic-count">{{item.postCount}} 讨论</text>
+        </view>
+      </view>
+      <view class="empty-result" wx:if="{{topics.length === 0 && !isLoading}}">
+        <text class="empty-icon">🔍</text>
+        <text class="empty-text">没有找到相关话题</text>
+      </view>
+    </view>
+  </view>
+</view>

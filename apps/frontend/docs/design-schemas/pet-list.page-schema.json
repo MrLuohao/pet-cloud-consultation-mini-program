@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "pageKey": "pet-list",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "cKCx8",
+    "frameName": "我的宠物列表 My Pets"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FBF8FF",
+      "surfaceSecondary": "#F6F8FF",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#8B879A",
+      "accentPrimary": "#6D32FF",
+      "accentSecondary": "#5F74DA",
+      "borderSoft": "#EEE6FB",
+      "ctaDark": "#30343C"
+    },
+    "radius": {
+      "card": 30,
+      "media": 24,
+      "button": 18,
+      "pill": 999
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "700" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "600" },
+      "button": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "Cgtlw", "copy": ["9:41", "5G   100%"] },
+    { "key": "pet_gallery_stage", "type": "pet_gallery_stage", "sourceNodeId": "BBTly", "copy": ["宠物档案", "查看档案", "新增宠物"] },
+    { "key": "empty_state", "type": "pet_gallery_empty_state", "copy": ["还没有宠物档案", "开始记录成长与健康信息"] },
+    { "key": "bottom_action", "type": "pet_add_action", "sourceNodeId": "syMJB", "copy": ["新增宠物"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "pet_gallery_stage",
+      "api": "GET /api/pets",
+      "fields": ["[].id", "[].name", "[].avatarUrl", "[].gender", "[].genderDesc", "[].type", "[].typeDesc", "[].breed", "[].age", "[].birthday", "[].healthStatus"]
+    }
+  ],
+  "actions": [
+    { "name": "openArchive", "target": "/pages/pet/edit", "sectionKey": "pet_gallery_stage" },
+    { "name": "addPet", "target": "/pages/pet/edit", "sectionKey": "bottom_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "cKCx8",
+    "criticalCheckpoints": [
+      "page uses a single large gallery card as the main focus instead of a stacked list",
+      "next pet preview only peeks from the bottom and never fully overtakes the main card",
+      "bottom action remains a single dark add button fixed near the safe area"
+    ]
+  }
+}

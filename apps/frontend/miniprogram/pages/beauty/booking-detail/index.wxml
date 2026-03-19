@@ -1,0 +1,132 @@
+<!-- pages/beauty/booking-detail/index.wxml - 美容预约详情与状态追踪 -->
+<view class="page">
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <view class="loading-dot"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <block wx:elif="{{booking}}">
+
+    <!-- 顶部状态卡片 -->
+    <view class="status-hero status-{{booking.statusColor}}">
+      <view class="status-hero-inner">
+        <text class="status-icon-big">
+          {{booking.status === 0 ? '⏳' : booking.status === 1 ? '✅' : booking.status === 2 ? '🎉' : '❌'}}
+        </text>
+        <text class="status-label">{{booking.statusText}}</text>
+        <text class="store-name-hero">{{booking.storeName}}</text>
+      </view>
+    </view>
+
+    <!-- 预约信息卡片 -->
+    <view class="card">
+      <view class="card-title">预约信息</view>
+      <view class="info-row">
+        <text class="info-label">宠物</text>
+        <text class="info-value">{{booking.petName || '未填写'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">日期</text>
+        <text class="info-value">{{booking.bookingDate}} {{booking.bookingTime}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">服务</text>
+        <text class="info-value">{{booking.services || '未填写'}}</text>
+      </view>
+      <view class="info-row" wx:if="{{booking.remark}}">
+        <text class="info-label">备注</text>
+        <text class="info-value">{{booking.remark}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">预约号</text>
+        <text class="info-value order-no">#{{booking.id}}</text>
+      </view>
+    </view>
+
+    <!-- 状态追踪时间轴 -->
+    <view class="card">
+      <view class="card-title">服务进度</view>
+      <view class="timeline">
+        <view
+          wx:for="{{timelineSteps}}"
+          wx:key="key"
+          class="timeline-item {{item.done ? 'done' : ''}} {{item.active ? 'active' : ''}}"
+        >
+          <!-- 图标与连接线 -->
+          <view class="timeline-left">
+            <view class="timeline-dot {{item.done ? 'dot-done' : item.active ? 'dot-active' : 'dot-pending'}}">
+              <text class="dot-icon">{{item.icon}}</text>
+            </view>
+            <view wx:if="{{index < timelineSteps.length - 1}}" class="timeline-line {{item.done ? 'line-done' : ''}}"></view>
+          </view>
+          <!-- 内容 -->
+          <view class="timeline-content">
+            <text class="timeline-label">{{item.label}}</text>
+            <text class="timeline-desc">{{item.desc}}</text>
+            <text wx:if="{{item.time}}" class="timeline-time">{{item.time}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 服务实况照片（进行中/完成后显示） -->
+    <view wx:if="{{booking.servicePhotoList.length > 0}}" class="card">
+      <view class="card-title">服务实况 <text class="photo-count">{{booking.servicePhotoList.length}}张</text></view>
+      <view class="photo-grid">
+        <view
+          wx:for="{{booking.servicePhotoList}}"
+          wx:key="index"
+          class="photo-item"
+          data-index="{{index}}"
+          bindtap="onPreviewPhoto"
+        >
+          <image src="{{item}}" mode="aspectFill" class="photo-img" lazy-load/>
+        </view>
+      </view>
+    </view>
+
+    <!-- 美容前后对比（完成后显示） -->
+    <view wx:if="{{booking.status === 2 && (booking.beforePhoto || booking.afterPhoto)}}" class="card">
+      <view class="card-title">美容成果对比</view>
+      <view class="contrast-wrap">
+        <view wx:if="{{booking.beforePhoto}}" class="contrast-item" data-type="before" bindtap="onPreviewContrast">
+          <image src="{{booking.beforePhoto}}" mode="aspectFill" class="contrast-img" lazy-load/>
+          <view class="contrast-label before-label">美容前</view>
+        </view>
+        <view class="contrast-divider">
+          <text class="contrast-arrow">→</text>
+        </view>
+        <view wx:if="{{booking.afterPhoto}}" class="contrast-item" data-type="after" bindtap="onPreviewContrast">
+          <image src="{{booking.afterPhoto}}" mode="aspectFill" class="contrast-img" lazy-load/>
+          <view class="contrast-label after-label">美容后</view>
+        </view>
+      </view>
+      <view class="share-btn" bindtap="onShareResult">
+        <text>📤 分享美容成果</text>
+      </view>
+    </view>
+
+    <!-- 底部操作区 -->
+    <view class="bottom-actions">
+      <!-- 待确认：可取消 -->
+      <view wx:if="{{booking.status === 0}}" class="action-row">
+        <view class="btn-cancel-booking" bindtap="onCancelBooking">取消预约</view>
+      </view>
+      <!-- 完成：去评价 -->
+      <view wx:elif="{{booking.status === 2}}" class="action-row">
+        <view class="btn-review" bindtap="onGoReview">✍️ 去评价</view>
+      </view>
+    </view>
+
+  </block>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{!loading}}" class="empty-wrap">
+    <text class="empty-icon">😕</text>
+    <text class="empty-text">预约信息不存在</text>
+    <view class="btn-back" bindtap="onBack">返回</view>
+  </view>
+
+</view>

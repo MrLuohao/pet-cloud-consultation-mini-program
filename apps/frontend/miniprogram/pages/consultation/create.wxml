@@ -1,0 +1,60 @@
+<!--pages/consultation/create.wxml-->
+<view class="create-container">
+  <!-- 医生信息 -->
+  <view class="doctor-info" wx:if="{{doctor}}">
+    <image class="doctor-avatar" src="{{doctor.avatar}}" mode="aspectFill"></image>
+    <view class="doctor-detail">
+      <text class="doctor-name">{{doctor.name}}</text>
+      <text class="doctor-title">{{doctor.title}}</text>
+    </view>
+    <view class="consultation-fee">¥{{fee}}</view>
+  </view>
+
+  <!-- 表单 -->
+  <view class="form-section">
+    <view class="form-title">咨询信息</view>
+
+    <view class="form-item">
+      <text class="label">宠物</text>
+      <picker mode="selector" range="{{petList}}" range-key="name" bindchange="onPetChange">
+        <view class="picker">
+          {{selectedPet ? selectedPet.name : '请选择宠物'}}
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="label">咨询类型</text>
+      <view class="type-selector">
+        <view class="type-option {{consultType === 1 ? 'active' : ''}}" bindtap="selectType" data-type="1">
+          图文咨询
+        </view>
+        <view class="type-option {{consultType === 2 ? 'active' : ''}}" bindtap="selectType" data-type="2">
+          视频咨询
+        </view>
+      </view>
+    </view>
+
+    <view class="form-item-vertical">
+      <text class="label">病情描述</text>
+      <textarea class="textarea" placeholder="请详细描述宠物的症状、患病时间等" value="{{description}}" bindinput="onDescriptionInput" maxlength="500"></textarea>
+    </view>
+
+    <view class="form-item-vertical">
+      <text class="label">上传图片</text>
+      <view class="image-uploader">
+        <view class="image-item" wx:for="{{images}}" wx:key="*this" wx:for-item="img">
+          <image class="uploaded-image" src="{{img}}" mode="aspectFill"></image>
+          <view class="delete-btn" catchtap="deleteImage" data-index="{{index}}">×</view>
+        </view>
+        <view class="upload-btn" wx:if="{{images.length < 4}}" bindtap="chooseImage">
+          <text class="upload-icon">+</text>
+          <text class="upload-text">添加图片</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <button class="submit-btn" bindtap="submitConsultation">提交咨询</button>
+</view>

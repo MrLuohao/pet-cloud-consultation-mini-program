@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "pageKey": "pet-profile",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "H6Xma",
+    "frameName": "单宠物健康档案页 Pet Health Profile"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FCFBFF",
+      "surfaceWarm": "#FFFDF9",
+      "surfaceTimeline": "#FFFEFD",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#746C86",
+      "borderSoft": "#F3EEF9",
+      "borderWarm": "#F3EEE8",
+      "accentPrimary": "#5C35D6",
+      "success": "#3B855B"
+    },
+    "radius": {
+      "identityCard": 22,
+      "summaryCard": 24,
+      "card": 18,
+      "button": 20,
+      "pill": 999
+    },
+    "typography": {
+      "pageTitle": { "fontFamily": "Inter", "fontSize": 24, "fontWeight": "700" },
+      "sectionTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "summaryTitle": { "fontFamily": "Inter", "fontSize": 22, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+      "button": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "cDbql", "copy": ["9:41", "5G   100%"] },
+    { "key": "identity_card", "type": "pet_identity_card", "sourceNodeId": "hqzgv", "copy": ["团子", "英短蓝猫 · 2岁3个月", "最近状态平稳，饮食和作息记录保持连续。"] },
+    { "key": "health_summary_card", "type": "pet_health_summary_card", "sourceNodeId": "xXY7B", "copy": ["状态稳定", "今日整体状态平稳", "最近关键记录 · 今天 09:20", "最近 7 天没有新增异常记录，可以继续保持规律观察，并留意下一次驱虫提醒。", "03", "近7天记录", "01", "待关注项", "2天", "下次提醒"] },
+    { "key": "reminder_overview_card", "type": "pet_reminder_overview_card", "sourceNodeId": "IydwD", "copy": ["提醒概览", "当前有 2 条提醒待处理，优先关注驱虫和复查安排。", "驱虫提醒", "复查安排"] },
+    { "key": "timeline_card", "type": "pet_health_timeline_card", "sourceNodeId": "618FQ", "copy": ["健康记录", "03/16", "驱虫记录已补充", "03/12", "饮食观察记录", "03/05", "AI 诊断摘要沉淀"] },
+    { "key": "bottom_action", "type": "pet_profile_actions", "sourceNodeId": "mftNe", "copy": ["新增健康记录", "查看成长档案", "编辑宠物资料"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "identity_card",
+      "api": "GET /api/pets/{petId}",
+      "fields": ["id", "name", "avatarUrl", "breed", "age", "ageText", "profileSummary"]
+    },
+    {
+      "sectionKey": "health_summary_card",
+      "api": "GET /api/pets/{petId}/diagnosis-summary",
+      "fields": ["statusLabel", "summaryTitle", "lastRecordTime", "careSuggestion", "recentRecordCount", "pendingReminderCount", "nextReminderText"]
+    },
+    {
+      "sectionKey": "reminder_overview_card",
+      "api": "GET /api/health/reminders?petId={petId}",
+      "fields": ["summary", "tags[]", "pendingCount"]
+    },
+    {
+      "sectionKey": "timeline_card",
+      "api": "GET /api/pets/{petId}/medical-records",
+      "fields": ["records[].dateLabel", "records[].type", "records[].title", "records[].summary"]
+    }
+  ],
+  "actions": [
+    { "name": "addHealthRecord", "target": "/pages/health/edit", "sectionKey": "bottom_action" },
+    { "name": "openGrowthTimeline", "target": "/pages/pet/timeline/index", "sectionKey": "bottom_action" },
+    { "name": "editPetProfile", "target": "/pages/pet/edit", "sectionKey": "bottom_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "H6Xma",
+    "criticalCheckpoints": [
+      "health summary card remains the first visual focus above reminders and timeline",
+      "reminder overview stays lightweight and does not expand into a dense task list",
+      "bottom actions keep one strong primary CTA plus two lighter secondary entries"
+    ]
+  }
+}

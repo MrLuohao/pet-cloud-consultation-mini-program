@@ -1,0 +1,150 @@
+.settings-page {
+  min-height: 100vh;
+  padding: 28rpx 24rpx 40rpx;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #f8fafc 0%, #eff5ff 100%);
+}
+
+.card {
+  margin-bottom: 20rpx;
+  padding: 24rpx;
+  border-radius: 20rpx;
+  background: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(15, 23, 42, 0.06);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.row:last-child { border-bottom: none; }
+
+.arrow {
+  color: #94a3b8;
+  font-size: 32rpx;
+}
+
+.muted {
+  color: #94a3b8;
+  font-size: 24rpx;
+}
+
+.title {
+  margin-bottom: 18rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.meta-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 18rpx;
+}
+
+.meta-item {
+  width: calc(50% - 6rpx);
+  padding: 14rpx 16rpx;
+  border-radius: 12rpx;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  box-sizing: border-box;
+}
+
+.meta-item.full {
+  width: 100%;
+}
+
+.meta-label {
+  display: block;
+  margin-bottom: 6rpx;
+  color: #64748b;
+  font-size: 22rpx;
+}
+
+.meta-value {
+  display: block;
+  color: #0f172a;
+  font-size: 24rpx;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.field-label {
+  margin: 6rpx 0 10rpx;
+  color: #475569;
+  font-size: 24rpx;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  height: 76rpx;
+  line-height: 76rpx;
+  padding: 0 16rpx;
+  border: 1px solid #cbd5e1;
+  border-radius: 12rpx;
+  background: #ffffff;
+  color: #0f172a;
+  box-sizing: border-box;
+}
+
+.btn-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.action {
+  width: calc(50% - 6rpx);
+  margin: 0;
+  padding: 0;
+  height: 72rpx;
+  line-height: 72rpx;
+  border-radius: 12rpx;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-size: 26rpx;
+  box-sizing: border-box;
+}
+
+.action::after {
+  border: none;
+}
+
+.action.primary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.action.accent {
+  background: #0ea5e9;
+  border-color: #0ea5e9;
+  color: #ffffff;
+}
+
+.status {
+  margin-top: 14rpx;
+  padding: 12rpx 16rpx;
+  border-radius: 10rpx;
+  font-size: 24rpx;
+  text-align: center;
+}
+
+.status.testing { background: #fef3c7; color: #92400e; }
+.status.success { background: #dcfce7; color: #166534; }
+.status.fail { background: #fee2e2; color: #b91c1c; }
+
+.danger {
+  background: #ef4444 !important;
+  color: #fff !important;
+  border-radius: 12rpx;
+}

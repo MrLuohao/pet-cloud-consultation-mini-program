@@ -1,0 +1,127 @@
+/* pages/message/chat.wxss */
+
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-secondary);
+}
+
+.message-list {
+  flex: 1;
+  padding: var(--space-4) var(--space-6);
+  padding-bottom: var(--space-8);
+}
+
+.message-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: var(--space-4);
+}
+
+.message-item.self {
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.message-content {
+  max-width: 70%;
+  margin: 0 var(--space-3);
+}
+
+.bubble {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  word-break: break-all;
+}
+
+.message-item.other .bubble {
+  background: var(--bg-primary);
+  border-top-left-radius: var(--radius-xs);
+}
+
+.message-item.self .bubble {
+  background: var(--primary-500);
+  border-top-right-radius: var(--radius-xs);
+}
+
+.bubble-text {
+  font-size: var(--font-base);
+  line-height: 1.5;
+}
+
+.message-item.other .bubble-text {
+  color: var(--text-primary);
+}
+
+.message-item.self .bubble-text {
+  color: white;
+}
+
+.message-time {
+  display: block;
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  margin-top: var(--space-1);
+  text-align: center;
+}
+
+.message-item.self .message-time {
+  text-align: right;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-16) 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: var(--space-4);
+}
+
+.empty-text {
+  font-size: var(--font-base);
+  color: var(--text-tertiary);
+}
+
+/* 输入栏 */
+.input-bar {
+  display: flex;
+  align-items: center;
+  padding: var(--space-4) var(--space-6);
+  padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  background: var(--bg-primary);
+  border-top: 1rpx solid var(--border-subtle);
+}
+
+.message-input {
+  flex: 1;
+  height: 72rpx;
+  padding: 0 var(--space-4);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-full);
+  font-size: var(--font-base);
+}
+
+.send-btn {
+  margin-left: var(--space-3);
+  padding: var(--space-2) var(--space-5);
+  background: var(--neutral-200);
+  border-radius: var(--radius-full);
+  font-size: var(--font-base);
+  color: var(--text-tertiary);
+}
+
+.send-btn.active {
+  background: var(--gradient-primary);
+  color: white;
+}

@@ -1,0 +1,202 @@
+.review-page {
+  min-height: 100vh;
+  background: #f8f7f4;
+}
+
+.review-content {
+  padding: 16rpx 32rpx 180rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.review-intro-card,
+.review-card {
+  background: #fffefb;
+  border: 2rpx solid #ede6dc;
+  border-radius: 44rpx;
+  box-shadow: 0 18rpx 48rpx rgba(24, 17, 10, 0.04);
+}
+
+.review-intro-card {
+  padding: 28rpx 32rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.review-intro-card__title {
+  font-size: 36rpx;
+  color: #20252c;
+  font-weight: 700;
+}
+
+.review-intro-card__subtitle {
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #968f85;
+}
+
+.review-intro-card__pill {
+  align-self: flex-start;
+  min-width: 160rpx;
+  height: 48rpx;
+  padding: 0 20rpx;
+  border-radius: 28rpx;
+  background: #f7f2ea;
+  color: #6d675e;
+  font-size: 18rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.review-card {
+  padding: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.review-card__product {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.review-card__thumb {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 20rpx;
+  background: #efe5d7;
+  flex-shrink: 0;
+}
+
+.review-card__product-copy {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.review-card__product-name {
+  font-size: 26rpx;
+  color: #2b3138;
+  font-weight: 600;
+}
+
+.review-card__product-meta {
+  font-size: 20rpx;
+  color: #8a857e;
+}
+
+.review-stars {
+  display: flex;
+  gap: 12rpx;
+}
+
+.review-star {
+  font-size: 36rpx;
+  color: #d8d0c5;
+}
+
+.review-star--active {
+  color: #4ea772;
+}
+
+.review-card__textarea {
+  width: 100%;
+  min-height: 88rpx;
+  padding: 22rpx 24rpx;
+  border-radius: 36rpx;
+  background: #f7f2ea;
+  border: 2rpx solid #ece4d9;
+  box-sizing: border-box;
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: #6f6a62;
+}
+
+.review-card__placeholder {
+  color: #a7a094;
+}
+
+.review-upload-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+}
+
+.review-upload-box {
+  position: relative;
+  width: 124rpx;
+  height: 124rpx;
+  border-radius: 24rpx;
+  background: #f6f2ec;
+  border: 2rpx solid #e8e1d7;
+}
+
+.review-upload-box--filled {
+  overflow: hidden;
+}
+
+.review-upload-box__image {
+  width: 100%;
+  height: 100%;
+}
+
+.review-upload-box__delete {
+  position: absolute;
+  top: 6rpx;
+  right: 6rpx;
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 16rpx;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-submit-bar {
+  position: fixed;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: calc(24rpx + env(safe-area-inset-bottom));
+  bottom: calc(24rpx + constant(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.review-submit-bar__button {
+  width: 100%;
+  height: 104rpx;
+  border-radius: 36rpx;
+  background: #30343c;
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 700;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-submit-bar__button::after {
+  border: none;
+}
+
+.review-submit-bar__button--disabled {
+  opacity: 0.6;
+}
+
+.review-submit-bar__hint {
+  font-size: 22rpx;
+  color: #a39c92;
+  text-align: center;
+}

@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "pageKey": "completed-order-detail",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "7rGoU",
+    "frameName": "订单详情页 Completed Order Detail"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "sections": [
+    { "key": "status_card", "type": "completed_order_status_card", "sourceNodeId": "AXQWe", "copy": ["已完成", "订单已完成，如有需要可继续评价或查看售后服务。", "已完成", "交易已完成，订单信息已归档保存。"] },
+    { "key": "address_card", "type": "order_address_card", "sourceNodeId": "laQW3", "copy": ["收货信息"] },
+    { "key": "product_card", "type": "order_product_card", "sourceNodeId": "dTyd4", "copy": ["商品信息"] },
+    { "key": "amount_card", "type": "completed_order_amount_card", "sourceNodeId": "KHZFa", "copy": ["实付信息", "商品金额", "运费", "优惠", "实付金额"] },
+    { "key": "info_card", "type": "completed_order_info_card", "sourceNodeId": "uzK29", "copy": ["订单信息", "订单编号", "创建时间", "支付时间", "完成状态"] },
+    { "key": "bottom_action", "type": "completed_order_actions", "sourceNodeId": "vM350", "copy": ["申请售后", "去评价"] }
+  ],
+  "actions": [
+    { "name": "requestAfterSale", "target": "after-sale-entry", "sectionKey": "bottom_action" },
+    { "name": "goToReview", "target": "/pages/order/pending-review", "sectionKey": "bottom_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "7rGoU",
+    "criticalCheckpoints": [
+      "completed status chip switches to green and progress bar fills fully",
+      "amount card title changes from 金额明细 to 实付信息",
+      "bottom actions show a light secondary after-sale button and dark primary review button"
+    ]
+  }
+}

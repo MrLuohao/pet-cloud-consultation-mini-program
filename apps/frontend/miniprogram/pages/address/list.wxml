@@ -1,0 +1,103 @@
+<view class="address-list-page">
+  <view class="address-list-body">
+    <view class="address-list-helper">
+      <view class="address-list-helper__copy">
+        <text class="address-list-helper__title">{{helperTitle}}</text>
+        <text class="address-list-helper__sub">{{helperSub}}</text>
+      </view>
+      <view class="address-list-helper__action" bindtap="addAddress">
+        <text>新增地址</text>
+      </view>
+    </view>
+
+    <view wx:if="{{defaultAddress}}" class="address-list-section">
+      <view class="address-list-section__header">
+        <text class="address-list-section__title">默认地址</text>
+        <view class="address-list-section__chip">
+          <text>{{addressCountText}}</text>
+        </view>
+      </view>
+
+      <view
+        class="address-card address-card--default {{activeAddressId === defaultAddress.id ? 'address-card--active' : ''}}"
+        data-id="{{defaultAddress.id}}"
+        bindtap="selectAddress"
+      >
+        <view class="address-card__top">
+          <view class="address-card__identity">
+            <text class="address-card__name">{{defaultAddress.contactName}}</text>
+            <text class="address-card__dot">·</text>
+            <text class="address-card__phone">{{defaultAddress.displayContactPhone}}</text>
+          </view>
+          <view class="address-card__tag">
+            <text>默认地址</text>
+          </view>
+        </view>
+
+        <text class="address-card__note">优先用于下单 · 常用地址</text>
+        <text class="address-card__detail">{{defaultAddress.displayFullAddress}}</text>
+
+        <view class="address-card__bottom">
+          <text class="address-card__city">{{defaultAddress.displayRegionText}}</text>
+          <view class="address-card__edit" catchtap="editAddress" data-id="{{defaultAddress.id}}">
+            <text>编辑</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{otherAddresses.length > 0}}" class="address-list-section">
+      <view class="address-list-section__header">
+        <text class="address-list-section__title">其他地址</text>
+        <text class="address-list-section__hint">点击即可切换</text>
+      </view>
+
+      <view class="address-list-stack">
+        <view
+          wx:for="{{otherAddresses}}"
+          wx:key="id"
+          class="address-card {{activeAddressId === item.id ? 'address-card--active' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="selectAddress"
+        >
+          <view class="address-card__top">
+            <view class="address-card__identity">
+              <text class="address-card__name">{{item.contactName}}</text>
+              <text class="address-card__dot">·</text>
+              <text class="address-card__phone">{{item.displayContactPhone}}</text>
+            </view>
+            <view wx:if="{{activeAddressId === item.id}}" class="address-card__check">
+              <text>✓</text>
+            </view>
+          </view>
+
+          <text class="address-card__detail">{{item.displayFullAddress}}</text>
+
+          <view class="address-card__bottom">
+            <text class="address-card__city">{{activeAddressId === item.id ? '当前选中' : item.displayRegionText}}</text>
+            <view class="address-card__edit" catchtap="editAddress" data-id="{{item.id}}">
+              <text>编辑</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{addressList.length === 0}}" class="address-list-empty">
+      <text class="address-list-empty__title">还没有收货地址</text>
+      <text class="address-list-empty__sub">新增地址后，可在这里切换并用于订单支付。</text>
+      <view class="address-list-empty__button" bindtap="addAddress">
+        <text>去新增地址</text>
+      </view>
+    </view>
+
+    <view class="address-list-safe"></view>
+  </view>
+
+  <view wx:if="{{addressList.length > 0}}" class="address-list-bottom">
+    <view class="address-list-bottom__button" bindtap="confirmAddress">
+      <text>{{confirmButtonText}}</text>
+    </view>
+    <text class="address-list-bottom__sub">{{confirmSubText}}</text>
+  </view>
+</view>

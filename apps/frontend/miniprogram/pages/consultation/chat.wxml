@@ -1,0 +1,49 @@
+<!--pages/consultation/chat.wxml-->
+<view class="chat-container">
+  <!-- 顶部信息 -->
+  <view class="chat-header">
+    <view class="doctor-info" wx:if="{{consultation}}">
+      <image class="doctor-avatar" src="{{consultation.doctorAvatar}}" mode="aspectFill"></image>
+      <view class="doctor-detail">
+        <text class="doctor-name">{{consultation.doctorName}}</text>
+        <text class="consult-status">{{consultation.statusDesc}}</text>
+      </view>
+    </view>
+    <view class="actions" wx:if="{{consultation.status === 0}}">
+      <button class="action-btn cancel" bindtap="cancelConsultation">取消</button>
+    </view>
+    <view class="actions" wx:if="{{consultation.status === 1}}">
+      <button class="action-btn" bindtap="finishConsultation">结束</button>
+    </view>
+  </view>
+
+  <!-- 聊天记录 -->
+  <scroll-view class="message-list" scroll-y="{{true}}" scroll-into-view="{{toView}}" scroll-with-animation="{{true}}">
+    <view class="message-item {{item.senderType === 1 ? 'user' : 'doctor'}}" wx:for="{{messages}}" wx:key="id" id="msg-{{item.id}}">
+      <image class="avatar" src="{{item.senderType === 1 ? consultation.userAvatar : consultation.doctorAvatar}}" mode="aspectFill"></image>
+      <view class="message-content">
+        <view class="message-bubble {{item.messageType === 2 ? 'image' : item.messageType === 3 ? 'voice' : ''}}" wx:if="{{item.messageType === 1}}">
+          {{item.content}}
+        </view>
+        <image class="message-image" src="{{item.mediaUrl}}" mode="aspectFill" wx:if="{{item.messageType === 2}}"></image>
+        <view class="voice-bubble" wx:if="{{item.messageType === 3}}">
+          <text class="voice-icon">🎤</text>
+          <text>语音消息</text>
+        </view>
+        <text class="message-time">{{item.createTime}}</text>
+      </view>
+    </view>
+    <view class="system-tip" wx:if="{{consultation.status === 0}}">
+      <text>等待医生接单...</text>
+    </view>
+  </scroll-view>
+
+  <!-- 输入框 -->
+  <view class="input-bar" wx:if="{{consultation.status >= 0 && consultation.status !== 3}}">
+    <button class="icon-btn" bindtap="chooseImage">
+      <text>📷</text>
+    </button>
+    <input class="message-input" placeholder="输入消息" value="{{inputContent}}" bindinput="onInput" confirm-type="send" bindconfirm="sendMessage" />
+    <button class="send-btn" bindtap="sendMessage">发送</button>
+  </view>
+</view>

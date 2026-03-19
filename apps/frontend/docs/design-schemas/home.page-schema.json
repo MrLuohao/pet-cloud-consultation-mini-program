@@ -1,0 +1,149 @@
+{
+  "meta": {
+    "pageKey": "home",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "kJvqm",
+    "frameName": "首页优化版 Home Style"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [4, 16, 24, 16],
+    "sectionGap": 10,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "cardBackground": "#FFFFFF",
+      "brandPrimary": "#6D32FF",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#737B8D",
+      "borderSoft": "#F2EDF8",
+      "purpleSoft": "#F5F1FF"
+    },
+    "radius": {
+      "card": 20,
+      "hero": 24,
+      "pill": 999,
+      "chip": 16
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 21, "fontWeight": "700", "lineHeight": 1.25 },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "lineHeight": 1.5 },
+      "chip": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "600" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "aD3Fb",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "search",
+      "type": "search_input",
+      "sourceNodeId": "pzBXJ",
+      "copy": ["搜索诊断、服务、商品"],
+      "layout": { "height": 44, "cornerRadius": 22 }
+    },
+    {
+      "key": "hero",
+      "type": "hero_card",
+      "sourceNodeId": "FQBsI",
+      "copy": [
+        "AI健康初诊",
+        "上传照片，快速初步判断宠物健康状态",
+        "支持皮肤、精神与饮食异常的初步识别，建议结合在线问诊协同判断。",
+        "AI初步判断",
+        "问诊协同",
+        "立即诊断",
+        "问医生"
+      ],
+      "layout": { "padding": 20, "gap": 14, "cornerRadius": 24 }
+    },
+    {
+      "key": "pet_identity",
+      "type": "identity_card",
+      "sourceNodeId": "dJBGt",
+      "title": "我的宠物",
+      "copy": ["宠物身份卡", "专属档案已同步", "查看详情"],
+      "layout": { "padding": 18, "gap": 14, "cornerRadius": 24 }
+    },
+    {
+      "key": "services",
+      "type": "two_row_service_grid",
+      "sourceNodeId": "G6AFz",
+      "title": "常用服务",
+      "copy": ["AI助手", "在线问诊", "训练课程", "美容服务"],
+      "layout": { "padding": 16, "gap": 10, "cornerRadius": 20 }
+    },
+    {
+      "key": "reminder",
+      "type": "summary_card",
+      "sourceNodeId": "cy6jX",
+      "title": "健康提醒",
+      "copy": ["2条待处理", "团子的疫苗提醒将在明天到期"],
+      "layout": { "padding": 16, "gap": 10, "cornerRadius": 20 }
+    },
+    {
+      "key": "today_care",
+      "type": "progress_summary_card",
+      "sourceNodeId": "g4RjG",
+      "title": "今日照护",
+      "copy": ["进行中", "已完成：喂食、基础清洁", "待关注：饮水记录、晚间散步"],
+      "layout": { "padding": 14, "gap": 8, "cornerRadius": 20 }
+    },
+    {
+      "key": "featured",
+      "type": "featured_content_stack",
+      "sourceNodeId": "ER3m4",
+      "title": "精选内容",
+      "copy": ["查看全部", "春季换毛期护理指南", "养护建议"],
+      "layout": { "padding": 16, "gap": 10, "cornerRadius": 20 }
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "pet_identity",
+      "api": "GET /api/home/summary",
+      "fields": ["petCard.petCount", "petCard.pets[].name", "petCard.pets[].avatarUrl", "petCard.pets[].breed", "petCard.pets[].ageText", "petCard.pets[].statusSummary"]
+    },
+    {
+      "sectionKey": "reminder",
+      "api": "GET /api/home/summary",
+      "fields": ["reminderSummary.pendingCount", "reminderSummary.nextTitle", "reminderSummary.nextPetName", "reminderSummary.nextRemindDateText"]
+    },
+    {
+      "sectionKey": "today_care",
+      "api": "GET /api/home/summary",
+      "fields": ["todayCareSummary.completionRate", "todayCareSummary.completedCount", "todayCareSummary.totalCount", "todayCareSummary.tasks[].name"]
+    },
+    {
+      "sectionKey": "featured",
+      "api": "GET /api/home/summary",
+      "fields": ["featuredContents[].id", "featuredContents[].title", "featuredContents[].summary", "featuredContents[].tag", "featuredContents[].coverUrl"]
+    }
+  ],
+  "actions": [
+    { "name": "search", "target": "/pages/search/result", "sectionKey": "search" },
+    { "name": "goToDiagnosis", "target": "/pages/diagnosis/diagnosis", "sectionKey": "hero" },
+    { "name": "goToChat", "target": "/pages/chat/chat", "sectionKey": "hero" },
+    { "name": "goToPetCardDetail", "target": "/pages/pet/edit", "sectionKey": "pet_identity" },
+    { "name": "handleReminderTap", "target": "/pages/consultation/create", "sectionKey": "reminder" },
+    { "name": "goToArticleDetail", "target": "/pages/recommend/detail", "sectionKey": "featured" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "kJvqm",
+    "criticalCheckpoints": [
+      "status bar height and content rhythm match the frame",
+      "hero card keeps one chip row and two action buttons",
+      "pet identity card remains a single premium card, not a list",
+      "service area remains two rows of pills, not icon wall",
+      "today care card is compact and progress-led",
+      "featured content uses one primary block and one secondary row"
+    ]
+  }
+}

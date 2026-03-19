@@ -1,0 +1,117 @@
+<view class="user-page">
+  <scroll-view class="main-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+    <view class="user-shell">
+      <view class="profile-card" bindtap="onProfileTap">
+        <view class="profile-top">
+          <view class="avatar-shell">
+            <image
+              wx:if="{{userInfo.avatar}}"
+              class="avatar-img"
+              src="{{userInfo.avatar}}"
+              mode="aspectFill"
+              binderror="onAvatarLoadError"
+            />
+            <view wx:else class="avatar-fallback"><text>🐱</text></view>
+          </view>
+          <view class="profile-copy">
+            <text class="profile-name">{{isLoggedIn ? (userInfo.name || '宠物达人') : '点击登录'}}</text>
+            <text class="profile-sub">ID: {{isLoggedIn ? (userInfo.id || '888888') : '888888'}} · 点击查看和编辑资料</text>
+          </view>
+          <view class="profile-action"><text>⚙</text></view>
+        </view>
+        <view class="stats-row">
+          <view class="stat-item" bindtap="onPointsTap">
+            <text class="stat-value">{{userPoints}}</text>
+            <text class="stat-label">积分</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item" bindtap="onCouponTap">
+            <text class="stat-value">{{userCoupons}}</text>
+            <text class="stat-label">优惠券</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item" bindtap="onPetTap">
+            <text class="stat-value">{{userPets}}</text>
+            <text class="stat-label">宠物</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="member-card" bindtap="onVipTap">
+        <text class="section-title">会员中心</text>
+        <text class="member-desc">专属权益、问诊折扣、成长礼包，一处统一查看。</text>
+        <view class="member-footer">
+          <text class="member-link">查看权益</text>
+          <text class="member-arrow">></text>
+        </view>
+      </view>
+
+      <view class="section-card">
+        <view class="section-head">
+          <text class="section-title">我的订单</text>
+          <text class="section-link" bindtap="onOrderAll">全部订单</text>
+        </view>
+        <view class="order-grid">
+          <view
+            class="order-item"
+            wx:for="{{orders}}"
+            wx:key="type"
+            bindtap="onOrderTap"
+            data-type="{{item.type}}"
+          >
+            <text class="order-icon">{{item.iconText}}</text>
+            <text class="order-name">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="section-card">
+        <text class="section-title">我的服务</text>
+        <view class="service-row">
+          <view class="service-box purple" bindtap="onServiceTap" data-type="pet"><text>我的宠物</text></view>
+          <view class="service-box pink" bindtap="onServiceTap" data-type="collection"><text>我的收藏</text></view>
+        </view>
+        <view class="service-row">
+          <view class="service-box blue" bindtap="onServiceTap" data-type="address"><text>收货地址</text></view>
+          <view class="service-box green" bindtap="onServiceTap" data-type="consult"><text>咨询记录</text></view>
+        </view>
+        <text class="service-subtitle">更多服务</text>
+        <view class="mini-service-row">
+          <view class="mini-service" bindtap="onServiceTap" data-type="coupon"><text>优惠券</text></view>
+          <view class="mini-service" bindtap="onServiceTap" data-type="health"><text>健康档案</text></view>
+          <view class="mini-service" bindtap="onServiceTap" data-type="task"><text>每日任务</text></view>
+        </view>
+        <view class="mini-service-row">
+          <view class="mini-service" bindtap="onServiceTap" data-type="feedback"><text>意见反馈</text></view>
+          <view class="mini-service" bindtap="onServiceTap" data-type="reminder"><text>健康提醒</text></view>
+          <view class="mini-service" bindtap="onServiceTap" data-type="insurance"><text>宠物保险</text></view>
+        </view>
+      </view>
+
+      <view class="section-card" wx:if="{{isLoggedIn}}">
+        <view class="section-head">
+          <text class="section-title">我的宠物</text>
+          <text class="section-link" bindtap="onPetTap">管理</text>
+        </view>
+        <view class="pet-list">
+          <view
+            class="pet-item {{index === 2 ? 'highlight' : ''}}"
+            wx:for="{{displayPets}}"
+            wx:key="id"
+            bindtap="onPetDetail"
+            data-id="{{item.id}}"
+          >
+            <view class="pet-icon">{{item.type === 1 ? '🐶' : item.type === 2 ? '🐱' : '🐾'}}</view>
+            <text class="pet-name">{{item.name}}</text>
+            <text class="pet-breed">{{item.breed || '资料待补充'}}</text>
+          </view>
+          <view wx:if="{{pets.length < 3}}" class="pet-item highlight" bindtap="onAddPet">
+            <view class="pet-icon">＋</view>
+            <text class="pet-name">添加宠物</text>
+            <text class="pet-breed">完善档案</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

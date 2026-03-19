@@ -1,0 +1,687 @@
+/**
+ * ╔══════════════════════════════════════════════════════════════════════════════
+ * ║  VIP 会员中心样式 | VIP Membership Center Styles                              ║
+ * ║  Design: Aurora Pastel • Soft Glass • Purple/Blue/Pink                       ║
+ * ╚══════════════════════════════════════════════════════════════════════════════
+ */
+
+page {
+  background: #F7F5FF;
+}
+
+/* ==================== 页面容器 ==================== */
+.vip-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #F7F5FF 0%, #F8FBFF 45%, #FFF6FB 100%);
+  color: #2A2145;
+  position: relative;
+}
+
+.main-scroll {
+  height: 100vh;
+}
+
+/* ==================== Hero VIP Card ==================== */
+.hero-card {
+  position: relative;
+  margin: var(--space-4);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  min-height: 420rpx;
+  background: #FFFFFF;
+  box-shadow: 0 24rpx 60rpx rgba(71, 48, 123, 0.12);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 10%, rgba(175, 140, 255, 0.35), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(109, 216, 255, 0.35), transparent 50%),
+    radial-gradient(circle at 70% 90%, rgba(255, 178, 221, 0.35), transparent 55%);
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40rpx);
+}
+
+.hero-orb-1 {
+  top: -20%;
+  right: -10%;
+  width: 260rpx;
+  height: 260rpx;
+  background: radial-gradient(circle, rgba(129, 92, 255, 0.32) 0%, transparent 70%);
+  animation: float 7s ease-in-out infinite;
+}
+
+.hero-orb-2 {
+  bottom: -15%;
+  left: -8%;
+  width: 240rpx;
+  height: 240rpx;
+  background: radial-gradient(circle, rgba(99, 202, 255, 0.28) 0%, transparent 70%);
+  animation: float 9s ease-in-out infinite reverse;
+}
+
+.hero-mesh {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.7) 0%, transparent 40%),
+    radial-gradient(circle at 70% 75%, rgba(255, 255, 255, 0.6) 0%, transparent 45%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* 顶部状态行 */
+.hero-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vip-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  background: linear-gradient(135deg, rgba(129, 92, 255, 0.18) 0%, rgba(255, 178, 221, 0.18) 100%);
+  border: 1rpx solid rgba(129, 92, 255, 0.2);
+  border-radius: var(--radius-full);
+}
+
+.vip-crown {
+  font-size: 28rpx;
+}
+
+.vip-badge-text {
+  font-size: var(--font-sm);
+  font-weight: var(--font-semibold);
+  color: #5B46A8;
+}
+
+.vip-level-tag {
+  padding: var(--space-1) var(--space-3);
+  background: linear-gradient(135deg, #8A5CFF 0%, #5AD7FF 100%);
+  border-radius: var(--radius-full);
+  box-shadow: 0 6rpx 16rpx rgba(90, 150, 255, 0.25);
+}
+
+.vip-level-tag text {
+  font-size: var(--font-xs);
+  font-weight: var(--font-bold);
+  color: #FFFFFF;
+}
+
+/* 用户信息行 */
+.hero-user-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.hero-avatar-wrap {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  border: 3rpx solid rgba(129, 92, 255, 0.25);
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 0 24rpx rgba(129, 92, 255, 0.18);
+  background: #FFFFFF;
+}
+
+.hero-avatar {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-avatar-emoji {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  background: linear-gradient(135deg, rgba(138, 92, 255, 0.16) 0%, rgba(90, 215, 255, 0.2) 100%);
+}
+
+.hero-user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.hero-user-name {
+  font-size: var(--font-xl);
+  font-weight: var(--font-bold);
+  color: #2A2145;
+}
+
+.hero-user-desc {
+  font-size: var(--font-sm);
+  color: rgba(42, 33, 69, 0.6);
+}
+
+/* 会员亮点 */
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.hero-tag {
+  padding: 4rpx var(--space-3);
+  font-size: var(--font-xs);
+  color: #4B3E8A;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1rpx solid rgba(138, 92, 255, 0.15);
+  border-radius: var(--radius-full);
+}
+
+/* 会员状态 */
+.hero-metrics {
+  display: flex;
+  align-items: center;
+  padding: var(--space-4);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1rpx solid rgba(138, 92, 255, 0.12);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 12rpx 30rpx rgba(90, 150, 255, 0.1);
+}
+
+.hero-metric {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.metric-value {
+  font-size: var(--font-2xl);
+  font-weight: var(--font-bold);
+  color: #6D32FF;
+}
+
+.metric-label {
+  font-size: var(--font-xs);
+  color: rgba(42, 33, 69, 0.6);
+}
+
+.hero-metric-divider {
+  width: 1rpx;
+  height: 48rpx;
+  background: rgba(90, 150, 255, 0.2);
+}
+
+/* ==================== Section 通用 ==================== */
+.section {
+  margin: var(--space-4);
+  padding: var(--space-5);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1rpx solid rgba(90, 150, 255, 0.12);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 16rpx 40rpx rgba(71, 48, 123, 0.08);
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.section-title {
+  font-size: var(--font-lg);
+  font-weight: var(--font-bold);
+  color: #2A2145;
+}
+
+.section-sub {
+  font-size: var(--font-xs);
+  color: rgba(42, 33, 69, 0.5);
+}
+
+/* ==================== 套餐选择 ==================== */
+.plan-scroll {
+  margin: 0 calc(-1 * var(--space-5));
+  padding: 0 var(--space-5);
+}
+
+.plan-list {
+  display: flex;
+  gap: var(--space-3);
+  padding-right: var(--space-5);
+}
+
+.plan-card {
+  flex-shrink: 0;
+  width: 200rpx;
+  padding: var(--space-5) var(--space-4);
+  background: #FFFFFF;
+  border: 2rpx solid rgba(138, 92, 255, 0.15);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  position: relative;
+  transition: all var(--duration-300) var(--ease-default);
+  box-shadow: 0 12rpx 30rpx rgba(90, 150, 255, 0.12);
+}
+
+.plan-card.plan-active {
+  background: linear-gradient(180deg, rgba(138, 92, 255, 0.12) 0%, rgba(90, 215, 255, 0.12) 100%);
+  border-color: rgba(109, 50, 255, 0.5);
+  box-shadow: 0 18rpx 40rpx rgba(109, 50, 255, 0.2);
+}
+
+.plan-card.plan-recommend.plan-active {
+  background: linear-gradient(180deg, rgba(255, 178, 221, 0.18) 0%, rgba(138, 92, 255, 0.12) 100%);
+  border-color: rgba(255, 178, 221, 0.6);
+}
+
+.plan-tag {
+  position: absolute;
+  top: -2rpx;
+  right: -2rpx;
+  padding: 4rpx var(--space-3);
+  background: linear-gradient(135deg, #FF9FD3 0%, #8A5CFF 100%);
+  border-radius: 0 var(--radius-xl) 0 var(--radius-md);
+}
+
+.plan-tag text {
+  font-size: 20rpx;
+  font-weight: var(--font-bold);
+  color: #FFFFFF;
+}
+
+.plan-name {
+  font-size: var(--font-base);
+  font-weight: var(--font-semibold);
+  color: rgba(42, 33, 69, 0.9);
+}
+
+.plan-price-row {
+  display: flex;
+  align-items: baseline;
+}
+
+.plan-currency {
+  font-size: var(--font-sm);
+  font-weight: var(--font-bold);
+  color: #6D32FF;
+}
+
+.plan-price {
+  font-size: var(--font-4xl);
+  font-weight: var(--font-bold);
+  color: #6D32FF;
+  line-height: 1.1;
+}
+
+.plan-active .plan-price,
+.plan-active .plan-currency {
+  color: #6D32FF;
+}
+
+.plan-original {
+  font-size: var(--font-xs);
+  color: rgba(42, 33, 69, 0.4);
+  text-decoration: line-through;
+}
+
+.plan-unit {
+  font-size: var(--font-xs);
+  color: rgba(42, 33, 69, 0.5);
+}
+
+.plan-save {
+  padding: 2rpx var(--space-2);
+  background: rgba(255, 178, 221, 0.25);
+  border-radius: var(--radius-sm);
+}
+
+.plan-save text {
+  font-size: 20rpx;
+  font-weight: var(--font-semibold);
+  color: #C0468D;
+}
+
+/* ==================== 会员权益 ==================== */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+.benefit-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-2);
+  border-radius: var(--radius-lg);
+  transition: all var(--duration-200) var(--ease-default);
+}
+
+.benefit-card:active {
+  transform: scale(0.96);
+}
+
+.benefit-icon-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+}
+
+.benefit-purple {
+  background: linear-gradient(135deg, rgba(138, 92, 255, 0.2) 0%, rgba(175, 140, 255, 0.12) 100%);
+  border: 1rpx solid rgba(138, 92, 255, 0.2);
+}
+
+.benefit-blue {
+  background: linear-gradient(135deg, rgba(90, 215, 255, 0.2) 0%, rgba(112, 198, 255, 0.12) 100%);
+  border: 1rpx solid rgba(90, 215, 255, 0.2);
+}
+
+.benefit-pink {
+  background: linear-gradient(135deg, rgba(255, 178, 221, 0.2) 0%, rgba(255, 149, 206, 0.12) 100%);
+  border: 1rpx solid rgba(255, 178, 221, 0.2);
+}
+
+.benefit-violet {
+  background: linear-gradient(135deg, rgba(109, 50, 255, 0.18) 0%, rgba(160, 140, 255, 0.12) 100%);
+  border: 1rpx solid rgba(109, 50, 255, 0.2);
+}
+
+.benefit-sky {
+  background: linear-gradient(135deg, rgba(98, 192, 255, 0.18) 0%, rgba(182, 228, 255, 0.12) 100%);
+  border: 1rpx solid rgba(98, 192, 255, 0.2);
+}
+
+.benefit-indigo {
+  background: linear-gradient(135deg, rgba(126, 99, 255, 0.18) 0%, rgba(182, 154, 255, 0.12) 100%);
+  border: 1rpx solid rgba(126, 99, 255, 0.2);
+}
+
+.benefit-icon {
+  font-size: 40rpx;
+}
+
+.benefit-name {
+  font-size: var(--font-sm);
+  font-weight: var(--font-semibold);
+  color: rgba(42, 33, 69, 0.92);
+  text-align: center;
+}
+
+.benefit-desc {
+  font-size: 20rpx;
+  color: rgba(42, 33, 69, 0.55);
+  text-align: center;
+}
+
+/* ==================== 会员说明 ==================== */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.faq-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-bottom: var(--space-4);
+  border-bottom: 1rpx solid rgba(90, 150, 255, 0.12);
+}
+
+.faq-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.faq-q {
+  font-size: var(--font-base);
+  font-weight: var(--font-semibold);
+  color: rgba(42, 33, 69, 0.88);
+}
+
+.faq-a {
+  font-size: var(--font-sm);
+  color: rgba(42, 33, 69, 0.55);
+  line-height: 1.6;
+}
+
+/* ==================== 底部操作栏 ==================== */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-fixed);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1rpx solid rgba(90, 150, 255, 0.12);
+  box-shadow: 0 -12rpx 30rpx rgba(71, 48, 123, 0.08);
+}
+
+.bottom-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.bottom-label {
+  font-size: var(--font-xs);
+  color: rgba(42, 33, 69, 0.5);
+}
+
+.bottom-price-row {
+  display: flex;
+  align-items: baseline;
+}
+
+.bottom-currency {
+  font-size: var(--font-sm);
+  font-weight: var(--font-bold);
+  color: #6D32FF;
+}
+
+.bottom-price {
+  font-size: var(--font-3xl);
+  font-weight: var(--font-bold);
+  color: #6D32FF;
+  line-height: 1.1;
+}
+
+.bottom-btn {
+  padding: var(--space-4) var(--space-12);
+  background: linear-gradient(135deg, #6D32FF 0%, #5AD7FF 45%, #FF9FD3 100%);
+  border-radius: var(--radius-full);
+  box-shadow: 0 8rpx 26rpx rgba(109, 50, 255, 0.25);
+  transition: all var(--duration-200) var(--ease-default);
+}
+
+.bottom-btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 4rpx 16rpx rgba(109, 50, 255, 0.2);
+}
+
+.bottom-btn text {
+  font-size: var(--font-lg);
+  font-weight: var(--font-bold);
+  color: #FFFFFF;
+}
+
+/* ==================== 动画 ==================== */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20rpx); }
+}
+
+/* ==================== 模拟支付面板 ==================== */
+.pay-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+.pay-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 0 40rpx 60rpx;
+  z-index: 101;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.pay-panel-show {
+  transform: translateY(0);
+}
+
+.pay-panel-handle {
+  width: 80rpx;
+  height: 8rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+  margin: 20rpx auto 30rpx;
+}
+
+.pay-panel-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+
+.pay-plan-info {
+  text-align: center;
+  margin-bottom: 32rpx;
+}
+
+.pay-plan-name {
+  font-size: 28rpx;
+  color: #6D32FF;
+  font-weight: 600;
+}
+
+.pay-plan-unit {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.pay-amount-wrap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 48rpx;
+}
+
+.pay-currency {
+  font-size: 32rpx;
+  color: #1d1d1f;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+  margin-right: 4rpx;
+}
+
+.pay-amount-num {
+  font-size: 72rpx;
+  color: #1d1d1f;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.pay-method-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 0;
+}
+
+.pay-method-left {
+  display: flex;
+  align-items: center;
+}
+
+.pay-method-icon {
+  font-size: 44rpx;
+  margin-right: 16rpx;
+}
+
+.pay-method-name {
+  font-size: 30rpx;
+  color: #1d1d1f;
+  font-weight: 500;
+}
+
+.pay-method-check {
+  font-size: 28rpx;
+  color: #07c160;
+  font-weight: 700;
+}
+
+.pay-divider {
+  height: 1rpx;
+  background: #f0f0f0;
+  margin: 8rpx 0 32rpx;
+}
+
+.pay-confirm-btn {
+  width: 100%;
+  height: 96rpx;
+  background: #07c160;
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 48rpx;
+  border: none;
+}
+
+.pay-confirm-btn::after {
+  border: none;
+}
+
+.pay-cancel-text {
+  text-align: center;
+  color: #999;
+  font-size: 28rpx;
+  margin-top: 28rpx;
+  padding: 10rpx;
+}

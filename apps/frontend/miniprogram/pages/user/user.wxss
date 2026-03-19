@@ -1,0 +1,268 @@
+.user-page {
+  min-height: 100vh;
+  background: #f8f8f8;
+}
+
+.main-scroll {
+  height: 100vh;
+}
+
+.user-shell {
+  padding: 24rpx 32rpx 36rpx;
+}
+
+.profile-top,
+.section-head,
+.stats-row,
+.member-footer {
+  display: flex;
+  align-items: center;
+}
+
+.profile-card,
+.member-card,
+.section-card {
+  margin-top: 20rpx;
+  padding: 28rpx;
+  background: #ffffff;
+  border-radius: 36rpx;
+}
+
+.profile-top {
+  gap: 18rpx;
+}
+
+.avatar-img,
+.avatar-fallback {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 46rpx;
+}
+
+.avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f6f2ff;
+  font-size: 40rpx;
+}
+
+.profile-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name,
+.section-title,
+.stat-value,
+.order-name,
+.pet-name {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.profile-name {
+  display: block;
+  font-size: 34rpx;
+}
+
+.profile-sub,
+.member-desc,
+.stat-label,
+.section-link,
+.service-subtitle,
+.pet-breed {
+  color: #9ca3af;
+}
+
+.profile-sub {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 20rpx;
+}
+
+.profile-action {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 22rpx;
+  background: #f6f2ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-action text {
+  color: #6d32ff;
+  font-size: 22rpx;
+}
+
+.stats-row {
+  margin-top: 22rpx;
+  padding: 22rpx 0 4rpx;
+  border-radius: 28rpx;
+  background: #fafafc;
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 34rpx;
+}
+
+.stat-label {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 20rpx;
+}
+
+.stat-divider {
+  width: 1rpx;
+  height: 56rpx;
+  background: #f0f1f5;
+}
+
+.member-desc {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 20rpx;
+  line-height: 1.5;
+}
+
+.member-footer {
+  justify-content: space-between;
+  margin-top: 14rpx;
+}
+
+.member-link {
+  color: #8f79d9;
+  font-size: 22rpx;
+}
+
+.member-arrow {
+  color: #b39aef;
+  font-size: 24rpx;
+}
+
+.section-head {
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+}
+
+.section-link {
+  font-size: 22rpx;
+}
+
+.order-grid,
+.service-row,
+.mini-service-row,
+.pet-list {
+  display: flex;
+  gap: 12rpx;
+}
+
+.order-item,
+.service-box,
+.mini-service,
+.pet-item {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  border-radius: 24rpx;
+}
+
+.order-item {
+  padding: 16rpx 8rpx;
+  background: #fafafc;
+}
+
+.order-icon {
+  display: block;
+  color: #4b5563;
+  font-size: 20rpx;
+}
+
+.order-name {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 20rpx;
+}
+
+.service-row,
+.mini-service-row {
+  margin-top: 12rpx;
+}
+
+.service-box {
+  padding: 20rpx 8rpx;
+}
+
+.service-box text,
+.mini-service text {
+  color: #4b5563;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.service-box.purple {
+  background: #f7f3ff;
+}
+
+.service-box.pink {
+  background: #fff5f9;
+}
+
+.service-box.blue {
+  background: #f5f9ff;
+}
+
+.service-box.green {
+  background: #f5fbf8;
+}
+
+.service-subtitle {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 20rpx;
+}
+
+.mini-service {
+  padding: 10rpx 4rpx;
+  background: #fafafc;
+}
+
+.pet-list {
+  margin-top: 14rpx;
+}
+
+.pet-item {
+  padding: 18rpx 8rpx;
+  background: #fafafc;
+}
+
+.pet-item.highlight {
+  background: #f7f3ff;
+}
+
+.pet-icon {
+  font-size: 30rpx;
+}
+
+.pet-name {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 22rpx;
+}
+
+.pet-breed {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 18rpx;
+}

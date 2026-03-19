@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "pageKey": "payment-method-modal",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "Dff1y",
+    "frameName": "支付方式弹窗 Payment Method Modal"
+  },
+  "layout": {
+    "background": "#F5F1EA",
+    "contentPadding": [14, 20, 30, 20],
+    "sectionGap": 10,
+    "safeAreaTop": false
+  },
+  "tokens": {
+    "colors": {
+      "sheetBackground": "#FFFDF9",
+      "overlay": "#1111111E",
+      "textPrimary": "#1D232A",
+      "textSecondary": "#8A867F",
+      "borderSoft": "#EEE7DE"
+    },
+    "radius": {
+      "sheet": 32,
+      "row": 16
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "600" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    { "key": "mask", "type": "modal_mask", "sourceNodeId": "75Sxp" },
+    { "key": "sheet", "type": "payment_method_sheet", "sourceNodeId": "d6Ycr" }
+  ],
+  "dataBindings": [
+    { "sectionKey": "sheet", "api": "checkout pay methods", "fields": ["methods[]", "selectedMethod"] }
+  ],
+  "actions": [
+    { "name": "closeSheet", "target": "local-state", "sectionKey": "mask" },
+    { "name": "selectPaymentMethod", "target": "local-state", "sectionKey": "sheet" },
+    { "name": "confirmPaymentMethod", "target": "payment-verification-open", "sectionKey": "sheet" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "Dff1y",
+    "criticalCheckpoints": [
+      "sheet is bottom anchored with warm translucent backdrop",
+      "sheet corners and blur match `.pen`",
+      "base checkout screen remains visible underneath"
+    ]
+  }
+}

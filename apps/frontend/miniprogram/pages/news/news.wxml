@@ -1,0 +1,108 @@
+<view class="news-page">
+  <scroll-view
+    class="main-scroll"
+    scroll-y
+    enhanced
+    show-scrollbar="{{false}}"
+    refresher-enabled
+    refresher-triggered="{{isRefreshing}}"
+    bindrefresherrefresh="onRefresh"
+  >
+    <view class="news-shell">
+      <view class="hero-card">
+        <view class="hero-top">
+          <text class="hero-kicker">消息概览</text>
+          <view class="hero-read-all" bindtap="onReadAll"><text>全部已读</text></view>
+        </view>
+        <text class="hero-title">今天有 {{unreadSummary.totalUnreadCount || 0}} 条待处理消息</text>
+        <text class="hero-desc">AI 助手与咨询提醒优先，建议先处理未读会话。</text>
+        <view class="quick-grid">
+          <view
+            class="quick-item"
+            wx:for="{{quickEntries}}"
+            wx:key="key"
+            bindtap="onQuickEntryTap"
+            data-entry="{{item}}"
+          >
+            <view class="quick-icon-wrap">
+              <image class="quick-icon" src="{{item.iconSrc}}" mode="aspectFit"></image>
+            </view>
+            <text class="quick-title">{{item.title}}</text>
+            <text class="quick-subtitle">{{item.badgeText || item.subtitle}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="section-card" wx:if="{{conversations.length > 0}}">
+        <view class="section-head">
+          <text class="section-title">最近会话</text>
+          <text class="section-link" bindtap="goToConversationList">查看全部</text>
+        </view>
+        <view
+          wx:for="{{topConversations}}"
+          wx:key="id"
+          class="conversation-card"
+          bindtap="onConversationTap"
+          bindlongpress="onConversationLongPress"
+          data-conversation="{{item}}"
+        >
+          <view class="conversation-avatar-shell">
+            <image wx:if="{{item.targetAvatar}}" class="conversation-avatar" src="{{item.targetAvatar}}" mode="aspectFill"></image>
+            <view wx:elif="{{item.type === 'ai_chat'}}" class="conversation-avatar fallback-avatar ai-avatar">AI</view>
+            <view wx:else class="conversation-avatar fallback-avatar">{{item.targetName ? item.targetName[0] : '宠'}}</view>
+          </view>
+          <text class="conversation-copy">{{item.targetName}} · {{item.lastMessage || '暂无消息'}}</text>
+          <view wx:if="{{item.unreadCount > 0}}" class="conversation-badge">
+            <text>{{item.unreadCount > 99 ? '99+' : item.unreadCount}}</text>
+          </view>
+          <text wx:else class="conversation-time">{{item.lastMessageTimeStr}}</text>
+        </view>
+      </view>
+
+      <view class="section-card">
+        <view class="section-head">
+          <text class="section-title">通知分类</text>
+          <text class="section-link" bindtap="goToNotifications">按类型查看</text>
+        </view>
+        <view class="notification-grid">
+          <view class="notification-item" bindtap="goToNotificationType" data-type="order">
+            <view class="notification-icon blue"><text>订</text></view>
+            <text class="notification-name">订单通知</text>
+            <text class="notification-count">{{notificationCounts.orderCount || 0}} 条未读</text>
+          </view>
+          <view class="notification-item" bindtap="goToNotificationType" data-type="activity">
+            <view class="notification-icon pink"><text>活</text></view>
+            <text class="notification-name">活动通知</text>
+            <text class="notification-count">{{notificationCounts.activityCount || 0}} 条提醒</text>
+          </view>
+          <view class="notification-item" bindtap="goToNotificationType" data-type="system">
+            <view class="notification-icon violet"><text>系</text></view>
+            <text class="notification-name">系统消息</text>
+            <text class="notification-count">{{notificationCounts.systemCount || 0}} 条待看</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="empty-state" wx:if="{{conversations.length === 0 && !quickEntries.length}}">
+        <text class="empty-title">暂无消息</text>
+        <text class="empty-desc">新的咨询回复、系统提醒和服务进展会显示在这里</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="action-sheet-mask" wx:if="{{showActionSheet}}" bindtap="hideActionSheet"></view>
+  <view class="action-sheet {{showActionSheet ? 'action-sheet-show' : ''}}">
+    <view class="action-sheet-item" bindtap="onActionMarkRead">
+      <text>标为已读</text>
+    </view>
+    <view class="action-sheet-item" bindtap="onActionTogglePin">
+      <text>{{selectedConversation && selectedConversation.isPinned ? '取消置顶' : '置顶会话'}}</text>
+    </view>
+    <view class="action-sheet-item danger" bindtap="onActionDelete">
+      <text>删除会话</text>
+    </view>
+    <view class="action-sheet-cancel" bindtap="hideActionSheet">
+      <text>取消</text>
+    </view>
+  </view>
+</view>

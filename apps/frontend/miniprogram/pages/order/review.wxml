@@ -1,0 +1,71 @@
+<view class="review-page">
+  <view class="review-content">
+    <view class="review-intro-card">
+      <text class="review-intro-card__title">评价订单</text>
+      <text class="review-intro-card__subtitle">分享本次购买体验，帮助其他用户做出选择。</text>
+      <view class="review-intro-card__pill">本单共 {{reviewItems.length}} 件商品</view>
+    </view>
+
+    <view wx:for="{{reviewItems}}" wx:key="orderItemId" class="review-card">
+      <view class="review-card__product">
+        <image class="review-card__thumb" src="{{item.coverUrl}}" mode="aspectFill" />
+        <view class="review-card__product-copy">
+          <text class="review-card__product-name">{{item.productName}}</text>
+          <text class="review-card__product-meta">{{item.metaText}}</text>
+        </view>
+      </view>
+
+      <view class="review-stars">
+        <text
+          wx:for="{{item.starOptions}}"
+          wx:key="value"
+          class="review-star {{item.rating >= starItem.value ? 'review-star--active' : ''}}"
+          data-index="{{index}}"
+          data-rating="{{starItem.value}}"
+          bindtap="setRating"
+          wx:for-item="starItem"
+        >★</text>
+      </view>
+
+      <textarea
+        class="review-card__textarea"
+        placeholder="{{item.placeholder}}"
+        placeholder-class="review-card__placeholder"
+        maxlength="200"
+        value="{{item.content}}"
+        data-index="{{index}}"
+        bindinput="onContentInput"
+      />
+
+      <view class="review-upload-row">
+        <view
+          wx:for="{{item.images}}"
+          wx:key="*this"
+          class="review-upload-box review-upload-box--filled"
+          data-url="{{item}}"
+          data-index="{{index}}"
+          bindtap="previewImage"
+          wx:for-item="imageUrl"
+          wx:for-index="imageIndex"
+        >
+          <image class="review-upload-box__image" src="{{imageUrl}}" mode="aspectFill" />
+          <view class="review-upload-box__delete" catchtap="deleteImage" data-index="{{index}}" data-image-index="{{imageIndex}}">✕</view>
+        </view>
+
+        <view
+          wx:if="{{item.images.length < item.maxImages}}"
+          class="review-upload-box"
+          data-index="{{index}}"
+          bindtap="chooseImage"
+        ></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="review-submit-bar">
+    <button class="review-submit-bar__button {{submitting ? 'review-submit-bar__button--disabled' : ''}}" bindtap="submitReview" disabled="{{submitting}}">
+      {{submitting ? '提交中...' : '提交评价'}}
+    </button>
+    <text class="review-submit-bar__hint">提交后可在订单详情中继续查看评价状态</text>
+  </view>
+</view>

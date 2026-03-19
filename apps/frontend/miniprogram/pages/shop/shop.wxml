@@ -1,0 +1,94 @@
+<view class="shop-page">
+  <movable-area class="cart-movable-area">
+    <movable-view class="cart-movable-view" x="{{cartX}}" y="{{cartY}}" direction="all" bindchange="onCartChange">
+      <view class="cart-float-btn" bindtap="goToCart">
+        <text>🛍</text>
+      </view>
+    </movable-view>
+  </movable-area>
+
+  <scroll-view
+    class="main-scroll"
+    scroll-y
+    enhanced
+    show-scrollbar="{{false}}"
+    bindscrolltolower="onLoadMore"
+  >
+    <view class="shop-shell">
+      <view class="search-bar" bindtap="onSearchTap">
+        <text class="search-placeholder">搜索主粮、零食、玩具</text>
+      </view>
+
+      <scroll-view
+        class="category-scroll"
+        scroll-x
+        enhanced
+        show-scrollbar="{{false}}"
+        scroll-with-animation
+        scroll-into-view="{{categoryScrollIntoView}}"
+      >
+        <view class="category-row">
+          <view
+            class="category-tab {{activeCategory === index ? 'active' : ''}}"
+            wx:for="{{categories}}"
+            wx:key="id"
+            bindtap="onCategoryChange"
+            data-index="{{index}}"
+            id="{{item.anchorId}}"
+          >
+            <view class="category-tab__capsule"></view>
+            <text>{{item.name}}</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="product-columns">
+        <view class="product-column">
+          <view
+            class="product-card"
+            wx:for="{{leftProducts}}"
+            wx:key="id"
+            bindtap="onProductTap"
+            data-product="{{item}}"
+          >
+            <view class="product-image-wrap">
+              <view class="product-bg product-bg-{{item.color || index % 4}}">
+                <image wx:if="{{item.coverUrl}}" class="product-image" src="{{item.coverUrl}}" mode="aspectFill"></image>
+                <text wx:else class="product-emoji">{{item.emoji}}</text>
+              </view>
+            </view>
+            <text class="product-name">{{item.name}}</text>
+            <text class="product-price">¥{{item.price}}</text>
+          </view>
+        </view>
+
+        <view class="product-column product-column--offset">
+          <view
+            class="product-card"
+            wx:for="{{rightProducts}}"
+            wx:key="id"
+            bindtap="onProductTap"
+            data-product="{{item}}"
+          >
+            <view class="product-image-wrap">
+              <view class="product-bg product-bg-{{item.color || index % 4}}">
+                <image wx:if="{{item.coverUrl}}" class="product-image" src="{{item.coverUrl}}" mode="aspectFill"></image>
+                <text wx:else class="product-emoji">{{item.emoji}}</text>
+              </view>
+            </view>
+            <text class="product-name">{{item.name}}</text>
+            <text class="product-price">¥{{item.price}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="empty-state" wx:if="{{products.length === 0 && !loading}}">
+        <text class="empty-title">暂无商品</text>
+      </view>
+
+      <view class="loading-more" wx:if="{{loading && products.length > 0}}">
+        <text>加载中...</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

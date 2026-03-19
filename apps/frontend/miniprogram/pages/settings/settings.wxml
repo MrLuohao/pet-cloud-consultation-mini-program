@@ -1,0 +1,55 @@
+<view class="settings-page">
+  <view class="card">
+    <view class="row" bindtap="goProfile">
+      <text>个人资料</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="row" bindtap="goProfile">
+      <text>{{userInfo.nickname || '未设置昵称'}}</text>
+      <text class="muted">编辑资料</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="title">后端地址（开发调试）</view>
+    <view class="meta-grid">
+      <view class="meta-item">
+        <text class="meta-label">当前环境</text>
+        <text class="meta-value">{{platformLabel}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-label">推荐地址</text>
+        <text class="meta-value">{{recommendedHost}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-label">默认地址</text>
+        <text class="meta-value">{{defaultHost}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-label">当前用户服务</text>
+        <text class="meta-value">{{currentUserApi}}</text>
+      </view>
+      <view class="meta-item full">
+        <text class="meta-label">当前商城服务</text>
+        <text class="meta-value">{{currentShopApi}}</text>
+      </view>
+    </view>
+
+    <view class="field-label">手动输入 Host（仅 IP 或域名，不带端口）</view>
+    <input class="input" value="{{apiHost}}" bindinput="onApiHostInput" placeholder="开发者工具建议用 127.0.0.1，真机请填局域网 IP" />
+
+    <view class="btn-grid">
+      <button class="action primary" bindtap="saveApiHost">保存并测试</button>
+      <button class="action accent" bindtap="useRecommendedHost">一键用推荐地址</button>
+      <button class="action" bindtap="testConnection">仅测试连接</button>
+      <button class="action" bindtap="resetApiHost">恢复默认</button>
+    </view>
+    <view wx:if="{{connectionStatus}}" class="status {{connectionStatus}}">
+      <text>{{statusMessage}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <button class="danger" bindtap="logout">退出登录</button>
+  </view>
+</view>

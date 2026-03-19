@@ -1,0 +1,76 @@
+<view class="page">
+  <view wx:if="{{store}}" class="store-bar">
+    <text class="store-bar-name">{{store.name}}</text>
+  </view>
+
+  <!-- 宠物选择 -->
+  <view class="section card">
+    <view class="section-header">选择宠物</view>
+    <view wx:if="{{pets.length > 0}}">
+      <picker range="{{pets}}" range-key="name" bindchange="onPetChange">
+        <view class="picker-row">
+          <text class="picker-label">{{pets[0].name}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+    <view wx:else class="empty-hint">
+      <text>暂无宠物，请先添加宠物</text>
+    </view>
+  </view>
+
+  <!-- 服务项目 -->
+  <view class="section card">
+    <view class="section-header">选择服务（可多选）</view>
+    <view wx:for="{{services}}" wx:key="id" class="service-check-item" data-id="{{item.id}}" bindtap="toggleService">
+      <view class="check-box {{selectedServiceIds.indexOf(item.id) >= 0 ? 'checked' : ''}}">
+        <text wx:if="{{selectedServiceIds.indexOf(item.id) >= 0}}">✓</text>
+      </view>
+      <view class="service-info-wrap">
+        <text class="service-name">{{item.name}}</text>
+        <text class="service-price">¥{{item.price}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 日期选择 -->
+  <view class="section card">
+    <view class="section-header">选择日期</view>
+    <picker mode="date" value="{{selectedDate}}" start="{{minDate}}" end="{{maxDate}}" bindchange="onDateChange">
+      <view class="picker-row">
+        <text class="picker-label">{{selectedDate || '请选择日期'}}</text>
+        <text class="picker-arrow">›</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 时间段选择 -->
+  <view class="section card">
+    <view class="section-header">选择时间段</view>
+    <view class="slots-grid">
+      <view
+        wx:for="{{availableSlots}}"
+        wx:key="slot"
+        class="slot-item {{!item.available ? 'unavailable' : ''}} {{selectedSlot === item.slot ? 'selected' : ''}}"
+        data-slot="{{item}}"
+        bindtap="onSlotTap"
+      >
+        <text class="slot-time">{{item.slot}}</text>
+        <text class="slot-remaining">剩余{{item.remaining}}名</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="section card">
+    <view class="section-header">备注（可选）</view>
+    <textarea class="remark-input" placeholder="如宠物特殊情况、注意事项等" bindinput="onRemarkInput" maxlength="200"/>
+  </view>
+
+  <!-- 底部提交 -->
+  <view class="bottom-bar">
+    <view class="btn-submit {{submitting ? 'disabled' : ''}}" bindtap="submitBooking">
+      {{submitting ? '提交中...' : '确认预约'}}
+    </view>
+  </view>
+</view>

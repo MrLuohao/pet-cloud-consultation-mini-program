@@ -1,0 +1,112 @@
+<!-- pages/consultation/urgent/index.wxml - 紧急问诊快速响应通道（Story 5.1）-->
+<view class="urgent-page">
+
+  <!-- 紧急标识头部 -->
+  <view class="urgent-header">
+    <view class="urgency-badge">
+      <text class="badge-icon">🚨</text>
+      <text class="badge-text">紧急问诊</text>
+    </view>
+    <view class="response-promise">
+      <text class="response-icon">⚡</text>
+      <text class="response-text {{showResponseBadge ? 'blink' : ''}}">{{countdownText}}</text>
+    </view>
+    <text class="header-desc">专属通道·在线医生优先接诊·全天候服务</text>
+  </view>
+
+  <!-- 选择宠物 -->
+  <view class="section-card">
+    <view class="section-title">
+      <text class="title-dot urgent-dot"></text>
+      <text>选择患病宠物</text>
+    </view>
+    <view wx:if="{{pets.length > 0}}" class="pet-list">
+      <view
+        wx:for="{{pets}}"
+        wx:key="id"
+        class="pet-item {{selectedPet && selectedPet.id === item.id ? 'pet-selected' : ''}}"
+        bindtap="onPetSelect"
+        data-index="{{index}}"
+      >
+        <image class="pet-avatar" src="{{item.avatar || '/images/default-pet.png'}}" mode="aspectFill"/>
+        <view class="pet-info">
+          <text class="pet-name">{{item.name}}</text>
+          <text class="pet-breed">{{item.breed || item.species}}</text>
+        </view>
+        <view wx:if="{{selectedPet && selectedPet.id === item.id}}" class="pet-check">✓</view>
+      </view>
+    </view>
+    <view wx:else class="no-pet">
+      <text class="no-pet-text">暂无宠物信息，请先在"我的宠物"添加</text>
+    </view>
+  </view>
+
+  <!-- 紧急症状描述 -->
+  <view class="section-card">
+    <view class="section-title">
+      <text class="title-dot urgent-dot"></text>
+      <text>描述紧急症状</text>
+      <text class="required-mark">*</text>
+    </view>
+    <view class="symptom-hints">
+      <text class="hint-label">常见紧急情况：</text>
+      <view class="hint-tags">
+        <text class="hint-tag" bindtap="onHintTap" data-text="突然晕厥/抽搐">突然晕厥/抽搐</text>
+        <text class="hint-tag" bindtap="onHintTap" data-text="呼吸困难">呼吸困难</text>
+        <text class="hint-tag" bindtap="onHintTap" data-text="大量出血">大量出血</text>
+        <text class="hint-tag" bindtap="onHintTap" data-text="误食异物">误食异物</text>
+        <text class="hint-tag" bindtap="onHintTap" data-text="骨折/外伤">骨折/外伤</text>
+        <text class="hint-tag" bindtap="onHintTap" data-text="持续呕吐">持续呕吐</text>
+      </view>
+    </view>
+    <textarea
+      class="symptom-input"
+      placeholder="请详细描述宠物的紧急症状、发病时间、目前状态等（至少10字）"
+      value="{{description}}"
+      bindinput="onDescriptionInput"
+      maxlength="500"
+      auto-height
+    />
+    <text class="char-count">{{description.length}}/500</text>
+  </view>
+
+  <!-- 上传现场图片 -->
+  <view class="section-card">
+    <view class="section-title">
+      <text class="title-dot"></text>
+      <text>上传现场图片</text>
+      <text class="optional-mark">选填·最多3张</text>
+    </view>
+    <view class="image-grid">
+      <view
+        wx:for="{{images}}"
+        wx:key="index"
+        class="image-item"
+      >
+        <image class="preview-img" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-index="{{index}}"/>
+        <view class="remove-btn" bindtap="onRemoveImage" data-index="{{index}}">×</view>
+      </view>
+      <view wx:if="{{images.length < 3}}" class="add-image-btn" bindtap="onChooseImage">
+        <text class="add-icon">📷</text>
+        <text class="add-text">添加图片</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-area">
+    <view class="safety-tips">
+      <text class="tips-icon">⚠️</text>
+      <text class="tips-text">若宠物情况危急，请同时前往最近宠物医院就诊</text>
+    </view>
+    <button
+      class="submit-btn {{submitting ? 'btn-disabled' : ''}}"
+      bindtap="onSubmitUrgent"
+      disabled="{{submitting}}"
+    >
+      <text wx:if="{{!submitting}}">🚨 立即呼叫医生</text>
+      <text wx:else>正在匹配医生...</text>
+    </button>
+  </view>
+
+</view>

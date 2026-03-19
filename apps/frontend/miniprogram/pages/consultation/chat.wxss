@@ -1,0 +1,229 @@
+/* pages/consultation/chat.wxss */
+.chat-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #F8F9FC 0%, #F5F5F5 100%);
+}
+
+/* 顶部信息 */
+.chat-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  padding-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.doctor-info {
+  display: flex;
+  align-items: center;
+}
+
+.doctor-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  margin-right: 15rpx;
+}
+
+.doctor-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.doctor-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.consult-status {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.actions {
+  display: flex;
+}
+
+.action-btn {
+  padding: 10rpx 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #666;
+  background: #fff;
+}
+
+.action-btn.cancel {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+/* 消息列表 */
+.message-list {
+  flex: 1;
+  padding: 20rpx 30rpx;
+}
+
+.message-item {
+  display: flex;
+  margin-bottom: 30rpx;
+}
+
+.message-item.user {
+  flex-direction: row-reverse;
+}
+
+.message-item .avatar {
+  width: 70rpx;
+  height: 70rpx;
+  border-radius: 50%;
+  margin: 0 15rpx;
+}
+
+.message-content {
+  max-width: 500rpx;
+}
+
+.message-item.doctor .message-content {
+  align-items: flex-start;
+}
+
+.message-item.user .message-content {
+  align-items: flex-end;
+}
+
+.message-bubble {
+  background: #fff;
+  padding: 20rpx 25rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+  word-break: break-all;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.message-item.doctor .message-bubble {
+  background: #fff;
+  border-top-left-radius: 4rpx;
+}
+
+.message-item.user .message-bubble {
+  background: linear-gradient(135deg, #6D32FF 0%, #A855F7 100%);
+  color: #fff;
+  border-top-right-radius: 4rpx;
+  box-shadow: 0 4rpx 16rpx rgba(109, 50, 255, 0.25);
+}
+
+.message-image {
+  width: 300rpx;
+  height: 300rpx;
+  border-radius: 12rpx;
+}
+
+.voice-bubble {
+  background: #fff;
+  padding: 15rpx 25rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+}
+
+.voice-icon {
+  margin-right: 10rpx;
+}
+
+.message-time {
+  display: block;
+  font-size: 20rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+.system-tip {
+  text-align: center;
+  padding: 20rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+
+/* 输入框 */
+.input-bar {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 20rpx 30rpx;
+  padding-bottom: calc(20rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  border-top: 0.5px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.03);
+}
+
+.icon-btn {
+  padding: 10rpx;
+  font-size: 40rpx;
+  background: transparent;
+  color: #666;
+  line-height: 1;
+  transition: opacity 0.2s ease;
+}
+
+.icon-btn:active {
+  opacity: 0.5;
+}
+
+.icon-btn::after {
+  border: none;
+}
+
+.message-input {
+  flex: 1;
+  padding: 18rpx 24rpx;
+  background: #F5F5F7;
+  border-radius: 36rpx;
+  margin: 0 15rpx;
+  font-size: 28rpx;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.message-input:focus {
+  background: #FFFFFF;
+  border-color: rgba(109, 50, 255, 0.3);
+}
+
+.send-btn {
+  background: linear-gradient(135deg, #6D32FF 0%, #A855F7 100%);
+  color: #fff;
+  padding: 18rpx 32rpx;
+  border-radius: 36rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  box-shadow: 0 4rpx 16rpx rgba(109, 50, 255, 0.25);
+  transition: all 0.2s ease;
+}
+
+.send-btn:active {
+  transform: scale(0.96);
+}
+
+.send-btn::after {
+  border: none;
+}

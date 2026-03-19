@@ -1,0 +1,100 @@
+/* pages/message/conversations.wxss */
+
+.conversations-page {
+  min-height: 100vh;
+  background: var(--bg-secondary);
+}
+
+.conversation-list {
+  background: var(--bg-primary);
+}
+
+.conversation-item {
+  display: flex;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1rpx solid var(--border-subtle);
+}
+
+.avatar-wrap {
+  position: relative;
+  margin-right: var(--space-4);
+}
+
+.avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+}
+
+.unread-badge {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  min-width: 36rpx;
+  height: 36rpx;
+  padding: 0 8rpx;
+  background: var(--error);
+  border-radius: var(--radius-full);
+  color: white;
+  font-size: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.conversation-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.nickname {
+  font-size: var(--font-lg);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+}
+
+.time {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+}
+
+.last-message {
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-24) 0;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: var(--space-4);
+}
+
+.empty-text {
+  font-size: var(--font-base);
+  color: var(--text-tertiary);
+}
+
+.loading-status {
+  text-align: center;
+  padding: var(--space-6);
+  color: var(--text-tertiary);
+}

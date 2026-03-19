@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "pageKey": "community",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "mRhIB",
+    "frameName": "社区页面优化版 Social Style"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [4, 16, 24, 16],
+    "sectionGap": 10,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "cardBackground": "#FFFFFF",
+      "textPrimary": "#1F2937",
+      "textBody": "#374151",
+      "textSecondary": "#7C8395",
+      "textMuted": "#9CA3AF",
+      "brandPrimary": "#6D32FF",
+      "brandSoft": "#F3F0FF",
+      "borderSoft": "#F1F2F5",
+      "mediaPlaceholder": "#EEE7FF",
+      "fabBackground": "#EFE7FF"
+    },
+    "radius": {
+      "search": 22,
+      "topic": 999,
+      "card": 18,
+      "media": 14,
+      "fab": 27
+    },
+    "typography": {
+      "tabActive": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "tabDefault": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "500" },
+      "body": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "500", "lineHeight": 1.55 },
+      "meta": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "NnLoy",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "search_and_tabs",
+      "type": "search_with_tabs",
+      "sourceNodeId": "NnbBk",
+      "copy": [
+        "搜索话题、用户、内容",
+        "推荐",
+        "关注",
+        "热门",
+        "最新"
+      ],
+      "layout": { "gap": 10 }
+    },
+    {
+      "key": "topics",
+      "type": "topic_chip_row",
+      "sourceNodeId": "pqhez",
+      "copy": [
+        "#晒宠日常",
+        "#养宠问题",
+        "#问诊反馈"
+      ],
+      "layout": { "gap": 6 }
+    },
+    {
+      "key": "feed",
+      "type": "social_feed",
+      "sourceNodeId": "VZVJ0",
+      "copy": [
+        "今天终于把饮食和作息慢慢调顺了，最近状态稳定很多，毛色也更亮了一点。",
+        "猫咪突然不爱喝水的时候，别只盯着饮水量本身，更要先看精神状态、排尿频率和近期环境变化。"
+      ],
+      "layout": { "gap": 14 }
+    },
+    {
+      "key": "publish",
+      "type": "floating_publish_entry",
+      "sourceNodeId": "19tAm",
+      "copy": ["+"],
+      "layout": { "width": 54, "height": 54, "cornerRadius": 27 }
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "feed",
+      "api": "GET /api/community/posts",
+      "fields": [
+        "posts[].id",
+        "posts[].postType",
+        "posts[].nickname",
+        "posts[].createTime",
+        "posts[].author.displayName",
+        "posts[].author.role",
+        "posts[].author.avatarUrl",
+        "posts[].pet.name",
+        "posts[].pet.breed",
+        "posts[].pet.ageText",
+        "posts[].pet.signature",
+        "posts[].pet.avatarUrl",
+        "posts[].content",
+        "posts[].mediaUrls",
+        "posts[].mediaType",
+        "posts[].likeCount",
+        "posts[].commentCount",
+        "posts[].isLiked"
+      ]
+    },
+    {
+      "sectionKey": "publish",
+      "api": "POST /api/community/post",
+      "fields": [
+        "newPostContent",
+        "newPostImages[]"
+      ]
+    },
+    {
+      "sectionKey": "publish",
+      "api": "POST /api/media/upload?ownerType=community",
+      "fields": [
+        "mediaAssetIds[]"
+      ]
+    }
+  ],
+  "actions": [
+    { "name": "loadPosts", "target": "/api/community/posts", "sectionKey": "feed" },
+    { "name": "onToggleLike", "target": "like-unlike-post", "sectionKey": "feed" },
+    { "name": "onOpenComments", "target": "comment-modal", "sectionKey": "feed" },
+    { "name": "onPreviewMedia", "target": "image-preview", "sectionKey": "feed" },
+    { "name": "onOpenPost", "target": "post-modal", "sectionKey": "publish" },
+    { "name": "onSubmitPost", "target": "/api/community/post", "sectionKey": "publish" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "mRhIB",
+    "criticalCheckpoints": [
+      "search field remains above tabs and topic chips",
+      "tabs remain a light text switcher, not boxed segmented controls",
+      "first feed card supports image/media variant",
+      "second feed card supports text-only variant",
+      "pet posts render avatar plus a three-line identity stack: pet name, breed-age, signature",
+      "expert posts render a compact two-line identity stack without age capsules",
+      "post cards are calm white cards with restrained actions row",
+      "publish action stays as a floating circular purple button in lower-right"
+    ]
+  }
+}

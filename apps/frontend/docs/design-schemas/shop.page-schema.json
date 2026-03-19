@@ -1,0 +1,127 @@
+{
+  "meta": {
+    "pageKey": "shop",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "frameId": "DcfUb",
+    "frameName": "商城页轻量优化版 Shop Style"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [10, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "pageGradientStart": "#FAF7FF",
+      "searchBackground": "#FFFFFFB8",
+      "cardBackground": "#FFFFFF",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#757B88",
+      "textMuted": "#A7ACB7",
+      "brandPrimary": "#6D32FF",
+      "borderSoft": "#F1EEF5",
+      "fabIcon": "#7C6AA8"
+    },
+    "radius": {
+      "search": 14,
+      "card": 18,
+      "fab": 22
+    },
+    "typography": {
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+      "category": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "500" },
+      "categoryActive": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "600" },
+      "productName": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700", "lineHeight": 1.35 },
+      "price": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "LzGWZ",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "search_and_categories",
+      "type": "search_with_category_strip",
+      "sourceNodeId": "Du2W0",
+      "copy": [
+        "搜索主粮、零食、玩具",
+        "推荐",
+        "主粮",
+        "护理",
+        "玩具",
+        "营养"
+      ],
+      "layout": { "gap": 12 }
+    },
+    {
+      "key": "product_editorial_grid",
+      "type": "two_column_product_grid",
+      "sourceNodeId": "rYkqT",
+      "copy": [
+        "低温烘焙鸡肉主粮",
+        "互动逗猫机盒",
+        "幼年纸袋加餐营养",
+        "益生菌营养补充片"
+      ],
+      "layout": { "gap": 8 }
+    },
+    {
+      "key": "cart_fab",
+      "type": "floating_cart_button",
+      "sourceNodeId": "2kP2P",
+      "layout": { "width": 44, "height": 44, "cornerRadius": 22 }
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "search_and_categories",
+      "api": "GET /api/shop/categories",
+      "fields": [
+        "categories[].id",
+        "categories[].name",
+        "categories[].iconKey",
+        "categories[].activeIconKey"
+      ]
+    },
+    {
+      "sectionKey": "product_editorial_grid",
+      "api": "GET /api/shop/products",
+      "fields": [
+        "products[].id",
+        "products[].name",
+        "products[].price",
+        "products[].coverUrl",
+        "products[].categoryId"
+      ]
+    },
+    {
+      "sectionKey": "cart_fab",
+      "api": "GET /api/cart/count",
+      "fields": [
+        "cartCount"
+      ]
+    }
+  ],
+  "actions": [
+    { "name": "onSearchTap", "target": "/pages/search/result", "sectionKey": "search_and_categories" },
+    { "name": "onCategoryChange", "target": "reload-products", "sectionKey": "search_and_categories" },
+    { "name": "onProductTap", "target": "/pages/product/detail", "sectionKey": "product_editorial_grid" },
+    { "name": "onLoadMore", "target": "pagination", "sectionKey": "product_editorial_grid" },
+    { "name": "goToCart", "target": "/pages/cart/cart", "sectionKey": "cart_fab" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "DcfUb",
+    "criticalCheckpoints": [
+      "search bar remains first, above category strip",
+      "category strip is a restrained text-first control, not icon-heavy chips",
+      "product list stays two-column with large visual blocks and minimal metadata",
+      "floating cart button remains small and low-noise in the lower-right corner"
+    ]
+  }
+}

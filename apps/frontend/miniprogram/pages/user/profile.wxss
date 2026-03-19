@@ -1,0 +1,249 @@
+/**
+ * ╔══════════════════════════════════════════════════════════════════════════════
+ * ║  个人资料编辑样式 | Profile Edit Styles                                            ║
+ * ║  Design: Purple • Blue • Pink • White                                            ║
+ * ╚══════════════════════════════════════════════════════════════════════════════
+ */
+
+.profile-page {
+  min-height: 100vh;
+  background: #FAFAFA;
+}
+
+/* ==================== 头像区域 ==================== */
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0 40rpx;
+  background: linear-gradient(180deg, #EDE9FE 0%, #FAFAFA 100%);
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 180rpx;
+  height: 180rpx;
+}
+
+.avatar-img,
+.avatar-placeholder {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 50%;
+  border: 6rpx solid #FFFFFF;
+  box-shadow: 0 8rpx 32rpx rgba(108, 92, 231, 0.2);
+}
+
+.avatar-img {
+  background: #FFFFFF;
+}
+
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #EDE9FE 0%, #FCE7F3 100%);
+}
+
+.avatar-emoji {
+  font-size: 80rpx;
+}
+
+.avatar-edit-icon {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6C5CE7 0%, #A855F7 100%);
+  border-radius: 50%;
+  border: 4rpx solid #FFFFFF;
+  box-shadow: 0 4rpx 12rpx rgba(108, 92, 231, 0.3);
+}
+
+.avatar-edit-icon text {
+  font-size: 28rpx;
+}
+
+.avatar-tip {
+  margin-top: 20rpx;
+  font-size: var(--font-sm);
+  color: #A855F7;
+}
+
+/* ==================== 表单区域 ==================== */
+.form-section {
+  margin: var(--space-4);
+  background: #FFFFFF;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4rpx 20rpx rgba(108, 92, 231, 0.06);
+  overflow: hidden;
+}
+
+.form-item {
+  display: flex;
+  align-items: center;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1rpx solid #F1F5F9;
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.form-label {
+  width: 140rpx;
+  font-size: var(--font-base);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+}
+
+.form-input {
+  flex: 1;
+  font-size: var(--font-base);
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.form-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.form-picker {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.picker-value {
+  font-size: var(--font-base);
+  color: var(--text-primary);
+}
+
+.picker-arrow {
+  margin-left: var(--space-2);
+  font-size: var(--font-xl);
+  color: #A855F7;
+}
+
+/* ==================== 性别选择器弹窗 ==================== */
+.gender-picker-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+.gender-picker-popup {
+  width: 100%;
+  background: #FFFFFF;
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.picker-header {
+  padding: var(--space-6);
+  text-align: center;
+  border-bottom: 1rpx solid #F1F5F9;
+}
+
+.picker-title {
+  font-size: var(--font-lg);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+}
+
+.picker-options {
+  padding: var(--space-4);
+}
+
+.picker-option {
+  display: flex;
+  align-items: center;
+  padding: var(--space-5) var(--space-4);
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+}
+
+.picker-option:active {
+  background: #F1F5F9;
+}
+
+.picker-option.active {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.08) 0%, rgba(236, 72, 153, 0.08) 100%);
+}
+
+.option-icon {
+  font-size: 40rpx;
+  margin-right: var(--space-4);
+}
+
+.option-text {
+  flex: 1;
+  font-size: var(--font-base);
+  color: var(--text-primary);
+}
+
+.option-check {
+  font-size: var(--font-lg);
+  color: #6C5CE7;
+  font-weight: var(--font-bold);
+}
+
+.picker-cancel {
+  margin: var(--space-4);
+  padding: var(--space-5);
+  text-align: center;
+  background: #F1F5F9;
+  border-radius: var(--radius-lg);
+}
+
+.picker-cancel text {
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+}
+
+/* ==================== 保存按钮 ==================== */
+.save-section {
+  padding: var(--space-8) var(--space-6);
+  padding-bottom: calc(var(--space-8) + constant(safe-area-inset-bottom));
+  padding-bottom: calc(var(--space-8) + env(safe-area-inset-bottom));
+}
+
+.save-btn {
+  width: 100%;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6C5CE7 0%, #A855F7 100%);
+  border-radius: var(--radius-full);
+  border: none;
+  font-size: var(--font-lg);
+  font-weight: var(--font-semibold);
+  color: #FFFFFF;
+  box-shadow: 0 8rpx 24rpx rgba(108, 92, 231, 0.3);
+  transition: all 0.2s ease;
+}
+
+.save-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 12rpx rgba(108, 92, 231, 0.3);
+}
+
+.save-btn.disabled {
+  background: #E5E7EB;
+  box-shadow: none;
+  color: #9CA3AF;
+}
+
+.save-btn::after {
+  border: none;
+}

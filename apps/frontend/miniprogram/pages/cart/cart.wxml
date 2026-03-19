@@ -1,0 +1,82 @@
+<view class="cart-page">
+  <view wx:if="{{cartList.length === 0 && invalidList.length === 0}}" class="cart-empty">
+    <view class="cart-empty__art">
+      <view class="cart-empty__shadow"></view>
+      <view class="cart-empty__bag"></view>
+      <view class="cart-empty__cap"></view>
+    </view>
+    <text class="cart-empty__title">还没有加入商品</text>
+    <text class="cart-empty__desc">从日常主粮或护理好物开始看看。</text>
+    <view class="cart-empty__cta" bindtap="gotoShop">
+      <text>去逛逛</text>
+    </view>
+  </view>
+
+  <view wx:else class="cart-body">
+    <view class="cart-group" wx:for="{{groupedCartList}}" wx:key="shopId">
+      <view class="cart-group__head">
+        <text class="cart-group__name">{{item.shopName}}</text>
+        <text class="cart-group__meta">{{item.serviceText}}</text>
+      </view>
+
+      <view class="cart-item" wx:for="{{item.products}}" wx:key="id" wx:for-item="product">
+        <view class="cart-item__select" bindtap="toggleSelect" data-id="{{product.id}}">
+          <view class="cart-item__dot {{product.selected ? 'cart-item__dot--active' : ''}}"></view>
+        </view>
+
+        <image
+          wx:if="{{product.coverUrl}}"
+          class="cart-item__thumb"
+          src="{{product.coverUrl}}"
+          mode="aspectFill"
+          bindtap="gotoProduct"
+          data-id="{{product.productId}}"
+        ></image>
+        <view wx:else class="cart-item__thumb cart-item__thumb--placeholder"></view>
+
+        <view class="cart-item__info">
+          <text class="cart-item__name">{{product.name || product.productName}}</text>
+          <text class="cart-item__meta">{{product.spec || '默认规格'}}</text>
+          <view class="cart-item__bottom">
+            <text class="cart-item__price">¥{{product.priceInt}}<text class="cart-item__price-decimal">.{{product.priceDecimal}}</text></text>
+            <view class="cart-item__stepper">
+              <text class="cart-item__stepper-btn" bindtap="decreaseQuantity" data-id="{{product.id}}">−</text>
+              <text class="cart-item__stepper-value">{{product.quantity}}</text>
+              <text class="cart-item__stepper-btn" bindtap="increaseQuantity" data-id="{{product.id}}">+</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="cart-recommend" wx:if="{{recommendCards.length > 0}}">
+      <text class="cart-recommend__title">你也许还需要</text>
+      <view class="cart-recommend__row">
+        <view class="cart-recommend__card" wx:for="{{recommendCards}}" wx:key="id" wx:for-item="card">
+          <image wx:if="{{card.coverUrl}}" class="cart-recommend__thumb" src="{{card.coverUrl}}" mode="aspectFill"></image>
+          <view wx:else class="cart-recommend__thumb cart-recommend__thumb--placeholder"></view>
+          <text class="cart-recommend__name">{{card.name}}</text>
+          <view class="cart-recommend__bottom">
+            <text class="cart-recommend__price">¥{{card.price}}</text>
+            <text class="cart-recommend__add" bindtap="quickAddCart" data-product="{{card}}">+</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="cart-safe-pad"></view>
+  </view>
+
+  <view wx:if="{{cartList.length > 0 || invalidList.length > 0}}" class="cart-checkout">
+    <view class="cart-checkout__left" bindtap="toggleSelectAll">
+      <view class="cart-checkout__dot {{allSelected ? 'cart-checkout__dot--active' : ''}}"></view>
+      <view class="cart-checkout__summary">
+        <text class="cart-checkout__hint">合计 · 已优惠 ¥{{totalDiscountDisplay}}</text>
+        <text class="cart-checkout__price">¥{{totalPrice}}</text>
+      </view>
+    </view>
+    <view class="cart-checkout__button" bindtap="checkout">
+      <text>去结算</text>
+    </view>
+  </view>
+</view>
