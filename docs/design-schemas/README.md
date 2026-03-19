@@ -40,13 +40,17 @@ For every page:
 - `checkout.page-schema.json`: checkout reference implementation
 - `payment-method-modal.page-schema.json`: payment method modal reference implementation
 - `pay-success.page-schema.json`: payment success reference implementation
-- `address-picker.page-schema.json`: address picker reference implementation
 - `payment-verification.page-schema.json`: payment verification reference implementation
 - `payment-password-entry.page-schema.json`: payment password entry reference implementation
 - `address-list.page-schema.json`: address list reference implementation
 - `address-edit.page-schema.json`: address edit reference implementation
 - `login.page-schema.json`: login reference implementation
-- `order-detail.page-schema.json`: order detail reference implementation
+- `order-detail.page-schema.json`: pending order detail reference implementation
+- `completed-order-detail.page-schema.json`: completed order detail reference implementation
+- `cancel-order-modal.page-schema.json`: cancel order modal reference implementation
+- `order-review.page-schema.json`: order review reference implementation
+- `pet-list.page-schema.json`: pet gallery list reference implementation
+- `pet-profile.page-schema.json`: pet health profile reference implementation
 
 ## Required implementation rules
 
@@ -84,6 +88,7 @@ Implementation discipline:
 - shop
 - user
 - community
+- pet-profile
 
 ## Review checklist
 
