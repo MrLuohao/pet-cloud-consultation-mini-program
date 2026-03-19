@@ -10,9 +10,10 @@
 
 1. `design/frontendMobileScreens.pen`
 2. `docs/project-rules.md`
-3. `docs/frontend-design-principles.md`
-4. `apps/frontend/docs/design-schemas/README.md`
-5. `docs/backend-integration-tracking.md`
+3. `docs/rules/design-source-rules.md`
+4. `docs/rules/frontend-implementation-rules.md`
+5. `docs/rules/backend-development-rules.md`
+6. `apps/frontend/docs/design-schemas/README.md`
 
 ## 当前唯一事实源
 
@@ -32,9 +33,9 @@
 ## 当前保留的核心文档
 
 - `docs/project-rules.md`
-- `docs/frontend-design-principles.md`
-- `docs/backend-integration-tracking.md`
-- `docs/product-image-generation-guidelines.md`
+- `docs/rules/design-source-rules.md`
+- `docs/rules/frontend-implementation-rules.md`
+- `docs/rules/backend-development-rules.md`
 - `apps/frontend/docs/design-schemas/README.md`
 - `apps/frontend/docs/design-schemas/page-schema.contract.json`
 
@@ -57,6 +58,6 @@
 ## 仓库结构
 
 - `design/`: Pencil `.pen` 设计源
-- `docs/`: 项目核心规则与协同文档
+- `docs/`: 项目统一规则与协同文档
 - `apps/frontend/`: 小程序前端与 schema 契约
-- `apps/backend/`: 后端服务
+- `apps/backend/pet-cloud-consultation/`: 后端服务

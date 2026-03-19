@@ -5,7 +5,7 @@
 ## 项目
 - 名称：PetCloud Consultation
 - 工作区：`/Users/luohao/Desktop/pet-cloud-consultation-mini-program`
-- 仓库结构：`apps/frontend`、`apps/backend`、`design`、`docs`、`memory`、`tests`
+- 仓库结构：`apps/frontend`、`apps/backend/pet-cloud-consultation`、`design`、`docs`、`memory`、`tests`
 - 前端：微信小程序原生 `WXML / WXSS / JS`
 - 后端：Java 21 + Spring Boot 3.2.5 多模块服务
 - 当前阶段：开发中 + 验证中，且上下文同步不完整
@@ -19,12 +19,11 @@
 
 ## 核心入口
 - 规则入口：`docs/project-rules.md`
-- 设计原则：`docs/frontend-design-principles.md`
-- 前后端协同：`docs/backend-integration-tracking.md`
-- 商品图规范：`docs/product-image-generation-guidelines.md`
+- 设计源规则：`docs/rules/design-source-rules.md`
+- 前端实现规则：`docs/rules/frontend-implementation-rules.md`
+- 后端开发规则：`docs/rules/backend-development-rules.md`
 - 设计源：`design/frontendMobileScreens.pen`
 - schema 规则：`apps/frontend/docs/design-schemas/README.md`
-- 执行路线：`docs/plans/2026-03-15-execution-roadmap.md`
 
 ## `.pen` 状态
 - 主设计源：`design/frontendMobileScreens.pen`
@@ -69,15 +68,8 @@
 - `address-picker` 旧契约已从 schema 目录移除
   - 当前地址链路应统一按 `address-list` + `address-edit` 理解
   - 仍引用 `address-picker / D5qTR` 的计划或摘要都应视为过期
-- `docs/plans/2026-03-15-execution-roadmap.md`
-  - 已补到 `pet-profile.page-schema.json` 与 `address-picker` 退场事实
-  - 但整体更新时间仍停留在 `2026-03-15`，不适合作为“最新进度唯一摘要”
-- `docs/plans/2026-03-15-page-design-gap-remediation-plan.md`
   - 已补到当前 schema 清单与地址链最新事实
   - 需结合当前 schema 数量、最新 `.pen` 画布与代码改动重新校准
-- `docs/backend-integration-tracking.md`
-  - 更新时间仍为 `2026-03-15`
-  - 未完全覆盖 2026-03-17 以后宠物页、订单态、评价页等进展
 
 ## 当前仓库事实
 - 小程序 `app.json` 当前注册页面：60 个
@@ -134,14 +126,13 @@
 - 如果继续做后台页：
   - 先补后台 `.pen`，禁止直接编码
 - 如果继续做上下文治理：
-  - 优先补齐 `docs/plans/*` 与 `docs/backend-integration-tracking.md` 的同步
+  - 优先同步 `docs/project-rules.md`、`docs/rules/*` 与 `memory/project-context-handoff.md`
 
 ## 下次会话优先读取
 1. `docs/project-rules.md`
 2. `memory/project-context-handoff.md`
 3. `design/frontendMobileScreens.pen`
 4. `apps/frontend/docs/design-schemas/README.md`
-5. `docs/plans/2026-03-15-execution-roadmap.md`
 
 ## 维护要求
 - 只要本轮工作影响下次接手判断，就更新本文件。

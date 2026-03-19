@@ -14,10 +14,11 @@
 
 1. `.pen` 画布
 2. 本文档
-3. `docs/frontend-design-principles.md`
-4. `apps/frontend/docs/design-schemas/README.md`
-5. `docs/backend-integration-tracking.md`
-6. 现有代码
+3. `docs/rules/design-source-rules.md`
+4. `docs/rules/frontend-implementation-rules.md`
+5. `docs/rules/backend-development-rules.md`
+6. `apps/frontend/docs/design-schemas/README.md`
+7. 现有代码
 
 结论：
 
@@ -30,6 +31,9 @@
 ### 设计源
 
 - `design/frontendMobileScreens.pen`
+- `docs/rules/design-source-rules.md`
+- `docs/rules/frontend-implementation-rules.md`
+- `docs/rules/backend-development-rules.md`
 
 说明：
 
@@ -38,11 +42,12 @@
 
 ### 全局设计规则
 
-- `docs/frontend-design-principles.md`
+- `docs/rules/design-source-rules.md`
+- `docs/rules/frontend-implementation-rules.md`
 
 说明：
 
-- 负责统一气质、色调策略、动效边界
+- 负责统一气质、色调策略、动效边界与前端落地规则
 - 已明确写入 `.pen` 1:1 还原原则
 
 ### 开发落地规则
@@ -57,7 +62,7 @@
 
 ### 前后端协同规则
 
-- `docs/backend-integration-tracking.md`
+- `docs/rules/backend-development-rules.md`
 
 说明：
 
@@ -66,11 +71,11 @@
 
 ### 商品图风格规则
 
-- `docs/product-image-generation-guidelines.md`
+- `docs/rules/design-source-rules.md`
 
 说明：
 
-- 这是商城商品图、详情图、AI 生成商品图的唯一风格基准
+- 其中已包含商城商品图、详情图、AI 生成商品图的统一风格基准
 - 任何快捷提示词、后台说明、运营口径都应从这里派生
 
 ## 2.1 文档与进度实时同步规则
@@ -87,7 +92,7 @@
 
 - 设计规则变化：更新 `docs/project-rules.md` 与相关设计原则/规则文件
 - 执行进度变化：更新对应计划文件，至少让“已完成 / 进行中 / 待处理 / 阻塞”状态可追踪
-- 前后端协同变化：更新 `docs/backend-integration-tracking.md`
+- 前后端协同变化：更新 `docs/rules/backend-development-rules.md`
 - 新增计划文件或新增规则文件后：同步补充到执行路线、引用入口或相关索引文件，避免下次对话看不到
 - 如果本轮变更会影响下次接手判断：必须同步补一份 handoff / resume / context 摘要，或更新已有摘要
 
@@ -259,7 +264,6 @@
 
 对应的本轮执行进展、已完成修正、测试结果与剩余待验项，统一记录在：
 
-- `docs/plans/2026-03-15-page-design-gap-remediation-plan.md`
 
 - 当前交易链相关 `.pen` 关键画板统一按以下节点核对：
   - 结算页：`0fx0p`
@@ -294,9 +298,9 @@
 清理后，`docs` 与前端 schema 目录保留以下核心文件：
 
 - `docs/project-rules.md`
-- `docs/frontend-design-principles.md`
-- `docs/backend-integration-tracking.md`
-- `docs/product-image-generation-guidelines.md`
+- `docs/rules/design-source-rules.md`
+- `docs/rules/frontend-implementation-rules.md`
+- `docs/rules/backend-development-rules.md`
 - `apps/frontend/docs/design-schemas/README.md`
 - `apps/frontend/docs/design-schemas/page-schema.contract.json`
 
