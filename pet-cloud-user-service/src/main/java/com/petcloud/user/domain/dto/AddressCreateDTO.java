@@ -16,4 +16,13 @@ public class AddressCreateDTO {
     private String district;
     private String detailAddress;
     private Integer isDefault;
+    private java.math.BigDecimal longitude;
+    private java.math.BigDecimal latitude;
+    private String businessArea;
+    private String doorNo;
+    private String rawText;
+    private String parsedName;
+    private String parsedPhone;
+    private String mapAddress;
+    private String addressTag;
 }

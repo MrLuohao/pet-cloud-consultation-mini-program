@@ -1,6 +1,6 @@
 package com.petcloud.shop.domain.service;
 
-import com.petcloud.shop.domain.vo.CartVO;
+import com.petcloud.shop.domain.vo.CartPageVO;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface CartService {
      * @param userId 用户ID
      * @return 购物车VO列表
      */
-    List<CartVO> getCartList(Long userId);
+    CartPageVO getCartList(Long userId);
 
     /**
      * 添加商品到购物车
@@ -27,7 +27,7 @@ public interface CartService {
      * @param quantity  数量
      * @return 购物车ID
      */
-    Long addToCart(Long userId, Long productId, Integer quantity);
+    Long addToCart(Long userId, Long productId, Integer quantity, String specLabel);
 
     /**
      * 更新购物车商品数量

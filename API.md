@@ -414,26 +414,26 @@ X-User-Id: {用户ID}
 
 ---
 
-## 消息模块 (`/api/message`)
+## 消息模块 (`/api/messages/notifications`)
 
 ### 1. 获取消息列表
-- **接口**: `GET /api/message/list`
+- **接口**: `GET /api/messages/notifications`
 - **认证**: 需要Token
 - **响应**: `List<MessageVO>`
 
 ### 2. 标记消息已读
-- **接口**: `PUT /api/message/{id}/read`
+- **接口**: `PUT /api/messages/notifications/{id}/read`
 - **认证**: 需要Token
 - **路径参数**: `id` - 消息ID
 - **响应**: `Void`
 
 ### 3. 全部标记已读
-- **接口**: `PUT /api/message/read-all`
+- **接口**: `PUT /api/messages/notifications/read-all`
 - **认证**: 需要Token
 - **响应**: `Void`
 
 ### 4. 获取未读数量
-- **接口**: `GET /api/message/unread-count`
+- **接口**: `GET /api/messages/notifications/unread-count`
 - **认证**: 需要Token
 - **响应**: `Long`
 

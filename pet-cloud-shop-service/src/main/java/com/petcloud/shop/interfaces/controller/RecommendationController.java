@@ -38,9 +38,14 @@ public class RecommendationController {
     public Response<List<ProductVO>> getRecommendationsByCart(
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "10") Integer limit) {
-        Long userId = userContextHolder.getRequiredUserId(request);
+        int safeLimit = normalizeLimit(limit);
+        Long userId = userContextHolder.getCurrentUserId(request);
+        if (userId == null) {
+            log.info("未登录用户访问购物车推荐，降级返回热销商品，limit: {}", safeLimit);
+            return Response.succeed(recommendationService.getHotProducts(safeLimit));
+        }
         log.info("获取购物车推荐商品，userId: {}, limit: {}", userId, limit);
-        List<ProductVO> recommendations = recommendationService.getRecommendationsByCart(userId, limit);
+        List<ProductVO> recommendations = recommendationService.getRecommendationsByCart(userId, safeLimit);
         return Response.succeed(recommendations);
     }
 
@@ -53,8 +58,9 @@ public class RecommendationController {
     @GetMapping("/hot")
     public Response<List<ProductVO>> getHotProducts(
             @RequestParam(required = false, defaultValue = "10") Integer limit) {
-        log.info("获取热销商品推荐，limit: {}", limit);
-        List<ProductVO> hotProducts = recommendationService.getHotProducts(limit);
+        int safeLimit = normalizeLimit(limit);
+        log.info("获取热销商品推荐，limit: {}", safeLimit);
+        List<ProductVO> hotProducts = recommendationService.getHotProducts(safeLimit);
         return Response.succeed(hotProducts);
     }
 
@@ -69,8 +75,16 @@ public class RecommendationController {
     public Response<List<ProductVO>> getSimilarProducts(
             @PathVariable Long productId,
             @RequestParam(required = false, defaultValue = "5") Integer limit) {
-        log.info("获取相似商品推荐，productId: {}, limit: {}", productId, limit);
-        List<ProductVO> similarProducts = recommendationService.getSimilarProducts(productId, limit);
+        int safeLimit = normalizeLimit(limit);
+        log.info("获取相似商品推荐，productId: {}, limit: {}", productId, safeLimit);
+        List<ProductVO> similarProducts = recommendationService.getSimilarProducts(productId, safeLimit);
         return Response.succeed(similarProducts);
+    }
+
+    private int normalizeLimit(Integer limit) {
+        if (limit == null || limit <= 0) {
+            return 10;
+        }
+        return Math.min(limit, 50);
     }
 }

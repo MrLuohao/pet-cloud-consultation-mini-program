@@ -12,6 +12,7 @@ import com.petcloud.common.web.constant.CacheConstants;
 import com.petcloud.common.web.utils.RedisUtil;
 import com.petcloud.shop.domain.entity.Product;
 import com.petcloud.shop.domain.entity.ProductCategory;
+import com.petcloud.shop.domain.enums.ShopCategoryVisualMeta;
 import com.petcloud.shop.domain.service.ProductService;
 import com.petcloud.shop.domain.vo.ProductCategoryVO;
 import com.petcloud.shop.domain.vo.ProductVO;
@@ -182,10 +183,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private ProductCategoryVO convertToCategoryVO(ProductCategory category) {
+        ShopCategoryVisualMeta visualMeta = ShopCategoryVisualMeta.resolve(category.getName(),
+                category.getSortOrder() != null ? Math.max(category.getSortOrder() - 1, 0) : 0);
         return ProductCategoryVO.builder()
                 .id(category.getId())
                 .name(category.getName())
                 .icon(category.getIcon())
+                .iconKey(visualMeta.getIconKey())
+                .activeIconKey(visualMeta.getActiveIconKey())
                 .sortOrder(category.getSortOrder())
                 .build();
     }

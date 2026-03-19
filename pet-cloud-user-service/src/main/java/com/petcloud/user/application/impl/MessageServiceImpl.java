@@ -63,7 +63,9 @@ public class MessageServiceImpl implements MessageService {
         LambdaQueryWrapper<Message> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Message::getUserId, userId)
                 .eq(Message::getIsRead, 0);
-        return messageMapper.selectCount(queryWrapper);
+        Long count = messageMapper.selectCount(queryWrapper);
+        // 防止 NPE：如果 selectCount 返回 null，返回 0
+        return count != null ? count : 0L;
     }
 
     private MessageVO convertToVO(Message message) {

@@ -49,6 +49,30 @@ public class PaymentRecord extends BaseEntity {
     private String paymentMethod;
 
     /**
+     * 支付渠道
+     */
+    @TableField("payment_channel")
+    private String paymentChannel;
+
+    /**
+     * 验证方式
+     */
+    @TableField("verify_type")
+    private String verifyType;
+
+    /**
+     * 状态说明
+     */
+    @TableField("status_detail")
+    private String statusDetail;
+
+    /**
+     * 客户端场景
+     */
+    @TableField("client_scene")
+    private String clientScene;
+
+    /**
      * 第三方交易号
      */
     @TableField("transaction_id")
@@ -102,7 +126,9 @@ public class PaymentRecord extends BaseEntity {
      */
     public enum PaymentMethod {
         WECHAT("wechat", "微信支付"),
-        BALANCE("balance", "余额支付");
+        ALIPAY("alipay", "支付宝"),
+        BANK("bank", "银行卡"),
+        CREDIT("credit", "信用卡");
 
         private final String code;
         private final String desc;

@@ -5,7 +5,6 @@ import com.petcloud.common.web.utils.UserContextHolderWeb;
 import com.petcloud.user.domain.service.ConversationService;
 import com.petcloud.user.domain.vo.AiChatMessageVO;
 import com.petcloud.user.domain.vo.ConversationVO;
-import com.petcloud.user.domain.vo.MessageCenterVO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,17 +25,6 @@ public class ConversationController {
 
     private final ConversationService conversationService;
     private final UserContextHolderWeb userContextHolderWeb;
-
-    /**
-     * 获取消息中心聚合数据
-     */
-    @GetMapping("/center")
-    public Response<MessageCenterVO> getMessageCenter(HttpServletRequest request) {
-        Long userId = userContextHolderWeb.getRequiredUserId(request);
-        log.info("获取消息中心数据, userId: {}", userId);
-        MessageCenterVO center = conversationService.getMessageCenter(userId);
-        return Response.succeed(center);
-    }
 
     /**
      * 获取会话列表

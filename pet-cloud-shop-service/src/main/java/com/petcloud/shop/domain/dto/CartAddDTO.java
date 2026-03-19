@@ -11,4 +11,5 @@ import lombok.Data;
 public class CartAddDTO {
     private Long productId;
     private Integer quantity = 1;
+    private String specLabel;
 }

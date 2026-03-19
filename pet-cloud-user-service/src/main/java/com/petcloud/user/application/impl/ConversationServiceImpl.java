@@ -2,8 +2,10 @@ package com.petcloud.user.application.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.petcloud.common.core.exception.BusinessException;
 import com.petcloud.common.core.exception.RespType;
+import com.petcloud.common.core.utils.DateUtils;
 import com.petcloud.user.domain.entity.AiChatMessage;
 import com.petcloud.user.domain.entity.Conversation;
 import com.petcloud.user.domain.entity.Message;
@@ -21,8 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +38,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ConversationServiceImpl implements ConversationService {
+
+    private static final String EVENT_SLOT_DIAGNOSIS_COMPLETE = "diagnosis_complete";
+    private static final String EVENT_SLOT_MODERATION_REJECT = "moderation_reject";
+    private static final String EVENT_SLOT_FEATURED_CONTENT_PUSH = "featured_content_push";
 
     private final ConversationMapper conversationMapper;
     private final AiChatMessageMapper aiChatMessageMapper;
@@ -62,36 +70,43 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public MessageCenterVO getMessageCenter(Long userId) {
-        // 获取会话列表
         List<ConversationVO> conversations = getConversationList(userId);
-
-        // 计算各类型未读数
         int aiUnreadCount = 0;
         int consultationUnreadCount = 0;
+        int customerServiceUnreadCount = 0;
         for (ConversationVO conv : conversations) {
-            if ("ai_chat".equals(conv.getType())) {
+            if (Conversation.Type.AI_CHAT.getCode().equals(conv.getType())) {
                 aiUnreadCount += conv.getUnreadCount() != null ? conv.getUnreadCount() : 0;
-            } else if ("doctor_consultation".equals(conv.getType())) {
+            } else if (Conversation.Type.DOCTOR_CONSULTATION.getCode().equals(conv.getType())) {
                 consultationUnreadCount += conv.getUnreadCount() != null ? conv.getUnreadCount() : 0;
+            } else if (Conversation.Type.CUSTOMER_SERVICE.getCode().equals(conv.getType())) {
+                customerServiceUnreadCount += conv.getUnreadCount() != null ? conv.getUnreadCount() : 0;
             }
         }
 
-        // 获取系统通知统计
         MessageCenterVO.NotificationCounts notificationCounts = getNotificationCounts(userId);
-
-        // 获取最近系统通知（最多5条）
         List<MessageVO> recentNotifications = getRecentNotifications(userId, 5);
-
-        // 计算总未读数
-        int totalUnreadCount = aiUnreadCount + consultationUnreadCount + notificationCounts.getTotalCount();
-
+        int conversationUnreadCount = aiUnreadCount + consultationUnreadCount + customerServiceUnreadCount;
+        int notificationUnreadCount = notificationCounts.getTotalCount() != null ? notificationCounts.getTotalCount() : 0;
+        int totalUnreadCount = conversationUnreadCount + notificationUnreadCount;
         return MessageCenterVO.builder()
+                .quickEntries(buildQuickEntries(aiUnreadCount, consultationUnreadCount, customerServiceUnreadCount))
+                .unreadSummary(MessageCenterVO.UnreadSummaryVO.builder()
+                        .totalUnreadCount(totalUnreadCount)
+                        .conversationUnreadCount(conversationUnreadCount)
+                        .notificationUnreadCount(notificationUnreadCount)
+                        .aiUnreadCount(aiUnreadCount)
+                        .consultationUnreadCount(consultationUnreadCount)
+                        .customerServiceUnreadCount(customerServiceUnreadCount)
+                        .build())
                 .totalUnreadCount(totalUnreadCount)
                 .recentConversations(conversations)
                 .aiUnreadCount(aiUnreadCount)
                 .consultationUnreadCount(consultationUnreadCount)
                 .notificationCounts(notificationCounts)
                 .recentNotifications(recentNotifications)
+                .systemNotifications(recentNotifications)
+                .eventSlots(buildEventSlots())
                 .build();
     }
 
@@ -258,7 +273,6 @@ public class ConversationServiceImpl implements ConversationService {
 
         List<AiChatMessage> messages = aiChatMessageMapper.selectList(queryWrapper);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return messages.stream()
                 .map(msg -> AiChatMessageVO.builder()
                         .id(msg.getId())
@@ -266,7 +280,7 @@ public class ConversationServiceImpl implements ConversationService {
                         .role(msg.getRole())
                         .content(msg.getContent())
                         .modelType(msg.getModelType())
-                        .createTime(msg.getCreateTime() != null ? sdf.format(msg.getCreateTime()) : null)
+                        .createTime(DateUtils.format(msg.getCreateTime()))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -312,9 +326,9 @@ public class ConversationServiceImpl implements ConversationService {
                 .targetAvatar(conversation.getTargetAvatar())
                 .lastMessage(conversation.getLastMessage())
                 .lastMessageTime(conversation.getLastMessageTime())
-                .lastMessageTimeStr(formatTime(conversation.getLastMessageTime()))
+                .lastMessageTimeStr(DateUtils.formatRelative(conversation.getLastMessageTime()))
                 .unreadCount(conversation.getUnreadCount())
-                .isPinned(conversation.getIsPinned() != null && conversation.getIsPinned() == 1)
+                .isPinned(Integer.valueOf(1).equals(conversation.getIsPinned()))
                 .navigateUrl(navigateUrl)
                 .build();
     }
@@ -329,7 +343,8 @@ public class ConversationServiceImpl implements ConversationService {
                     .eq(Message::getType, type.getCode())
                     .eq(Message::getIsRead, 0);
             Long count = messageMapper.selectCount(queryWrapper);
-            countMap.put(type.getCode(), count.intValue());
+            // 防止 NPE：如果 selectCount 返回 null，默认为 0
+            countMap.put(type.getCode(), count != null ? count.intValue() : 0);
         }
 
         int totalCount = countMap.values().stream().mapToInt(Integer::intValue).sum();
@@ -344,14 +359,14 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     private List<MessageVO> getRecentNotifications(Long userId, int limit) {
+        // 使用 MyBatis-Plus 分页，避免 SQL 拼接
+        Page<Message> pageParam = new Page<>(1, limit);
         LambdaQueryWrapper<Message> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Message::getUserId, userId)
-                .orderByDesc(Message::getCreateTime)
-                .last("LIMIT " + limit);
+                .orderByDesc(Message::getCreateTime);
 
-        List<Message> messages = messageMapper.selectList(queryWrapper);
+        List<Message> messages = messageMapper.selectPage(pageParam, queryWrapper).getRecords();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return messages.stream()
                 .map(msg -> MessageVO.builder()
                         .id(msg.getId())
@@ -373,47 +388,78 @@ public class ConversationServiceImpl implements ConversationService {
             return "";
         }
         switch (type) {
-            case "system":
-                return "系统通知";
-            case "order":
-                return "订单通知";
-            case "activity":
-                return "活动通知";
             case "interaction":
                 return "互动消息";
             case "consult":
                 return "咨询回复";
             default:
-                return "";
+                return resolveMessageTypeDesc(type);
         }
     }
 
-    private String formatTime(Date date) {
-        if (date == null) {
-            return "";
+    private List<MessageCenterVO.QuickEntryVO> buildQuickEntries(int aiUnreadCount,
+                                                                 int consultationUnreadCount,
+                                                                 int customerServiceUnreadCount) {
+        return List.of(
+                MessageCenterVO.QuickEntryVO.builder()
+                        .key("ai_assistant")
+                        .title("AI助手")
+                        .subtitle(aiUnreadCount > 0 ? aiUnreadCount + "条未读" : "随时继续诊断对话")
+                        .iconKey("msg-ai")
+                        .unreadCount(aiUnreadCount)
+                        .navigateUrl("/pages/chat/chat")
+                        .build(),
+                MessageCenterVO.QuickEntryVO.builder()
+                        .key("consultation")
+                        .title("我的咨询")
+                        .subtitle(consultationUnreadCount > 0 ? consultationUnreadCount + "条提醒" : "查看医生回复进度")
+                        .iconKey("msg-consult")
+                        .unreadCount(consultationUnreadCount)
+                        .navigateUrl("/pages/consultation/list")
+                        .build(),
+                MessageCenterVO.QuickEntryVO.builder()
+                        .key("customer_service")
+                        .title("在线客服")
+                        .subtitle(customerServiceUnreadCount > 0 ? customerServiceUnreadCount + "条未读" : "订单与服务问题")
+                        .iconKey("msg-service")
+                        .unreadCount(customerServiceUnreadCount)
+                        .navigateUrl("/pages/consultation/doctor-list")
+                        .build()
+        );
+    }
+
+    private List<MessageCenterVO.EventSlotVO> buildEventSlots() {
+        return List.of(
+                MessageCenterVO.EventSlotVO.builder()
+                        .key(EVENT_SLOT_DIAGNOSIS_COMPLETE)
+                        .title("诊断结果完成")
+                        .description("预留 AI 诊断完成提醒槽位")
+                        .unreadCount(0)
+                        .enabled(false)
+                        .build(),
+                MessageCenterVO.EventSlotVO.builder()
+                        .key(EVENT_SLOT_MODERATION_REJECT)
+                        .title("内容审核反馈")
+                        .description("预留素材审核驳回提醒槽位")
+                        .unreadCount(0)
+                        .enabled(false)
+                        .build(),
+                MessageCenterVO.EventSlotVO.builder()
+                        .key(EVENT_SLOT_FEATURED_CONTENT_PUSH)
+                        .title("精选内容更新")
+                        .description("预留精选内容推送槽位")
+                        .unreadCount(0)
+                        .enabled(false)
+                        .build()
+        );
+    }
+
+    private String resolveMessageTypeDesc(String type) {
+        for (Message.Type messageType : Message.Type.values()) {
+            if (messageType.getCode().equals(type)) {
+                return messageType.getDesc();
+            }
         }
-
-        long now = System.currentTimeMillis();
-        long time = date.getTime();
-        long diff = now - time;
-
-        long minute = 60000;
-        long hour = 3600000;
-        long day = 86400000;
-
-        if (diff < minute) {
-            return "刚刚";
-        } else if (diff < hour) {
-            return (diff / minute) + "分钟前";
-        } else if (diff < day) {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            return "今天 " + sdf.format(date);
-        } else if (diff < day * 2) {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            return "昨天 " + sdf.format(date);
-        } else {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日");
-            return sdf.format(date);
-        }
+        return "";
     }
 }

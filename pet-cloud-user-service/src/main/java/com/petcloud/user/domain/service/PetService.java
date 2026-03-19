@@ -1,5 +1,7 @@
 package com.petcloud.user.domain.service;
 
+import com.petcloud.user.domain.dto.PetCreateDTO;
+import com.petcloud.user.domain.dto.PetUpdateDTO;
 import com.petcloud.user.domain.vo.UserPetVO;
 import com.petcloud.user.domain.vo.PetTimelineVO;
 import com.petcloud.user.domain.vo.PetMonthlyReportVO;
@@ -33,42 +35,20 @@ public interface PetService {
     /**
      * 创建宠物
      *
-     * @param userId    用户ID
-     * @param name      宠物名称
-     * @param type      宠物类型
-     * @param breed     品种
-     * @param gender    性别
-     * @param birthday  生日
-     * @param weight    体重
-     * @param avatarUrl 头像URL
-     * @param healthStatus 健康状况
-     * @param personality 性格
-     * @param motto     座右铭
+     * @param userId 用户ID
+     * @param dto    宠物创建DTO
      * @return 宠物ID
      */
-    Long createPet(Long userId, String name, Integer type, String breed, Integer gender,
-                   String birthday, String weight, String avatarUrl, String healthStatus,
-                   String personality, String motto);
+    Long createPet(Long userId, PetCreateDTO dto);
 
     /**
      * 更新宠物
      *
-     * @param petId     宠物ID
-     * @param userId    用户ID
-     * @param name      宠物名称
-     * @param type      宠物类型
-     * @param breed     品种
-     * @param gender    性别
-     * @param birthday  生日
-     * @param weight    体重
-     * @param avatarUrl 头像URL
-     * @param healthStatus 健康状况
-     * @param personality 性格
-     * @param motto     座右铭
+     * @param petId  宠物ID
+     * @param userId 用户ID
+     * @param dto    宠物更新DTO
      */
-    void updatePet(Long petId, Long userId, String name, Integer type, String breed, Integer gender,
-                   String birthday, String weight, String avatarUrl, String healthStatus,
-                   String personality, String motto);
+    void updatePet(Long petId, Long userId, PetUpdateDTO dto);
 
     /**
      * 删除宠物

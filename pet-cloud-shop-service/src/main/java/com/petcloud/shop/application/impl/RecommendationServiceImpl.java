@@ -1,6 +1,7 @@
 package com.petcloud.shop.application.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.petcloud.shop.domain.entity.Product;
 import com.petcloud.shop.domain.entity.ProductCategory;
 import com.petcloud.shop.domain.entity.ShoppingCart;
@@ -13,11 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +33,7 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     @Override
     public List<ProductVO> getRecommendationsByCart(Long userId, Integer limit) {
+        int safeLimit = normalizeLimit(limit);
         log.info("获取购物车推荐商品，userId: {}, limit: {}", userId, limit);
 
         // 获取用户购物车中的商品
@@ -43,9 +41,9 @@ public class RecommendationServiceImpl implements RecommendationService {
         cartWrapper.eq(ShoppingCart::getUserId, userId);
         List<ShoppingCart> cartList = shoppingCartMapper.selectList(cartWrapper);
 
-        if (cartList.isEmpty()) {
+        if (cartList == null || cartList.isEmpty()) {
             // 购物车为空，返回热销商品
-            return getHotProducts(limit);
+            return getHotProducts(safeLimit);
         }
 
         // 获取购物车中商品的分类ID
@@ -53,11 +51,18 @@ public class RecommendationServiceImpl implements RecommendationService {
         Set<Long> categoryIds = new HashSet<>();
 
         for (ShoppingCart cart : cartList) {
+            if (cart.getProductId() == null) {
+                continue;
+            }
             cartProductIds.add(cart.getProductId());
             Product product = productMapper.selectById(cart.getProductId());
             if (product != null && product.getCategoryId() != null) {
                 categoryIds.add(product.getCategoryId());
             }
+        }
+
+        if (cartProductIds.isEmpty()) {
+            return getHotProducts(safeLimit);
         }
 
         // 查询同分类下的其他商品
@@ -70,14 +75,15 @@ public class RecommendationServiceImpl implements RecommendationService {
         }
 
         queryWrapper.orderByDesc(Product::getSales)
-                .orderByDesc(Product::getRating)
-                .last("LIMIT " + limit);
+                .orderByDesc(Product::getRating);
 
-        List<Product> products = productMapper.selectList(queryWrapper);
+        // 使用 Page API 避免 SQL 拼接
+        Page<Product> pageParam = new Page<>(1, safeLimit);
+        List<Product> products = safeRecords(productMapper.selectPage(pageParam, queryWrapper));
 
         // 如果同分类商品不足，补充热销商品
-        if (products.size() < limit) {
-            int remaining = limit - products.size();
+        if (products.size() < safeLimit) {
+            int remaining = safeLimit - products.size();
             Set<Long> existingIds = products.stream()
                     .map(Product::getId)
                     .collect(Collectors.toSet());
@@ -86,10 +92,10 @@ public class RecommendationServiceImpl implements RecommendationService {
             LambdaQueryWrapper<Product> hotWrapper = new LambdaQueryWrapper<>();
             hotWrapper.eq(Product::getStatus, Product.Status.ONLINE.getCode())
                     .notIn(Product::getId, existingIds)
-                    .orderByDesc(Product::getSales)
-                    .last("LIMIT " + remaining);
+                    .orderByDesc(Product::getSales);
 
-            List<Product> hotProducts = productMapper.selectList(hotWrapper);
+            Page<Product> hotPageParam = new Page<>(1, remaining);
+            List<Product> hotProducts = safeRecords(productMapper.selectPage(hotPageParam, hotWrapper));
             products.addAll(hotProducts);
         }
 
@@ -98,21 +104,24 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     @Override
     public List<ProductVO> getHotProducts(Integer limit) {
-        log.info("获取热销商品推荐，limit: {}", limit);
+        int safeLimit = normalizeLimit(limit);
+        log.info("获取热销商品推荐，limit: {}", safeLimit);
 
         LambdaQueryWrapper<Product> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Product::getStatus, Product.Status.ONLINE.getCode())
                 .orderByDesc(Product::getSales)
-                .orderByDesc(Product::getRating)
-                .last("LIMIT " + limit);
+                .orderByDesc(Product::getRating);
 
-        List<Product> products = productMapper.selectList(queryWrapper);
+        // 使用 Page API 避免 SQL 拼接
+        Page<Product> pageParam = new Page<>(1, safeLimit);
+        List<Product> products = safeRecords(productMapper.selectPage(pageParam, queryWrapper));
         return convertToProductVOList(products);
     }
 
     @Override
     public List<ProductVO> getSimilarProducts(Long productId, Integer limit) {
-        log.info("获取相似商品推荐，productId: {}, limit: {}", productId, limit);
+        int safeLimit = normalizeLimit(limit);
+        log.info("获取相似商品推荐，productId: {}, limit: {}", productId, safeLimit);
 
         Product targetProduct = productMapper.selectById(productId);
         if (targetProduct == null) {
@@ -129,14 +138,15 @@ public class RecommendationServiceImpl implements RecommendationService {
         }
 
         queryWrapper.orderByDesc(Product::getSales)
-                .orderByDesc(Product::getRating)
-                .last("LIMIT " + limit);
+                .orderByDesc(Product::getRating);
 
-        List<Product> products = productMapper.selectList(queryWrapper);
+        // 使用 Page API 避免 SQL 拼接
+        Page<Product> pageParam = new Page<>(1, safeLimit);
+        List<Product> products = safeRecords(productMapper.selectPage(pageParam, queryWrapper));
 
         // 如果同分类商品不足，补充其他热销商品
-        if (products.size() < limit) {
-            int remaining = limit - products.size();
+        if (products.size() < safeLimit) {
+            int remaining = safeLimit - products.size();
             Set<Long> existingIds = products.stream()
                     .map(Product::getId)
                     .collect(Collectors.toSet());
@@ -145,10 +155,10 @@ public class RecommendationServiceImpl implements RecommendationService {
             LambdaQueryWrapper<Product> hotWrapper = new LambdaQueryWrapper<>();
             hotWrapper.eq(Product::getStatus, Product.Status.ONLINE.getCode())
                     .notIn(Product::getId, existingIds)
-                    .orderByDesc(Product::getSales)
-                    .last("LIMIT " + remaining);
+                    .orderByDesc(Product::getSales);
 
-            List<Product> hotProducts = productMapper.selectList(hotWrapper);
+            Page<Product> hotPageParam = new Page<>(1, remaining);
+            List<Product> hotProducts = safeRecords(productMapper.selectPage(hotPageParam, hotWrapper));
             products.addAll(hotProducts);
         }
 
@@ -159,7 +169,11 @@ public class RecommendationServiceImpl implements RecommendationService {
      * 将商品实体列表转换为VO列表
      */
     private List<ProductVO> convertToProductVOList(List<Product> products) {
+        if (products == null || products.isEmpty()) {
+            return Collections.emptyList();
+        }
         return products.stream()
+                .filter(product -> product != null)
                 .map(this::convertToProductVO)
                 .collect(Collectors.toList());
     }
@@ -241,5 +255,19 @@ public class RecommendationServiceImpl implements RecommendationService {
         }
 
         return "";
+    }
+
+    private int normalizeLimit(Integer limit) {
+        if (limit == null || limit <= 0) {
+            return 10;
+        }
+        return Math.min(limit, 50);
+    }
+
+    private List<Product> safeRecords(Page<Product> page) {
+        if (page == null || page.getRecords() == null) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(page.getRecords());
     }
 }

@@ -39,9 +39,34 @@ public class OrderItemVO {
     private String coverUrl;
 
     /**
+     * 店铺标识
+     */
+    private String shopId;
+
+    /**
+     * 店铺名称
+     */
+    private String shopName;
+
+    /**
+     * 服务文案
+     */
+    private String serviceText;
+
+    /**
+     * 规格
+     */
+    private String spec;
+
+    /**
      * 商品价格
      */
     private BigDecimal price;
+
+    /**
+     * 商品原价
+     */
+    private BigDecimal originalPrice;
 
     /**
      * 数量
@@ -57,57 +82,4 @@ public class OrderItemVO {
      * 是否已评价
      */
     private Boolean reviewed;
-
-    // Builder pattern support
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private OrderItemVO vo = new OrderItemVO();
-
-        public Builder orderItemId(Long orderItemId) {
-            vo.orderItemId = orderItemId;
-            return this;
-        }
-
-        public Builder productId(Long productId) {
-            vo.productId = productId;
-            return this;
-        }
-
-        public Builder productName(String productName) {
-            vo.productName = productName;
-            return this;
-        }
-
-        public Builder coverUrl(String coverUrl) {
-            vo.coverUrl = coverUrl;
-            return this;
-        }
-
-        public Builder price(BigDecimal price) {
-            vo.price = price;
-            return this;
-        }
-
-        public Builder quantity(Integer quantity) {
-            vo.quantity = quantity;
-            return this;
-        }
-
-        public Builder subtotal(BigDecimal subtotal) {
-            vo.subtotal = subtotal;
-            return this;
-        }
-
-        public Builder reviewed(Boolean reviewed) {
-            vo.reviewed = reviewed;
-            return this;
-        }
-
-        public OrderItemVO build() {
-            return vo;
-        }
-    }
 }

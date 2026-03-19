@@ -4,6 +4,7 @@ import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.petcloud.common.core.exception.BusinessException;
 import com.petcloud.common.core.exception.RespType;
+import com.petcloud.shop.domain.dto.OrderSubmitDTO;
 import com.petcloud.shop.domain.entity.*;
 import com.petcloud.shop.domain.service.OrderService;
 import com.petcloud.shop.domain.vo.*;
@@ -14,7 +15,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -35,185 +45,61 @@ public class OrderServiceImpl implements OrderService {
     private final PaymentRecordMapper paymentRecordMapper;
     private final UserAddressMapper userAddressMapper;
     private final ProductReviewMapper productReviewMapper;
+    private final OrderStatusHistoryMapper orderStatusHistoryMapper;
 
     @Override
-    public OrderConfirmVO getOrderConfirm(Long userId, List<Long> productIds, List<Integer> quantities, List<Long> cartIds) {
-        List<OrderItemVO> items = new ArrayList<>();
-
-        // 如果是从购物车下单
-        if (cartIds != null && !cartIds.isEmpty()) {
-            LambdaQueryWrapper<ShoppingCart> cartWrapper = new LambdaQueryWrapper<>();
-            cartWrapper.eq(ShoppingCart::getUserId, userId)
-                    .in(ShoppingCart::getId, cartIds);
-            List<ShoppingCart> cartItems = shoppingCartMapper.selectList(cartWrapper);
-
-            for (ShoppingCart cart : cartItems) {
-                Product product = productMapper.selectById(cart.getProductId());
-                if (product != null) {
-                    items.add(OrderItemVO.builder()
-                            .productId(product.getId())
-                            .productName(product.getName())
-                            .coverUrl(product.getCoverUrl())
-                            .price(product.getPrice())
-                            .quantity(cart.getQuantity())
-                            .subtotal(product.getPrice().multiply(BigDecimal.valueOf(cart.getQuantity())))
-                            .build());
-                }
-            }
-        } else if (productIds != null && !productIds.isEmpty()) {
-            // 直接购买
-            for (int i = 0; i < productIds.size(); i++) {
-                Product product = productMapper.selectById(productIds.get(i));
-                if (product != null) {
-                    int quantity = quantities != null && i < quantities.size() ? quantities.get(i) : 1;
-                    items.add(OrderItemVO.builder()
-                            .productId(product.getId())
-                            .productName(product.getName())
-                            .coverUrl(product.getCoverUrl())
-                            .price(product.getPrice())
-                            .quantity(quantity)
-                            .subtotal(product.getPrice().multiply(BigDecimal.valueOf(quantity)))
-                            .build());
-                }
-            }
-        }
-
-        // 计算总金额
-        BigDecimal totalAmount = items.stream()
+    public OrderConfirmVO getOrderConfirm(Long userId, List<Long> productIds, List<Integer> quantities, List<Long> cartIds,
+                                          List<String> specLabels) {
+        List<OrderItemVO> items = buildCheckoutItems(userId, productIds, quantities, cartIds, specLabels, false);
+        BigDecimal goodsAmount = items.stream()
                 .map(OrderItemVO::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        // 获取默认地址
-        LambdaQueryWrapper<UserAddress> addressWrapper = new LambdaQueryWrapper<>();
-        addressWrapper.eq(UserAddress::getUserId, userId)
-                .eq(UserAddress::getIsDefault, 1);
-        UserAddress defaultAddress = userAddressMapper.selectOne(addressWrapper);
-
-        AddressVO addressVO = null;
-        if (defaultAddress != null) {
-            addressVO = AddressVO.builder()
-                    .id(defaultAddress.getId())
-                    .contactName(defaultAddress.getContactName())
-                    .contactPhone(defaultAddress.getContactPhone())
-                    .province(defaultAddress.getProvince())
-                    .city(defaultAddress.getCity())
-                    .district(defaultAddress.getDistrict())
-                    .detailAddress(defaultAddress.getDetailAddress())
-                    .fullAddress(defaultAddress.getProvince() + defaultAddress.getCity() + defaultAddress.getDistrict() + defaultAddress.getDetailAddress())
-                    .isDefault(defaultAddress.getIsDefault() == 1)
-                    .build();
-        }
-
-        // 获取可用优惠券
-        List<UserCouponVO> availableCoupons = new ArrayList<>();
-        LambdaQueryWrapper<UserCoupon> couponWrapper = new LambdaQueryWrapper<>();
-        couponWrapper.eq(UserCoupon::getUserId, userId)
-                .eq(UserCoupon::getStatus, 0);
-        List<UserCoupon> userCoupons = userCouponMapper.selectList(couponWrapper);
-        String now = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-        for (UserCoupon uc : userCoupons) {
-            if (uc.getExpireTime().compareTo(now) < 0) {
-                continue;
-            }
-            if (uc.getMinAmount() != null && totalAmount.compareTo(uc.getMinAmount()) < 0) {
-                continue;
-            }
-            availableCoupons.add(UserCouponVO.builder()
-                    .id(uc.getId())
-                    .couponId(uc.getCouponId())
-                    .couponName(uc.getCouponName())
-                    .couponType(uc.getCouponType())
-                    .typeDesc(uc.getCouponType() == 1 ? "满减券" : "折扣券")
-                    .discountAmount(uc.getDiscountAmount())
-                    .discountRate(uc.getDiscountRate())
-                    .minAmount(uc.getMinAmount())
-                    .maxDiscount(uc.getMaxDiscount())
-                    .status(uc.getStatus())
-                    .expireTime(uc.getExpireTime())
-                    .available(true)
-                    .build());
-        }
-
+        AddressVO addressVO = buildDefaultAddress(userId);
+        List<UserCouponVO> availableCoupons = loadAvailableCoupons(userId, goodsAmount);
+        BigDecimal freight = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
         return OrderConfirmVO.builder()
                 .items(items)
                 .address(addressVO)
                 .totalCount(items.stream().mapToInt(OrderItemVO::getQuantity).sum())
-                .totalAmount(totalAmount)
-                .freight(BigDecimal.ZERO)  // 暂时免运费
+                .totalAmount(goodsAmount)
+                .goodsAmount(goodsAmount)
+                .freight(freight)
+                .couponDiscount(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP))
+                .payAmount(goodsAmount.add(freight))
                 .availableCoupons(availableCoupons)
+                .deliveryText("顺丰冷链")
+                .orderHint("订单将于提交后创建，请在 30 分钟内完成支付。")
+                .selectedPaymentMethod(PaymentRecord.PaymentMethod.WECHAT.getCode())
+                .paymentMethods(buildPaymentMethods())
                 .build();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long submitOrder(Long userId, List<Long> productIds, List<Integer> quantities, Long addressId, Long couponId, String remark) {
-        // 获取地址
-        UserAddress address = userAddressMapper.selectById(addressId);
+    public Long submitOrder(Long userId, OrderSubmitDTO dto) {
+        UserAddress address = userAddressMapper.selectById(dto.getAddressId());
         if (address == null || !address.getUserId().equals(userId)) {
             throw new BusinessException(RespType.ADDRESS_NOT_FOUND);
         }
 
-        // 构建商品列表
-        List<OrderItemVO> items = new ArrayList<>();
-        if (productIds != null && !productIds.isEmpty()) {
-            for (int i = 0; i < productIds.size(); i++) {
-                Product product = productMapper.selectById(productIds.get(i));
-                if (product == null) {
-                    throw new BusinessException(RespType.PRODUCT_NOT_FOUND);
-                }
-                int quantity = quantities != null && i < quantities.size() ? quantities.get(i) : 1;
-                if (product.getStock() < quantity) {
-                    throw new BusinessException(RespType.STOCK_INSUFFICIENT);
-                }
-                items.add(OrderItemVO.builder()
-                        .productId(product.getId())
-                        .productName(product.getName())
-                        .coverUrl(product.getCoverUrl())
-                        .price(product.getPrice())
-                        .quantity(quantity)
-                        .subtotal(product.getPrice().multiply(BigDecimal.valueOf(quantity)))
-                        .build());
-            }
-        }
-
-        // 计算金额
+        List<OrderItemVO> items = buildCheckoutItems(
+                userId,
+                dto.getProductIds(),
+                dto.getQuantities(),
+                dto.getCartIds(),
+                dto.getSpecLabels(),
+                true
+        );
         BigDecimal totalAmount = items.stream()
                 .map(OrderItemVO::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal couponDiscount = BigDecimal.ZERO;
-
-        // 使用优惠券
-        if (couponId != null) {
-            UserCoupon userCoupon = userCouponMapper.selectById(couponId);
-            if (userCoupon != null && userCoupon.getUserId().equals(userId) && userCoupon.getStatus() == 0) {
-                String now = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                if (userCoupon.getExpireTime().compareTo(now) >= 0) {
-                    if (userCoupon.getMinAmount() == null || totalAmount.compareTo(userCoupon.getMinAmount()) >= 0) {
-                        if (userCoupon.getCouponType() == 1) {
-                            couponDiscount = userCoupon.getDiscountAmount() != null ? userCoupon.getDiscountAmount() : BigDecimal.ZERO;
-                        } else if (userCoupon.getCouponType() == 2 && userCoupon.getDiscountRate() != null) {
-                            BigDecimal discount = totalAmount.multiply(BigDecimal.ONE.subtract(userCoupon.getDiscountRate().divide(BigDecimal.valueOf(10), 2, java.math.RoundingMode.HALF_UP)));
-                            if (userCoupon.getMaxDiscount() != null && discount.compareTo(userCoupon.getMaxDiscount()) > 0) {
-                                couponDiscount = userCoupon.getMaxDiscount();
-                            } else {
-                                couponDiscount = discount;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+        BigDecimal couponDiscount = calculateCouponDiscount(dto.getCouponId(), userId, totalAmount);
         BigDecimal payAmount = totalAmount.subtract(couponDiscount);
         if (payAmount.compareTo(BigDecimal.ZERO) < 0) {
             payAmount = BigDecimal.ZERO;
         }
 
-        // 生成订单号
         String orderNo = generateOrderNo();
-
-        // 创建订单
         OrderInfo order = new OrderInfo();
         order.setOrderNo(orderNo);
         order.setUserId(userId);
@@ -221,54 +107,68 @@ public class OrderServiceImpl implements OrderService {
         order.setPayAmount(payAmount);
         order.setReceiverName(address.getContactName());
         order.setReceiverPhone(address.getContactPhone());
-        order.setReceiverAddress(address.getProvince() + address.getCity() + address.getDistrict() + address.getDetailAddress());
-        order.setRemark(remark);
-        order.setCouponId(couponId);
+        order.setReceiverAddress(address.getFullAddress());
+        order.setRemark(dto.getRemark());
+        order.setCouponId(dto.getCouponId());
         order.setCouponDiscount(couponDiscount);
         order.setStatus(OrderInfo.Status.UNPAID.getCode());
         orderInfoMapper.insert(order);
+        recordOrderStatusHistory(order, null, OrderInfo.Status.UNPAID.getCode(), "submit_order",
+                "user", userId, "用户下单", null, null, "用户提交订单");
 
-        // 创建订单项
         for (OrderItemVO item : items) {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrderId(order.getId());
             orderItem.setProductId(item.getProductId());
             orderItem.setProductName(item.getProductName());
             orderItem.setCoverUrl(item.getCoverUrl());
+            orderItem.setShopId(item.getShopId());
+            orderItem.setShopName(item.getShopName());
+            orderItem.setServiceText(item.getServiceText());
+            orderItem.setSpecSnapshot(item.getSpec());
+            orderItem.setSkuSnapshot(item.getSpec());
             orderItem.setPrice(item.getPrice());
+            orderItem.setOriginalPrice(item.getOriginalPrice());
             orderItem.setQuantity(item.getQuantity());
             orderItem.setSubtotal(item.getSubtotal());
             orderItemMapper.insert(orderItem);
 
-            // 扣减库存
             Product product = productMapper.selectById(item.getProductId());
             if (product != null) {
                 product.setStock(product.getStock() - item.getQuantity());
-                product.setSales(product.getSales() + item.getQuantity());
+                product.setSales((product.getSales() != null ? product.getSales() : 0) + item.getQuantity());
                 productMapper.updateById(product);
             }
         }
 
-        // 标记优惠券为已使用
-        if (couponId != null && couponDiscount.compareTo(BigDecimal.ZERO) > 0) {
-            UserCoupon userCoupon = userCouponMapper.selectById(couponId);
+        if (dto.getCouponId() != null && couponDiscount.compareTo(BigDecimal.ZERO) > 0) {
+            UserCoupon userCoupon = userCouponMapper.selectById(dto.getCouponId());
             if (userCoupon != null) {
                 userCoupon.setStatus(1);
-                userCoupon.setUseTime(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                userCoupon.setUseTime(nowString());
                 userCoupon.setOrderId(order.getId());
                 userCouponMapper.updateById(userCoupon);
             }
         }
 
-        // 创建支付记录
         PaymentRecord paymentRecord = new PaymentRecord();
         paymentRecord.setOrderId(order.getId());
         paymentRecord.setOrderNo(orderNo);
         paymentRecord.setUserId(userId);
         paymentRecord.setAmount(payAmount);
-        paymentRecord.setPaymentMethod("wechat");
+        paymentRecord.setPaymentMethod(defaultPaymentMethod(dto.getPaymentMethod()));
+        paymentRecord.setPaymentChannel(defaultPaymentMethod(dto.getPaymentMethod()));
+        paymentRecord.setVerifyType(dto.getVerificationType() != null ? dto.getVerificationType() : "face");
+        paymentRecord.setStatusDetail("待支付");
+        paymentRecord.setClientScene("mini_program");
         paymentRecord.setStatus(PaymentRecord.Status.PENDING.getCode());
         paymentRecordMapper.insert(paymentRecord);
+
+        if (dto.getCartIds() != null && !dto.getCartIds().isEmpty()) {
+            for (Long cartId : dto.getCartIds()) {
+                shoppingCartMapper.deleteById(cartId);
+            }
+        }
 
         return order.getId();
     }
@@ -295,7 +195,12 @@ public class OrderServiceImpl implements OrderService {
                                     .productId(item.getProductId())
                                     .productName(item.getProductName())
                                     .coverUrl(item.getCoverUrl())
+                                    .shopId(item.getShopId())
+                                    .shopName(item.getShopName())
+                                    .serviceText(item.getServiceText())
+                                    .spec(item.getSpecSnapshot())
                                     .price(item.getPrice())
+                                    .originalPrice(item.getOriginalPrice())
                                     .quantity(item.getQuantity())
                                     .subtotal(item.getSubtotal())
                                     .build())
@@ -335,7 +240,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 获取已评价的订单项ID
         Set<Long> reviewedItemIds = new HashSet<>();
-        if (order.getStatus() == OrderInfo.Status.COMPLETED.getCode()) {
+        if (OrderInfo.Status.COMPLETED.getCode().equals(order.getStatus())) {
             LambdaQueryWrapper<ProductReview> reviewWrapper = new LambdaQueryWrapper<>();
             reviewWrapper.eq(ProductReview::getUserId, userId)
                     .in(ProductReview::getOrderItemId, items.stream().map(OrderItem::getId).collect(Collectors.toList()));
@@ -352,7 +257,12 @@ public class OrderServiceImpl implements OrderService {
                         .productId(item.getProductId())
                         .productName(item.getProductName())
                         .coverUrl(item.getCoverUrl())
+                        .shopId(item.getShopId())
+                        .shopName(item.getShopName())
+                        .serviceText(item.getServiceText())
+                        .spec(item.getSpecSnapshot())
                         .price(item.getPrice())
+                        .originalPrice(item.getOriginalPrice())
                         .quantity(item.getQuantity())
                         .subtotal(item.getSubtotal())
                         .reviewed(finalReviewedItemIds.contains(item.getId()))
@@ -385,12 +295,14 @@ public class OrderServiceImpl implements OrderService {
             throw new BusinessException(RespType.ORDER_NOT_FOUND);
         }
 
-        if (order.getStatus() != OrderInfo.Status.UNPAID.getCode()) {
+        if (!OrderInfo.Status.UNPAID.getCode().equals(order.getStatus())) {
             throw new BusinessException(RespType.ORDER_STATUS_ERROR);
         }
 
         order.setStatus(OrderInfo.Status.CANCELLED.getCode());
         orderInfoMapper.updateById(order);
+        recordOrderStatusHistory(order, OrderInfo.Status.UNPAID.getCode(), OrderInfo.Status.CANCELLED.getCode(), "cancel_order",
+                "user", userId, "用户", null, null, "用户取消订单");
 
         // 恢复库存
         LambdaQueryWrapper<OrderItem> itemWrapper = new LambdaQueryWrapper<>();
@@ -425,13 +337,15 @@ public class OrderServiceImpl implements OrderService {
             throw new BusinessException(RespType.ORDER_NOT_FOUND);
         }
 
-        if (order.getStatus() != OrderInfo.Status.PENDING_RECEIPT.getCode()) {
+        if (!OrderInfo.Status.PENDING_RECEIPT.getCode().equals(order.getStatus())) {
             throw new BusinessException(RespType.ORDER_STATUS_ERROR);
         }
 
         order.setStatus(OrderInfo.Status.COMPLETED.getCode());
         order.setReceiveTime(new Date());
         orderInfoMapper.updateById(order);
+        recordOrderStatusHistory(order, OrderInfo.Status.PENDING_RECEIPT.getCode(), OrderInfo.Status.COMPLETED.getCode(), "confirm_receive",
+                "user", userId, "用户", null, null, "用户确认收货");
     }
 
     @Override
@@ -450,6 +364,8 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderInfo.Status.PENDING_SHIPMENT.getCode());
         order.setPayTime(new Date());
         orderInfoMapper.updateById(order);
+        recordOrderStatusHistory(order, OrderInfo.Status.UNPAID.getCode(), OrderInfo.Status.PENDING_SHIPMENT.getCode(), "pay_order",
+                "payment", userId, "支付系统", null, null, "订单支付成功");
 
         // 更新支付记录
         LambdaQueryWrapper<PaymentRecord> wrapper = new LambdaQueryWrapper<>();
@@ -458,12 +374,56 @@ public class OrderServiceImpl implements OrderService {
         PaymentRecord paymentRecord = paymentRecordMapper.selectOne(wrapper);
         if (paymentRecord != null) {
             paymentRecord.setStatus(PaymentRecord.Status.PAID.getCode());
-            paymentRecord.setPayTime(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            paymentRecord.setPayTime(nowString());
             paymentRecord.setTransactionId("WX" + IdUtil.getSnowflakeNextIdStr());
             paymentRecordMapper.updateById(paymentRecord);
         }
 
         return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void shipOrder(Long orderId, String logisticsCompany, String trackingNo, String remark, Long operatorId, String operatorName) {
+        OrderInfo order = orderInfoMapper.selectById(orderId);
+        if (order == null) {
+            throw new BusinessException(RespType.ORDER_NOT_FOUND);
+        }
+        if (!OrderInfo.Status.PENDING_SHIPMENT.getCode().equals(order.getStatus())) {
+            throw new BusinessException(RespType.ORDER_STATUS_ERROR);
+        }
+
+        order.setStatus(OrderInfo.Status.PENDING_RECEIPT.getCode());
+        order.setShipTime(new Date());
+        orderInfoMapper.updateById(order);
+
+        recordOrderStatusHistory(order, OrderInfo.Status.PENDING_SHIPMENT.getCode(), OrderInfo.Status.PENDING_RECEIPT.getCode(),
+                "ship_order", "admin", operatorId, operatorName, logisticsCompany, trackingNo, remark);
+    }
+
+    @Override
+    public List<OrderTimelineVO> getOrderTimeline(Long orderId) {
+        LambdaQueryWrapper<OrderStatusHistory> wrapper = new LambdaQueryWrapper<OrderStatusHistory>()
+                .eq(OrderStatusHistory::getOrderId, orderId)
+                .orderByDesc(OrderStatusHistory::getOperateTime)
+                .orderByDesc(OrderStatusHistory::getId);
+        List<OrderStatusHistory> histories = orderStatusHistoryMapper.selectList(wrapper);
+        return histories.stream()
+                .map(item -> OrderTimelineVO.builder()
+                        .action(item.getAction())
+                        .fromStatus(item.getFromStatus())
+                        .fromStatusDesc(getStatusDesc(item.getFromStatus()))
+                        .toStatus(item.getToStatus())
+                        .toStatusDesc(getStatusDesc(item.getToStatus()))
+                        .operatorType(item.getOperatorType())
+                        .operatorId(item.getOperatorId())
+                        .operatorName(item.getOperatorName())
+                        .logisticsCompany(item.getLogisticsCompany())
+                        .trackingNo(item.getTrackingNo())
+                        .remark(item.getRemark())
+                        .operateTime(item.getOperateTime())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -495,6 +455,9 @@ public class OrderServiceImpl implements OrderService {
                     int unreviewedCount = getUnreviewedItemCount(order.getId());
                     countMap.put("pendingReview", countMap.get("pendingReview") + unreviewedCount);
                     countMap.put("completed", countMap.get("completed") + 1);
+                    break;
+                default:
+                    // 未知状态，忽略
                     break;
             }
         }
@@ -563,7 +526,7 @@ public class OrderServiceImpl implements OrderService {
         if (start >= result.size()) {
             return new ArrayList<>();
         }
-        return result.subList(start, end);
+        return new ArrayList<>(result.subList(start, end));
     }
 
     @Override
@@ -599,32 +562,255 @@ public class OrderServiceImpl implements OrderService {
         // 获取已评价的订单项
         LambdaQueryWrapper<ProductReview> reviewWrapper = new LambdaQueryWrapper<>();
         reviewWrapper.in(ProductReview::getOrderItemId, items.stream().map(OrderItem::getId).collect(Collectors.toList()));
-        long reviewedCount = productReviewMapper.selectCount(reviewWrapper);
+        Long reviewedCount = productReviewMapper.selectCount(reviewWrapper);
+        // 防止 NPE：如果 selectCount 返回 null，视为 0
+        long count = reviewedCount != null ? reviewedCount : 0L;
 
-        return items.size() - (int) reviewedCount;
+        return items.size() - (int) count;
+    }
+
+    /**
+     * 计算优惠券折扣金额
+     */
+    private BigDecimal calculateCouponDiscount(Long couponId, Long userId, BigDecimal totalAmount) {
+        if (couponId == null) {
+            return BigDecimal.ZERO;
+        }
+
+        UserCoupon userCoupon = userCouponMapper.selectById(couponId);
+        if (userCoupon == null || !userCoupon.getUserId().equals(userId) || !Integer.valueOf(0).equals(userCoupon.getStatus())) {
+            return BigDecimal.ZERO;
+        }
+
+        if (isCouponExpired(userCoupon.getExpireTime())) {
+            return BigDecimal.ZERO;
+        }
+
+        if (userCoupon.getMinAmount() != null && totalAmount.compareTo(userCoupon.getMinAmount()) < 0) {
+            return BigDecimal.ZERO;
+        }
+
+        if (Integer.valueOf(1).equals(userCoupon.getCouponType())) {
+            return userCoupon.getDiscountAmount() != null ? userCoupon.getDiscountAmount() : BigDecimal.ZERO;
+        }
+
+        if (Integer.valueOf(2).equals(userCoupon.getCouponType()) && userCoupon.getDiscountRate() != null) {
+            BigDecimal discount = totalAmount.multiply(
+                BigDecimal.ONE.subtract(userCoupon.getDiscountRate().divide(BigDecimal.valueOf(10), 2, java.math.RoundingMode.HALF_UP)));
+            if (userCoupon.getMaxDiscount() != null && discount.compareTo(userCoupon.getMaxDiscount()) > 0) {
+                return userCoupon.getMaxDiscount();
+            }
+            return discount;
+        }
+
+        return BigDecimal.ZERO;
     }
 
     private String generateOrderNo() {
         return "ORD" + System.currentTimeMillis() + IdUtil.getSnowflakeNextIdStr();
     }
 
+    private List<OrderItemVO> buildCheckoutItems(Long userId, List<Long> productIds, List<Integer> quantities,
+                                                 List<Long> cartIds, List<String> specLabels, boolean validateStock) {
+        List<OrderItemVO> items = new ArrayList<>();
+        if (cartIds != null && !cartIds.isEmpty()) {
+            LambdaQueryWrapper<ShoppingCart> cartWrapper = new LambdaQueryWrapper<>();
+            cartWrapper.eq(ShoppingCart::getUserId, userId).in(ShoppingCart::getId, cartIds);
+            List<ShoppingCart> cartItems = shoppingCartMapper.selectList(cartWrapper);
+            for (ShoppingCart cart : cartItems) {
+                Product product = requiredProduct(cart.getProductId());
+                if (validateStock && product.getStock() < cart.getQuantity()) {
+                    throw new BusinessException(RespType.STOCK_INSUFFICIENT);
+                }
+                items.add(buildOrderItem(product, cart.getQuantity(), cart.getShopId(), cart.getShopName(),
+                        cart.getServiceText(), cart.getSpecLabel(),
+                        cart.getPriceSnapshot(), cart.getOriginalPriceSnapshot()));
+            }
+            return items;
+        }
+
+        if (productIds == null) {
+            return items;
+        }
+        for (int i = 0; i < productIds.size(); i++) {
+            Product product = requiredProduct(productIds.get(i));
+            int quantity = quantities != null && i < quantities.size() ? quantities.get(i) : 1;
+            if (validateStock && product.getStock() < quantity) {
+                throw new BusinessException(RespType.STOCK_INSUFFICIENT);
+            }
+            String selectedSpec = resolveDirectBuySpecLabel(product, specLabels, i);
+            items.add(buildOrderItem(product, quantity, product.getShopId(), product.getShopName(),
+                    product.getServiceText(), selectedSpec, product.getPrice(), product.getOriginalPrice()));
+        }
+        return items;
+    }
+
+    private OrderItemVO buildOrderItem(Product product, Integer quantity, String shopId, String shopName,
+                                       String serviceText, String spec, BigDecimal priceSnapshot, BigDecimal originalPriceSnapshot) {
+        BigDecimal price = priceSnapshot != null ? priceSnapshot : product.getPrice();
+        BigDecimal originalPrice = originalPriceSnapshot != null
+                ? originalPriceSnapshot
+                : (product.getOriginalPrice() != null ? product.getOriginalPrice() : product.getPrice());
+        return OrderItemVO.builder()
+                .productId(product.getId())
+                .productName(product.getName())
+                .coverUrl(product.getCoverUrl())
+                .shopId(defaultString(shopId, product.getShopId(), "official"))
+                .shopName(defaultString(shopName, product.getShopName(), "伴宠云诊自营"))
+                .serviceText(defaultString(serviceText, product.getServiceText(), "包邮 · 正品保障"))
+                .spec(defaultString(spec, product.getDefaultSpec(), "默认规格"))
+                .price(price)
+                .originalPrice(originalPrice)
+                .quantity(quantity)
+                .subtotal(price.multiply(BigDecimal.valueOf(quantity)))
+                .build();
+    }
+
+    private Product requiredProduct(Long productId) {
+        Product product = productMapper.selectById(productId);
+        if (product == null) {
+            throw new BusinessException(RespType.PRODUCT_NOT_FOUND);
+        }
+        return product;
+    }
+
+    private String resolveDirectBuySpecLabel(Product product, List<String> specLabels, int index) {
+        String selectedSpec = specLabels != null && index < specLabels.size() ? specLabels.get(index) : null;
+        return defaultString(selectedSpec, product.getDefaultSpec(), "默认规格");
+    }
+
+    private AddressVO buildDefaultAddress(Long userId) {
+        LambdaQueryWrapper<UserAddress> addressWrapper = new LambdaQueryWrapper<>();
+        addressWrapper.eq(UserAddress::getUserId, userId).eq(UserAddress::getIsDefault, 1);
+        UserAddress defaultAddress = userAddressMapper.selectOne(addressWrapper);
+        if (defaultAddress == null) {
+            return null;
+        }
+        return AddressVO.builder()
+                .id(defaultAddress.getId())
+                .contactName(defaultAddress.getContactName())
+                .contactPhone(defaultAddress.getContactPhone())
+                .receiverName(defaultAddress.getContactName())
+                .receiverPhone(defaultAddress.getContactPhone())
+                .province(defaultAddress.getProvince())
+                .city(defaultAddress.getCity())
+                .district(defaultAddress.getDistrict())
+                .detailAddress(defaultAddress.getDetailAddress())
+                .fullAddress(defaultAddress.getFullAddress())
+                .isDefault(Integer.valueOf(1).equals(defaultAddress.getIsDefault()))
+                .longitude(defaultAddress.getLongitude())
+                .latitude(defaultAddress.getLatitude())
+                .businessArea(defaultAddress.getBusinessArea())
+                .doorNo(defaultAddress.getDoorNo())
+                .mapAddress(defaultAddress.getMapAddress())
+                .build();
+    }
+
+    private List<UserCouponVO> loadAvailableCoupons(Long userId, BigDecimal totalAmount) {
+        List<UserCouponVO> availableCoupons = new ArrayList<>();
+        LambdaQueryWrapper<UserCoupon> couponWrapper = new LambdaQueryWrapper<>();
+        couponWrapper.eq(UserCoupon::getUserId, userId).eq(UserCoupon::getStatus, 0);
+        List<UserCoupon> userCoupons = userCouponMapper.selectList(couponWrapper);
+        for (UserCoupon uc : userCoupons) {
+            if (isCouponExpired(uc.getExpireTime())) {
+                continue;
+            }
+            if (uc.getMinAmount() != null && totalAmount.compareTo(uc.getMinAmount()) < 0) {
+                continue;
+            }
+            availableCoupons.add(UserCouponVO.builder()
+                    .id(uc.getId())
+                    .couponId(uc.getCouponId())
+                    .couponName(uc.getCouponName())
+                    .couponType(uc.getCouponType())
+                    .typeDesc(Integer.valueOf(1).equals(uc.getCouponType()) ? "满减券" : "折扣券")
+                    .discountAmount(uc.getDiscountAmount())
+                    .discountRate(uc.getDiscountRate())
+                    .minAmount(uc.getMinAmount())
+                    .maxDiscount(uc.getMaxDiscount())
+                    .status(uc.getStatus())
+                    .expireTime(uc.getExpireTime())
+                    .available(true)
+                    .build());
+        }
+        return availableCoupons;
+    }
+
+    private List<PaymentMethodVO> buildPaymentMethods() {
+        return List.of(
+                PaymentMethodVO.builder().key("wechat").title("微信支付").subtitle("默认推荐 · 快速完成支付").verifyType("face").build(),
+                PaymentMethodVO.builder().key("alipay").title("支付宝").subtitle("切换支付方式 · 支持余额与花呗").verifyType("password").build(),
+                PaymentMethodVO.builder().key("bank").title("银行卡").subtitle("储蓄卡与借记卡账户").verifyType("password").build(),
+                PaymentMethodVO.builder().key("credit").title("信用卡").subtitle("支持分期与国际信用卡").verifyType("password").build()
+        );
+    }
+
+    private boolean isCouponExpired(String expireTime) {
+        if (expireTime == null || expireTime.isBlank()) {
+            return false;
+        }
+        return LocalDateTime.parse(expireTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                .isBefore(LocalDateTime.now());
+    }
+
+    private String nowString() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    private String defaultPaymentMethod(String paymentMethod) {
+        if (paymentMethod == null || paymentMethod.isBlank()) {
+            return PaymentRecord.PaymentMethod.WECHAT.getCode();
+        }
+        return paymentMethod;
+    }
+
+    private String defaultString(String value, String fallback, String finalValue) {
+        if (value != null && !value.isBlank()) {
+            return value;
+        }
+        if (fallback != null && !fallback.isBlank()) {
+            return fallback;
+        }
+        return finalValue;
+    }
+
+    private void recordOrderStatusHistory(OrderInfo order,
+                                          Integer fromStatus,
+                                          Integer toStatus,
+                                          String action,
+                                          String operatorType,
+                                          Long operatorId,
+                                          String operatorName,
+                                          String logisticsCompany,
+                                          String trackingNo,
+                                          String remark) {
+        OrderStatusHistory history = new OrderStatusHistory();
+        history.setOrderId(order.getId());
+        history.setOrderNo(order.getOrderNo());
+        history.setFromStatus(fromStatus);
+        history.setToStatus(toStatus);
+        history.setAction(action);
+        history.setOperatorType(operatorType);
+        history.setOperatorId(operatorId);
+        history.setOperatorName(operatorName);
+        history.setLogisticsCompany(logisticsCompany);
+        history.setTrackingNo(trackingNo);
+        history.setRemark(remark);
+        history.setOperateTime(new Date());
+        orderStatusHistoryMapper.insert(history);
+    }
+
     private String getStatusDesc(Integer status) {
         if (status == null) {
             return "";
         }
-        switch (status) {
-            case 0:
-                return "待付款";
-            case 1:
-                return "待发货";
-            case 2:
-                return "待收货";
-            case 3:
-                return "已完成";
-            case 4:
-                return "已取消";
-            default:
-                return "";
-        }
+        return switch (status) {
+            case 0 -> "待付款";
+            case 1 -> "待发货";
+            case 2 -> "待收货";
+            case 3 -> "已完成";
+            case 4 -> "已取消";
+            default -> "";
+        };
     }
 }

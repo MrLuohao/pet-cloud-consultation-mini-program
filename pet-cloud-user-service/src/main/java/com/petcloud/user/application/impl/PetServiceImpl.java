@@ -3,6 +3,8 @@ package com.petcloud.user.application.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.petcloud.common.core.exception.BusinessException;
 import com.petcloud.common.core.exception.RespType;
+import com.petcloud.user.domain.dto.PetCreateDTO;
+import com.petcloud.user.domain.dto.PetUpdateDTO;
 import com.petcloud.user.domain.entity.UserPet;
 import com.petcloud.user.domain.entity.HealthRecord;
 import com.petcloud.user.domain.service.PetService;
@@ -19,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,53 +61,50 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Long createPet(Long userId, String name, Integer type, String breed, Integer gender,
-                          String birthday, String weight, String avatarUrl, String healthStatus,
-                          String personality, String motto) {
+    public Long createPet(Long userId, PetCreateDTO dto) {
         // 检查宠物数量限制
         Long count = userPetMapper.selectCount(
                 new LambdaQueryWrapper<UserPet>().eq(UserPet::getUserId, userId)
         );
-        if (count >= 20) {
+        // 防止 NPE：如果 selectCount 返回 null，视为 0
+        if (count != null && count >= 20) {
             throw new BusinessException(RespType.PET_LIMIT_EXCEEDED);
         }
 
         UserPet pet = new UserPet();
         pet.setUserId(userId);
-        pet.setName(name);
-        pet.setType(type);
-        pet.setBreed(breed);
-        pet.setGender(gender);
-        pet.setBirthday(birthday != null && !birthday.isEmpty() ? LocalDate.parse(birthday) : null);
-        pet.setWeight(weight != null && !weight.isEmpty() ? new BigDecimal(weight) : null);
-        pet.setAvatarUrl(avatarUrl);
-        pet.setHealthStatus(healthStatus);
-        pet.setPersonality(personality);
-        pet.setMotto(motto);
+        pet.setName(dto.getName());
+        pet.setType(dto.getType());
+        pet.setBreed(dto.getBreed());
+        pet.setGender(dto.getGender());
+        pet.setBirthday(dto.getBirthday() != null && !dto.getBirthday().isEmpty() ? LocalDate.parse(dto.getBirthday()) : null);
+        pet.setWeight(dto.getWeight() != null && !dto.getWeight().isEmpty() ? new BigDecimal(dto.getWeight()) : null);
+        pet.setAvatarUrl(dto.getAvatarUrl());
+        pet.setHealthStatus(dto.getHealthStatus());
+        pet.setPersonality(dto.getPersonality());
+        pet.setMotto(dto.getMotto());
 
         userPetMapper.insert(pet);
         return pet.getId();
     }
 
     @Override
-    public void updatePet(Long petId, Long userId, String name, Integer type, String breed, Integer gender,
-                          String birthday, String weight, String avatarUrl, String healthStatus,
-                          String personality, String motto) {
+    public void updatePet(Long petId, Long userId, PetUpdateDTO dto) {
         UserPet pet = userPetMapper.selectById(petId);
         if (pet == null || !pet.getUserId().equals(userId)) {
             throw new BusinessException(RespType.PET_NOT_FOUND);
         }
 
-        pet.setName(name);
-        pet.setType(type);
-        pet.setBreed(breed);
-        pet.setGender(gender);
-        pet.setBirthday(birthday != null && !birthday.isEmpty() ? LocalDate.parse(birthday) : null);
-        pet.setWeight(weight != null && !weight.isEmpty() ? new BigDecimal(weight) : null);
-        pet.setAvatarUrl(avatarUrl);
-        pet.setHealthStatus(healthStatus);
-        pet.setPersonality(personality);
-        pet.setMotto(motto);
+        pet.setName(dto.getName());
+        pet.setType(dto.getType());
+        pet.setBreed(dto.getBreed());
+        pet.setGender(dto.getGender());
+        pet.setBirthday(dto.getBirthday() != null && !dto.getBirthday().isEmpty() ? LocalDate.parse(dto.getBirthday()) : null);
+        pet.setWeight(dto.getWeight() != null && !dto.getWeight().isEmpty() ? new BigDecimal(dto.getWeight()) : null);
+        pet.setAvatarUrl(dto.getAvatarUrl());
+        pet.setHealthStatus(dto.getHealthStatus());
+        pet.setPersonality(dto.getPersonality());
+        pet.setMotto(dto.getMotto());
 
         userPetMapper.updateById(pet);
     }
@@ -187,7 +187,9 @@ public class PetServiceImpl implements PetService {
     }
 
     private String getRecordIcon(String recordType) {
-        if (recordType == null) return "📋";
+        if (recordType == null) {
+            return "📋";
+        }
         switch (recordType) {
             case "vaccine": return "💉";
             case "checkup": return "🏥";
@@ -198,7 +200,9 @@ public class PetServiceImpl implements PetService {
     }
 
     private String getRecordColor(String recordType) {
-        if (recordType == null) return "gray";
+        if (recordType == null) {
+            return "gray";
+        }
         switch (recordType) {
             case "vaccine": return "blue";
             case "checkup": return "green";
@@ -229,29 +233,21 @@ public class PetServiceImpl implements PetService {
         if (type == null) {
             return "";
         }
-        switch (type) {
-            case 1:
-                return "狗";
-            case 2:
-                return "猫";
-            case 3:
-                return "其他";
-            default:
-                return "";
-        }
+        return Arrays.stream(UserPet.PetType.values())
+                .filter(t -> t.getCode().equals(type))
+                .findFirst()
+                .map(UserPet.PetType::getDesc)
+                .orElse("");
     }
 
     private String getGenderDesc(Integer gender) {
         if (gender == null) {
             return "未知";
         }
-        switch (gender) {
-            case 1:
-                return "公";
-            case 2:
-                return "母";
-            default:
-                return "未知";
-        }
+        return Arrays.stream(UserPet.Gender.values())
+                .filter(g -> g.getCode().equals(gender))
+                .findFirst()
+                .map(UserPet.Gender::getDesc)
+                .orElse("未知");
     }
 }

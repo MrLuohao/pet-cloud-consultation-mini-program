@@ -87,8 +87,7 @@ public class HealthRecordController {
     public Response<Long> createReminder(HttpServletRequest request,
                                          @RequestBody HealthReminderCreateDTO dto) {
         Long userId = userContextHolderWeb.getRequiredUserId(request);
-        Long id = healthReminderService.create(userId, dto.getPetId(), dto.getPetName(),
-                dto.getReminderType(), dto.getTitle(), dto.getRemindDate(), dto.getNote());
+        Long id = healthReminderService.create(userId, dto);
         return Response.succeed(id);
     }
 

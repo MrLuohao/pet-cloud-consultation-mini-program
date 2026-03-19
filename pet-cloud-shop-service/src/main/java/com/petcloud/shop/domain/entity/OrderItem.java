@@ -43,10 +43,46 @@ public class OrderItem extends BaseEntity {
     private String coverUrl;
 
     /**
+     * 店铺标识
+     */
+    @TableField("shop_id")
+    private String shopId;
+
+    /**
+     * 店铺名称
+     */
+    @TableField("shop_name")
+    private String shopName;
+
+    /**
+     * 服务文案
+     */
+    @TableField("service_text")
+    private String serviceText;
+
+    /**
+     * 规格快照
+     */
+    @TableField("spec_snapshot")
+    private String specSnapshot;
+
+    /**
+     * sku 快照
+     */
+    @TableField("sku_snapshot")
+    private String skuSnapshot;
+
+    /**
      * 商品单价
      */
     @TableField("price")
     private BigDecimal price;
+
+    /**
+     * 商品原价
+     */
+    @TableField("original_price")
+    private BigDecimal originalPrice;
 
     /**
      * 购买数量

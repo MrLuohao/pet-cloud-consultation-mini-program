@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
@@ -20,6 +21,7 @@ import java.text.DecimalFormat;
 @SpringBootApplication
 @ConfigurationPropertiesScan(basePackages = {"com.petcloud.common.web", "com.petcloud.user"})
 @ComponentScan(basePackages = {"com.petcloud.common.web", "com.petcloud.user"})
+@EnableFeignClients(basePackages = "com.petcloud.user.infrastructure.feign")
 public class UserServiceApplication {
 
     public static void main(String[] args) {

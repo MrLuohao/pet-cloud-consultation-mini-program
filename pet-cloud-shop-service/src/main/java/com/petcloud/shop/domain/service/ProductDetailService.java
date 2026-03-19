@@ -1,5 +1,6 @@
 package com.petcloud.shop.domain.service;
 
+import com.petcloud.shop.domain.dto.ProductReviewDTO;
 import com.petcloud.shop.domain.vo.ProductDetailVO;
 import com.petcloud.shop.domain.vo.ProductReviewVO;
 import com.petcloud.shop.domain.vo.ReviewSummaryVO;
@@ -55,14 +56,10 @@ public interface ProductDetailService {
     /**
      * 提交商品评价
      *
-     * @param userId     用户ID
-     * @param orderItemId 订单项ID
-     * @param productId  商品ID
-     * @param rating     评分
-     * @param content    评价内容
-     * @param images     评价图片
+     * @param userId 用户ID
+     * @param dto    评价请求DTO
      */
-    void createReview(Long userId, Long orderItemId, Long productId, Integer rating, String content, String images);
+    void createReview(Long userId, ProductReviewDTO dto);
 
     /**
      * 获取用户可评价的订单项

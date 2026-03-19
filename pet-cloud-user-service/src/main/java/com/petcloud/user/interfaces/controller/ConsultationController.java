@@ -36,15 +36,7 @@ public class ConsultationController {
     public Response<Long> createConsultation(HttpServletRequest request,
                                           @RequestBody ConsultationCreateDTO consultationRequest) {
         Long userId = userContextHolderWeb.getRequiredUserId(request);
-        Long consultationId = consultationService.createConsultation(
-                userId,
-                consultationRequest.getPetId(),
-                consultationRequest.getDoctorId(),
-                consultationRequest.getType(),
-                consultationRequest.getDescription(),
-                consultationRequest.getImages(),
-                consultationRequest.getUrgentType()
-        );
+        Long consultationId = consultationService.createConsultation(userId, consultationRequest);
         return Response.succeed(consultationId);
     }
 
@@ -64,13 +56,7 @@ public class ConsultationController {
     public Response<Long> sendMessage(HttpServletRequest request,
                                    @RequestBody ConsultationMessageDTO messageRequest) {
         Long userId = userContextHolderWeb.getRequiredUserId(request);
-        Long messageId = consultationService.sendMessage(
-                userId,
-                messageRequest.getConsultationId(),
-                messageRequest.getMessageType(),
-                messageRequest.getContent(),
-                messageRequest.getMediaUrl()
-        );
+        Long messageId = consultationService.sendMessage(userId, messageRequest);
         return Response.succeed(messageId);
     }
 

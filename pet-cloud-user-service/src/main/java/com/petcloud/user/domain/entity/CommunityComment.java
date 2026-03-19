@@ -22,8 +22,38 @@ public class CommunityComment extends BaseEntity {
     @TableField("user_id")
     private Long userId;
 
+    /**
+     * 回复目标评论ID
+     */
+    @TableField("reply_to_id")
+    private Long replyToId;
+
+    /**
+     * 回复目标用户ID
+     */
+    @TableField("reply_to_user_id")
+    private Long replyToUserId;
+
     @TableField("content")
     private String content;
+
+    /**
+     * 媒体URL数组（JSON）
+     */
+    @TableField("media_urls")
+    private String mediaUrls;
+
+    /**
+     * 媒体类型（image/video）
+     */
+    @TableField("media_type")
+    private String mediaType;
+
+    /**
+     * 点赞数
+     */
+    @TableField("like_count")
+    private Integer likeCount;
 
     @TableField("is_deleted")
     private Integer isDeleted;

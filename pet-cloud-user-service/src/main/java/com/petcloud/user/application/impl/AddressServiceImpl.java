@@ -3,6 +3,8 @@ package com.petcloud.user.application.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.petcloud.common.core.exception.BusinessException;
 import com.petcloud.common.core.exception.RespType;
+import com.petcloud.user.domain.dto.AddressCreateDTO;
+import com.petcloud.user.domain.dto.AddressUpdateDTO;
 import com.petcloud.user.domain.entity.UserAddress;
 import com.petcloud.user.domain.service.AddressService;
 import com.petcloud.user.domain.vo.UserAddressVO;
@@ -15,11 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * 地址管理服务实现类
- *
- * @author luohao
- */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -33,9 +30,7 @@ public class AddressServiceImpl implements AddressService {
         queryWrapper.eq(UserAddress::getUserId, userId)
                 .orderByDesc(UserAddress::getIsDefault)
                 .orderByDesc(UserAddress::getCreateTime);
-        List<UserAddress> addresses = userAddressMapper.selectList(queryWrapper);
-
-        return addresses.stream()
+        return userAddressMapper.selectList(queryWrapper).stream()
                 .map(this::convertToVO)
                 .collect(Collectors.toList());
     }
@@ -51,68 +46,38 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long createAddress(Long userId, String contactName, String contactPhone,
-                               String province, String city, String district,
-                               String detailAddress, Integer isDefault) {
-        // 检查地址数量限制
+    public Long createAddress(Long userId, AddressCreateDTO request) {
         Long count = userAddressMapper.selectCount(
                 new LambdaQueryWrapper<UserAddress>().eq(UserAddress::getUserId, userId)
         );
-        if (count >= 20) {
+        if (count != null && count >= 20) {
             throw new BusinessException(RespType.ADDRESS_LIMIT_EXCEEDED);
         }
 
-        // 如果设置为默认地址，先取消其他默认地址
-        if (isDefault != null && isDefault == 1) {
-            LambdaQueryWrapper<UserAddress> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(UserAddress::getUserId, userId);
-            UserAddress defaultRecord = new UserAddress();
-            defaultRecord.setIsDefault(0);
-            userAddressMapper.update(defaultRecord, wrapper);
+        if (Integer.valueOf(1).equals(request.getIsDefault())) {
+            resetDefaultAddresses(userId, null);
         }
 
         UserAddress address = new UserAddress();
         address.setUserId(userId);
-        address.setContactName(contactName);
-        address.setContactPhone(contactPhone);
-        address.setProvince(province);
-        address.setCity(city);
-        address.setDistrict(district);
-        address.setDetailAddress(detailAddress);
-        address.setIsDefault(isDefault != null ? isDefault : 0);
-
+        applyAddressFields(address, request);
         userAddressMapper.insert(address);
         return address.getId();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateAddress(Long addressId, Long userId, String contactName, String contactPhone,
-                               String province, String city, String district,
-                               String detailAddress, Integer isDefault) {
+    public void updateAddress(Long addressId, Long userId, AddressUpdateDTO request) {
         UserAddress address = userAddressMapper.selectById(addressId);
         if (address == null || !address.getUserId().equals(userId)) {
             throw new BusinessException(RespType.ADDRESS_NOT_FOUND);
         }
 
-        // 如果设置为默认地址，先取消其他默认地址
-        if (isDefault != null && isDefault == 1) {
-            LambdaQueryWrapper<UserAddress> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(UserAddress::getUserId, userId)
-                    .ne(UserAddress::getId, addressId);
-            UserAddress defaultRecord = new UserAddress();
-            defaultRecord.setIsDefault(0);
-            userAddressMapper.update(defaultRecord, wrapper);
+        if (Integer.valueOf(1).equals(request.getIsDefault())) {
+            resetDefaultAddresses(userId, addressId);
         }
 
-        address.setContactName(contactName);
-        address.setContactPhone(contactPhone);
-        address.setProvince(province);
-        address.setCity(city);
-        address.setDistrict(district);
-        address.setDetailAddress(detailAddress);
-        address.setIsDefault(isDefault);
-
+        applyAddressFields(address, request);
         userAddressMapper.updateById(address);
     }
 
@@ -133,14 +98,7 @@ public class AddressServiceImpl implements AddressService {
             throw new BusinessException(RespType.ADDRESS_NOT_FOUND);
         }
 
-        // 取消所有默认地址
-        LambdaQueryWrapper<UserAddress> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(UserAddress::getUserId, userId);
-        UserAddress defaultRecord = new UserAddress();
-        defaultRecord.setIsDefault(0);
-        userAddressMapper.update(defaultRecord, wrapper);
-
-        // 设置新默认地址
+        resetDefaultAddresses(userId, null);
         address.setIsDefault(1);
         userAddressMapper.updateById(address);
     }
@@ -151,17 +109,63 @@ public class AddressServiceImpl implements AddressService {
         queryWrapper.eq(UserAddress::getUserId, userId)
                 .eq(UserAddress::getIsDefault, 1);
         UserAddress address = userAddressMapper.selectOne(queryWrapper);
-
         if (address == null) {
-            // 如果没有默认地址，返回第一个地址
             queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(UserAddress::getUserId, userId)
                     .orderByDesc(UserAddress::getCreateTime)
                     .last("LIMIT 1");
             address = userAddressMapper.selectOne(queryWrapper);
         }
-
         return address != null ? convertToVO(address) : null;
+    }
+
+    private void resetDefaultAddresses(Long userId, Long excludeAddressId) {
+        LambdaQueryWrapper<UserAddress> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserAddress::getUserId, userId);
+        if (excludeAddressId != null) {
+            wrapper.ne(UserAddress::getId, excludeAddressId);
+        }
+        UserAddress defaultRecord = new UserAddress();
+        defaultRecord.setIsDefault(0);
+        userAddressMapper.update(defaultRecord, wrapper);
+    }
+
+    private void applyAddressFields(UserAddress address, AddressCreateDTO request) {
+        address.setContactName(request.getContactName());
+        address.setContactPhone(request.getContactPhone());
+        address.setProvince(request.getProvince());
+        address.setCity(request.getCity());
+        address.setDistrict(request.getDistrict());
+        address.setDetailAddress(request.getDetailAddress());
+        address.setIsDefault(request.getIsDefault() != null ? request.getIsDefault() : 0);
+        address.setLongitude(request.getLongitude());
+        address.setLatitude(request.getLatitude());
+        address.setBusinessArea(request.getBusinessArea());
+        address.setDoorNo(request.getDoorNo());
+        address.setRawText(request.getRawText());
+        address.setParsedName(request.getParsedName());
+        address.setParsedPhone(request.getParsedPhone());
+        address.setMapAddress(request.getMapAddress());
+        address.setAddressTag(request.getAddressTag());
+    }
+
+    private void applyAddressFields(UserAddress address, AddressUpdateDTO request) {
+        address.setContactName(request.getContactName());
+        address.setContactPhone(request.getContactPhone());
+        address.setProvince(request.getProvince());
+        address.setCity(request.getCity());
+        address.setDistrict(request.getDistrict());
+        address.setDetailAddress(request.getDetailAddress());
+        address.setIsDefault(request.getIsDefault());
+        address.setLongitude(request.getLongitude());
+        address.setLatitude(request.getLatitude());
+        address.setBusinessArea(request.getBusinessArea());
+        address.setDoorNo(request.getDoorNo());
+        address.setRawText(request.getRawText());
+        address.setParsedName(request.getParsedName());
+        address.setParsedPhone(request.getParsedPhone());
+        address.setMapAddress(request.getMapAddress());
+        address.setAddressTag(request.getAddressTag());
     }
 
     private UserAddressVO convertToVO(UserAddress address) {
@@ -173,8 +177,17 @@ public class AddressServiceImpl implements AddressService {
                 .city(address.getCity())
                 .district(address.getDistrict())
                 .detailAddress(address.getDetailAddress())
-                .fullAddress(address.getProvince() + address.getCity() + address.getDistrict() + address.getDetailAddress())
-                .isDefault(address.getIsDefault() != null && address.getIsDefault() == 1 ? 1 : 0)
+                .fullAddress(address.getFullAddress())
+                .isDefault(Integer.valueOf(1).equals(address.getIsDefault()) ? 1 : 0)
+                .longitude(address.getLongitude())
+                .latitude(address.getLatitude())
+                .businessArea(address.getBusinessArea())
+                .doorNo(address.getDoorNo())
+                .rawText(address.getRawText())
+                .parsedName(address.getParsedName())
+                .parsedPhone(address.getParsedPhone())
+                .mapAddress(address.getMapAddress())
+                .addressTag(address.getAddressTag())
                 .build();
     }
 }

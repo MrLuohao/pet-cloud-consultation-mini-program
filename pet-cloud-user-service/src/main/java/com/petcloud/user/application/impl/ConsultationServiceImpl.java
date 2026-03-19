@@ -4,6 +4,9 @@ import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.petcloud.common.core.exception.BusinessException;
 import com.petcloud.common.core.exception.RespType;
+import com.petcloud.common.core.utils.DateUtils;
+import com.petcloud.user.domain.dto.ConsultationCreateDTO;
+import com.petcloud.user.domain.dto.ConsultationMessageDTO;
 import com.petcloud.user.domain.entity.*;
 import com.petcloud.user.domain.service.ConsultationService;
 import com.petcloud.user.domain.vo.ConsultationMessageVO;
@@ -14,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,14 +38,9 @@ public class ConsultationServiceImpl implements ConsultationService {
     private final WxUserMapper wxUserMapper;
 
     @Override
-    public Long createConsultation(Long userId, Long petId, Long doctorId, Integer type, String description, String images) {
-        return createConsultation(userId, petId, doctorId, type, description, images, "normal");
-    }
-
-    @Override
-    public Long createConsultation(Long userId, Long petId, Long doctorId, Integer type, String description, String images, String urgentType) {
-        boolean isUrgent = "urgent".equals(urgentType);
-        Long assignedDoctorId = doctorId;
+    public Long createConsultation(Long userId, ConsultationCreateDTO dto) {
+        boolean isUrgent = "urgent".equals(dto.getUrgentType());
+        Long assignedDoctorId = dto.getDoctorId();
         String waitingMessage = null;
 
         // 紧急问诊：优先从在线医生中分配
@@ -78,8 +75,8 @@ public class ConsultationServiceImpl implements ConsultationService {
         // 获取宠物信息
         String petName = null;
         Integer petType = null;
-        if (petId != null) {
-            UserPet pet = userPetMapper.selectById(petId);
+        if (dto.getPetId() != null) {
+            UserPet pet = userPetMapper.selectById(dto.getPetId());
             if (pet != null && pet.getUserId().equals(userId)) {
                 petName = pet.getName();
                 petType = pet.getType();
@@ -95,16 +92,16 @@ public class ConsultationServiceImpl implements ConsultationService {
         consultation.setUserId(userId);
         consultation.setUserNickname(user.getNickname());
         consultation.setUserAvatar(user.getAvatarUrl());
-        consultation.setPetId(petId);
+        consultation.setPetId(dto.getPetId());
         consultation.setPetName(petName);
         consultation.setPetType(petType);
         consultation.setDoctorId(assignedDoctorId);
         consultation.setDoctorName(doctor != null ? doctor.getName() : null);
         consultation.setDoctorAvatar(doctor != null ? doctor.getAvatar() : null);
-        consultation.setType(type);
+        consultation.setType(dto.getType());
         consultation.setStatus(Consultation.Status.PENDING.getCode());
-        consultation.setDescription(description);
-        consultation.setImages(images);
+        consultation.setDescription(dto.getDescription());
+        consultation.setImages(dto.getImages());
         consultation.setFee(doctor != null ? doctor.getConsultationFee() : null);
         consultation.setIsUrgent(isUrgent ? 1 : 0);
 
@@ -135,14 +132,14 @@ public class ConsultationServiceImpl implements ConsultationService {
     }
 
     @Override
-    public Long sendMessage(Long userId, Long consultationId, Integer messageType, String content, String mediaUrl) {
-        Consultation consultation = consultationMapper.selectById(consultationId);
+    public Long sendMessage(Long userId, ConsultationMessageDTO dto) {
+        Consultation consultation = consultationMapper.selectById(dto.getConsultationId());
         if (consultation == null || !consultation.getUserId().equals(userId)) {
             throw new BusinessException(RespType.CONSULTATION_NOT_FOUND);
         }
 
-        if (consultation.getStatus() != Consultation.Status.IN_PROGRESS.getCode()
-                && consultation.getStatus() != Consultation.Status.PENDING.getCode()) {
+        if (!Consultation.Status.IN_PROGRESS.getCode().equals(consultation.getStatus())
+                && !Consultation.Status.PENDING.getCode().equals(consultation.getStatus())) {
             throw new BusinessException(RespType.CONSULTATION_STATUS_ERROR);
         }
 
@@ -150,22 +147,22 @@ public class ConsultationServiceImpl implements ConsultationService {
         WxUser user = wxUserMapper.selectById(userId);
 
         ConsultationMessage message = new ConsultationMessage();
-        message.setConsultationId(consultationId);
+        message.setConsultationId(dto.getConsultationId());
         message.setSenderId(userId);
         message.setSenderType(ConsultationMessage.SenderType.USER.getCode());
         message.setSenderName(user != null ? user.getNickname() : "用户");
         message.setSenderAvatar(user != null ? user.getAvatarUrl() : null);
-        message.setMessageType(messageType);
-        message.setContent(content);
-        message.setMediaUrl(mediaUrl);
+        message.setMessageType(dto.getMessageType());
+        message.setContent(dto.getContent());
+        message.setMediaUrl(dto.getMediaUrl());
         message.setIsRead(0);
 
         consultationMessageMapper.insert(message);
 
         // 如果是待接单状态，自动转为进行中
-        if (consultation.getStatus() == Consultation.Status.PENDING.getCode()) {
+        if (Consultation.Status.PENDING.getCode().equals(consultation.getStatus())) {
             consultation.setStatus(Consultation.Status.IN_PROGRESS.getCode());
-            consultation.setAcceptTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            consultation.setAcceptTime(DateUtils.now());
             consultationMapper.updateById(consultation);
         }
 
@@ -208,12 +205,12 @@ public class ConsultationServiceImpl implements ConsultationService {
             throw new BusinessException(RespType.CONSULTATION_NOT_FOUND);
         }
 
-        if (consultation.getStatus() != Consultation.Status.IN_PROGRESS.getCode()) {
+        if (!Consultation.Status.IN_PROGRESS.getCode().equals(consultation.getStatus())) {
             throw new BusinessException(RespType.CONSULTATION_STATUS_ERROR);
         }
 
         consultation.setStatus(Consultation.Status.COMPLETED.getCode());
-        consultation.setFinishTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        consultation.setFinishTime(DateUtils.now());
         consultationMapper.updateById(consultation);
     }
 
@@ -224,13 +221,13 @@ public class ConsultationServiceImpl implements ConsultationService {
             throw new BusinessException(RespType.CONSULTATION_NOT_FOUND);
         }
 
-        if (consultation.getStatus() == Consultation.Status.COMPLETED.getCode()
-                || consultation.getStatus() == Consultation.Status.CANCELLED.getCode()) {
+        if (Consultation.Status.COMPLETED.getCode().equals(consultation.getStatus())
+                || Consultation.Status.CANCELLED.getCode().equals(consultation.getStatus())) {
             throw new BusinessException(RespType.CONSULTATION_STATUS_ERROR);
         }
 
         consultation.setStatus(Consultation.Status.CANCELLED.getCode());
-        consultation.setCancelTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        consultation.setCancelTime(DateUtils.now());
         consultationMapper.updateById(consultation);
     }
 
@@ -241,13 +238,13 @@ public class ConsultationServiceImpl implements ConsultationService {
             throw new BusinessException(RespType.CONSULTATION_NOT_FOUND);
         }
 
-        if (consultation.getStatus() != Consultation.Status.PENDING.getCode()) {
+        if (!Consultation.Status.PENDING.getCode().equals(consultation.getStatus())) {
             throw new BusinessException(RespType.CONSULTATION_STATUS_ERROR);
         }
 
         // 模拟支付成功：直接转为进行中
         consultation.setStatus(Consultation.Status.IN_PROGRESS.getCode());
-        consultation.setAcceptTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        consultation.setAcceptTime(DateUtils.now());
         consultationMapper.updateById(consultation);
     }
 
@@ -262,7 +259,7 @@ public class ConsultationServiceImpl implements ConsultationService {
                 .petName(consultation.getPetName())
                 .petType(consultation.getPetType())
                 .type(consultation.getType())
-                .typeDesc(consultation.getType() == 1 ? "图文" : "视频")
+                .typeDesc(Integer.valueOf(1).equals(consultation.getType()) ? "图文" : "视频")
                 .status(consultation.getStatus())
                 .statusDesc(getStatusDesc(consultation.getStatus()))
                 .description(consultation.getDescription())
@@ -274,17 +271,13 @@ public class ConsultationServiceImpl implements ConsultationService {
     }
 
     private String getStatusDesc(Integer status) {
-        switch (status) {
-            case 0:
-                return "待接单";
-            case 1:
-                return "进行中";
-            case 2:
-                return "已完成";
-            case 3:
-                return "已取消";
-            default:
-                return "";
+        if (status == null) {
+            return "";
         }
+        return Arrays.stream(Consultation.Status.values())
+                .filter(s -> s.getCode().equals(status))
+                .findFirst()
+                .map(Consultation.Status::getDesc)
+                .orElse("");
     }
 }

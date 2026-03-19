@@ -94,6 +94,26 @@ public class ProductDetailVO {
      */
     private List<ProductReviewVO> reviews;
 
+    /**
+     * 规格组选项
+     */
+    private List<ProductSpecGroupVO> specGroups;
+
+    /**
+     * 亮点文案
+     */
+    private List<String> highlights;
+
+    /**
+     * 详情故事段落
+     */
+    private List<ProductStorySectionVO> storySections;
+
+    /**
+     * 使用建议
+     */
+    private ProductUsageNoteVO usageNote;
+
     // Builder pattern support
     public static Builder builder() {
         return new Builder();
@@ -174,6 +194,26 @@ public class ProductDetailVO {
 
         public Builder reviews(List<ProductReviewVO> reviews) {
             vo.reviews = reviews;
+            return this;
+        }
+
+        public Builder specGroups(List<ProductSpecGroupVO> specGroups) {
+            vo.specGroups = specGroups;
+            return this;
+        }
+
+        public Builder highlights(List<String> highlights) {
+            vo.highlights = highlights;
+            return this;
+        }
+
+        public Builder storySections(List<ProductStorySectionVO> storySections) {
+            vo.storySections = storySections;
+            return this;
+        }
+
+        public Builder usageNote(ProductUsageNoteVO usageNote) {
+            vo.usageNote = usageNote;
             return this;
         }
 

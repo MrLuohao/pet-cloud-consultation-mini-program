@@ -76,7 +76,7 @@ public class PromotionServiceImpl implements PromotionService {
         if (type == null) {
             return "";
         }
-        if (type == 1) {
+        if (Integer.valueOf(1).equals(type)) {
             return "满减";
         }
         return "";

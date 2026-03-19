@@ -27,6 +27,12 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
+        <!-- MyBatis-Plus JSqlParser 插件（3.5.9+ 分离出的模块） -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser</artifactId>
+        </dependency>
+
         <!-- MyBatis-Spring -->
         <dependency>
             <groupId>org.mybatis</groupId>

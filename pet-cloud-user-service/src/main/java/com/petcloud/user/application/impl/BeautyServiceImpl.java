@@ -13,7 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -229,9 +234,15 @@ public class BeautyServiceImpl implements BeautyService {
         if (booking == null) {
             throw new BusinessException(RespType.BOOKING_NOT_FOUND);
         }
-        if (beforePhoto != null) booking.setBeforePhoto(beforePhoto);
-        if (afterPhoto != null) booking.setAfterPhoto(afterPhoto);
-        if (servicePhotos != null) booking.setServicePhotos(servicePhotos);
+        if (beforePhoto != null) {
+            booking.setBeforePhoto(beforePhoto);
+        }
+        if (afterPhoto != null) {
+            booking.setAfterPhoto(afterPhoto);
+        }
+        if (servicePhotos != null) {
+            booking.setServicePhotos(servicePhotos);
+        }
         beautyBookingMapper.updateById(booking);
         log.info("上传服务照片成功，bookingId: {}", bookingId);
     }

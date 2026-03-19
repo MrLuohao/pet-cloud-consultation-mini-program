@@ -11,6 +11,7 @@ import com.petcloud.shop.domain.dto.OrderSubmitDTO;
 import com.petcloud.shop.domain.service.OrderService;
 import com.petcloud.shop.domain.vo.OrderConfirmVO;
 import com.petcloud.shop.domain.vo.OrderDetailVO;
+import com.petcloud.shop.domain.vo.OrderTimelineVO;
 import com.petcloud.shop.domain.vo.PendingReviewOrderVO;
 import com.petcloud.shop.domain.vo.WxPayParamsVO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +50,8 @@ public class OrderController {
                 userId,
                 req.getProductIds(),
                 req.getQuantities(),
-                req.getCartIds()
+                req.getCartIds(),
+                req.getSpecLabels()
         );
         return Response.succeed(confirmVO);
     }
@@ -62,14 +64,7 @@ public class OrderController {
                                        @RequestBody OrderSubmitDTO req) {
         Long userId = userContextHolder.getRequiredUserId(request);
         log.info("提交订单，userId: {}", userId);
-        Long orderId = orderService.submitOrder(
-                userId,
-                req.getProductIds(),
-                req.getQuantities(),
-                req.getAddressId(),
-                req.getCouponId(),
-                req.getRemark()
-        );
+        Long orderId = orderService.submitOrder(userId, req);
         return Response.succeed(orderId);
     }
 
@@ -95,6 +90,14 @@ public class OrderController {
         log.info("获取订单详情，userId: {}, orderId: {}", userId, id);
         OrderDetailVO orderDetail = orderService.getOrderDetail(userId, id);
         return Response.succeed(orderDetail);
+    }
+
+    @GetMapping("/{id}/timeline")
+    public Response<List<OrderTimelineVO>> getOrderTimeline(HttpServletRequest request,
+                                                            @PathVariable Long id) {
+        Long userId = userContextHolder.getRequiredUserId(request);
+        orderService.getOrderDetail(userId, id);
+        return Response.succeed(orderService.getOrderTimeline(id));
     }
 
     /**
@@ -133,7 +136,9 @@ public class OrderController {
 
         // 1. 从数据库获取订单金额（防篡改），转换为分
         OrderDetailVO order = orderService.getOrderDetail(userId, req.getOrderId());
-        int totalFee = order.getPayAmount().multiply(java.math.BigDecimal.valueOf(100)).intValue();
+        // 防止 NPE：如果 getPayAmount() 返回 null，默认为 0
+        java.math.BigDecimal payAmount = order.getPayAmount() != null ? order.getPayAmount() : java.math.BigDecimal.ZERO;
+        int totalFee = payAmount.multiply(java.math.BigDecimal.valueOf(100)).intValue();
 
         // 2. 调用 WxPayService 生成支付参数（沙箱模式或真实微信支付）
         WxPayParamsVO payParams = wxPayService.createOrder(req.getOrderId(), totalFee, null);

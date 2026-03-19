@@ -81,7 +81,7 @@ public class UserCenterServiceImpl implements UserCenterService {
     @Transactional(rollbackFor = Exception.class)
     public Long addAddress(Long userId, String contactName, String contactPhone, String province, String city, String district, String detailAddress, Integer isDefault) {
         // 如果设置为默认地址，先取消其他默认地址
-        if (isDefault != null && isDefault == 1) {
+        if (Integer.valueOf(1).equals(isDefault)) {
             LambdaUpdateWrapper<UserAddress> updateWrapper = new LambdaUpdateWrapper<>();
             updateWrapper.eq(UserAddress::getUserId, userId)
                     .set(UserAddress::getIsDefault, 0);
@@ -115,7 +115,7 @@ public class UserCenterServiceImpl implements UserCenterService {
         }
 
         // 如果设置为默认地址，先取消其他默认地址
-        if (isDefault != null && isDefault == 1) {
+        if (Integer.valueOf(1).equals(isDefault)) {
             LambdaUpdateWrapper<UserAddress> updateWrapper = new LambdaUpdateWrapper<>();
             updateWrapper.eq(UserAddress::getUserId, userId)
                     .ne(UserAddress::getId, addressId)

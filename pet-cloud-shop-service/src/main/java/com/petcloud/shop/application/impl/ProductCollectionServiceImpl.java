@@ -121,7 +121,8 @@ public class ProductCollectionServiceImpl implements ProductCollectionService {
         queryWrapper.eq(ProductCollection::getUserId, userId)
                 .eq(ProductCollection::getProductId, productId);
         Long count = productCollectionMapper.selectCount(queryWrapper);
-        return count > 0;
+        // 防止 NPE：如果 selectCount 返回 null，视为 0
+        return count != null && count > 0;
     }
 
     @Override

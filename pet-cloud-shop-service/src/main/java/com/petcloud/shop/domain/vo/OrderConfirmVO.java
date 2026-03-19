@@ -40,55 +40,47 @@ public class OrderConfirmVO {
     private BigDecimal totalAmount;
 
     /**
+     * 商品金额
+     */
+    private BigDecimal goodsAmount;
+
+    /**
      * 运费
      */
     private BigDecimal freight;
+
+    /**
+     * 优惠金额
+     */
+    private BigDecimal couponDiscount;
+
+    /**
+     * 应付金额
+     */
+    private BigDecimal payAmount;
 
     /**
      * 可用优惠券列表
      */
     private List<UserCouponVO> availableCoupons;
 
-    // Builder pattern support
-    public static Builder builder() {
-        return new Builder();
-    }
+    /**
+     * 配送文案
+     */
+    private String deliveryText;
 
-    public static class Builder {
-        private OrderConfirmVO vo = new OrderConfirmVO();
+    /**
+     * 订单提示
+     */
+    private String orderHint;
 
-        public Builder items(List<OrderItemVO> items) {
-            vo.items = items;
-            return this;
-        }
+    /**
+     * 当前选中的支付方式
+     */
+    private String selectedPaymentMethod;
 
-        public Builder address(AddressVO address) {
-            vo.address = address;
-            return this;
-        }
-
-        public Builder totalCount(Integer totalCount) {
-            vo.totalCount = totalCount;
-            return this;
-        }
-
-        public Builder totalAmount(java.math.BigDecimal totalAmount) {
-            vo.totalAmount = totalAmount;
-            return this;
-        }
-
-        public Builder freight(java.math.BigDecimal freight) {
-            vo.freight = freight;
-            return this;
-        }
-
-        public Builder availableCoupons(List<UserCouponVO> availableCoupons) {
-            vo.availableCoupons = availableCoupons;
-            return this;
-        }
-
-        public OrderConfirmVO build() {
-            return vo;
-        }
-    }
+    /**
+     * 可选支付方式
+     */
+    private List<PaymentMethodVO> paymentMethods;
 }

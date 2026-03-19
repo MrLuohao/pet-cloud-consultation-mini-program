@@ -1,5 +1,7 @@
 package com.petcloud.user.domain.service;
 
+import com.petcloud.user.domain.dto.ConsultationCreateDTO;
+import com.petcloud.user.domain.dto.ConsultationMessageDTO;
 import com.petcloud.user.domain.vo.ConsultationVO;
 import com.petcloud.user.domain.vo.ConsultationMessageVO;
 
@@ -15,14 +17,7 @@ public interface ConsultationService {
     /**
      * 创建咨询
      */
-    Long createConsultation(Long userId, Long petId, Long doctorId, Integer type, String description, String images);
-
-    /**
-     * 创建咨询（支持紧急类型）
-     *
-     * @param urgentType  normal / urgent
-     */
-    Long createConsultation(Long userId, Long petId, Long doctorId, Integer type, String description, String images, String urgentType);
+    Long createConsultation(Long userId, ConsultationCreateDTO dto);
 
     /**
      * 获取我的咨询列表
@@ -44,14 +39,11 @@ public interface ConsultationService {
     /**
      * 发送消息
      *
-     * @param userId         用户ID
-     * @param consultationId 咨询ID
-     * @param messageType    消息类型：1文字 2图片 3语音
-     * @param content        消息内容
-     * @param mediaUrl       媒体URL
+     * @param userId 用户ID
+     * @param dto    消息请求DTO
      * @return 消息ID
      */
-    Long sendMessage(Long userId, Long consultationId, Integer messageType, String content, String mediaUrl);
+    Long sendMessage(Long userId, ConsultationMessageDTO dto);
 
     /**
      * 获取聊天记录

@@ -1,6 +1,7 @@
 package com.petcloud.user.application.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.petcloud.common.core.exception.BusinessException;
 import com.petcloud.common.core.exception.RespType;
 import com.petcloud.user.domain.entity.PointsHistory;
@@ -21,7 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -79,7 +84,7 @@ public class TaskServiceImpl implements TaskService {
 
         // 查询任务定义
         TaskDefinition taskDef = taskDefinitionMapper.selectById(taskId);
-        if (taskDef == null || taskDef.getStatus() != TaskDefinition.Status.ENABLED.getCode()) {
+        if (taskDef == null || !TaskDefinition.Status.ENABLED.getCode().equals(taskDef.getStatus())) {
             throw new BusinessException(RespType.TASK_NOT_FOUND);
         }
 
@@ -90,7 +95,7 @@ public class TaskServiceImpl implements TaskService {
                 .eq(UserTask::getTaskDate, today);
         UserTask existingTask = userTaskMapper.selectOne(checkQuery);
 
-        if (existingTask != null && existingTask.getStatus() == UserTask.Status.COMPLETED.getCode()) {
+        if (existingTask != null && UserTask.Status.COMPLETED.getCode().equals(existingTask.getStatus())) {
             throw new BusinessException(RespType.TASK_ALREADY_COMPLETED);
         }
 
@@ -134,16 +139,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<PointsHistoryVO> getPointsHistory(Long userId, Integer page, Integer size) {
+        // 使用 MyBatis-Plus 分页，避免 SQL 拼接
+        Page<PointsHistory> pageParam = new Page<>(page, size);
         LambdaQueryWrapper<PointsHistory> query = new LambdaQueryWrapper<>();
         query.eq(PointsHistory::getUserId, userId)
                 .orderByDesc(PointsHistory::getCreateTime);
 
-        // 简单分页处理
-        int offset = (page - 1) * size;
-        query.last("LIMIT " + offset + ", " + size);
-
-        List<PointsHistory> historyList = pointsHistoryMapper.selectList(query);
-        return historyList.stream()
+        Page<PointsHistory> resultPage = pointsHistoryMapper.selectPage(pageParam, query);
+        return resultPage.getRecords().stream()
                 .map(this::convertToHistoryVO)
                 .collect(Collectors.toList());
     }
@@ -252,18 +255,11 @@ public class TaskServiceImpl implements TaskService {
         if (type == null) {
             return "";
         }
-        switch (type) {
-            case 1:
-                return "任务奖励";
-            case 2:
-                return "签到奖励";
-            case 3:
-                return "兑换消耗";
-            case 4:
-                return "其他";
-            default:
-                return "";
-        }
+        return Arrays.stream(TaskDefinition.TaskType.values())
+                .filter(t -> t.getCode().equals(type))
+                .findFirst()
+                .map(TaskDefinition.TaskType::getDesc)
+                .orElse("");
     }
 
     @Override

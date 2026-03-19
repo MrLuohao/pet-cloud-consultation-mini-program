@@ -14,4 +14,5 @@ public class OrderConfirmDTO {
     private List<Long> productIds;
     private List<Integer> quantities;
     private List<Long> cartIds;
+    private List<String> specLabels;
 }

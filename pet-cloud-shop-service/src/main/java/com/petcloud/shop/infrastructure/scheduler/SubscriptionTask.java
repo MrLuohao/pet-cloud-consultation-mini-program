@@ -57,7 +57,7 @@ public class SubscriptionTask {
 
     private void processOneSub(ProductSubscription sub, LocalDate today) {
         Product product = productMapper.selectById(sub.getProductId());
-        if (product == null || product.getStatus() != 1 || product.getStock() < sub.getQuantity()) {
+        if (product == null || !Integer.valueOf(1).equals(product.getStatus()) || product.getStock() < sub.getQuantity()) {
             log.warn("[订阅任务] 订阅 {} 对应商品不可用或库存不足，跳过", sub.getId());
             return;
         }

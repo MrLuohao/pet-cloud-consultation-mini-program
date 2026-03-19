@@ -8,21 +8,19 @@ import com.alibaba.dashscope.app.ApplicationParam;
 import com.alibaba.dashscope.app.ApplicationResult;
 import com.alibaba.dashscope.common.Message;
 import com.alibaba.dashscope.common.Role;
-import com.alibaba.dashscope.exception.ApiException;
-import com.alibaba.dashscope.exception.InputRequiredException;
-import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.utils.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.petcloud.common.core.exception.BusinessException;
 import com.petcloud.user.application.config.AliYunAiConfig;
 import com.petcloud.user.domain.dto.AgentApplicationDTO;
+import com.petcloud.user.domain.enums.UserRespType;
 import com.petcloud.user.domain.service.ChatService;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -39,13 +37,11 @@ import java.util.Map;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private AliYunAiConfig aliyunAiConfig;
+    private final ObjectMapper objectMapper;
+    private final AliYunAiConfig aliyunAiConfig;
 
     @Override
     public String callWithMessageQwenMax3(String content) {
@@ -70,7 +66,7 @@ public class ChatServiceImpl implements ChatService {
             return result.getOutput().getChoices().get(0).getMessage().getContent();
         } catch (Exception e) {
             log.error("QwenMax3调用失败", e);
-            throw new RuntimeException("QwenMax3调用失败: " + e.getMessage(), e);
+            throw new BusinessException(UserRespType.CHAT_QWEN_MAX_CALL_FAILED, e.getMessage(), e);
         }
     }
 
@@ -97,7 +93,7 @@ public class ChatServiceImpl implements ChatService {
             return result.getOutput().getChoices().get(0).getMessage().getContent();
         } catch (Exception e) {
             log.error("DeepSeekV3调用失败", e);
-            throw new RuntimeException("DeepSeekV3调用失败: " + e.getMessage(), e);
+            throw new BusinessException(UserRespType.CHAT_DEEPSEEK_CALL_FAILED, e.getMessage(), e);
         }
     }
 
@@ -283,7 +279,7 @@ public class ChatServiceImpl implements ChatService {
             return result.getOutput().getText();
         } catch (Exception e) {
             log.error("Agent应用调用失败", e);
-            throw new RuntimeException("Agent应用调用失败: " + e.getMessage(), e);
+            throw new BusinessException(UserRespType.CHAT_AGENT_CALL_FAILED, e.getMessage(), e);
         }
     }
 }

@@ -39,7 +39,7 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
     @Transactional
     public Long createSubscription(Long userId, SubscriptionCreateDTO dto) {
         Product product = productMapper.selectById(dto.getProductId());
-        if (product == null || product.getStatus() != 1) {
+        if (product == null || !Integer.valueOf(1).equals(product.getStatus())) {
             throw new BusinessException(RespType.PRODUCT_NOT_FOUND);
         }
 
@@ -71,7 +71,7 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
     @Override
     public void pauseSubscription(Long subscriptionId, Long userId) {
         ProductSubscription sub = getAndValidate(subscriptionId, userId);
-        if (sub.getStatus() != ProductSubscription.Status.ACTIVE.getCode()) {
+        if (!ProductSubscription.Status.ACTIVE.getCode().equals(sub.getStatus())) {
             throw new BusinessException(RespType.SUBSCRIPTION_CANNOT_PAUSE);
         }
         sub.setStatus(ProductSubscription.Status.PAUSED.getCode());
@@ -81,7 +81,7 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
     @Override
     public void resumeSubscription(Long subscriptionId, Long userId) {
         ProductSubscription sub = getAndValidate(subscriptionId, userId);
-        if (sub.getStatus() != ProductSubscription.Status.PAUSED.getCode()) {
+        if (!ProductSubscription.Status.PAUSED.getCode().equals(sub.getStatus())) {
             throw new BusinessException(RespType.SUBSCRIPTION_CANNOT_RESUME);
         }
         sub.setStatus(ProductSubscription.Status.ACTIVE.getCode());
@@ -144,7 +144,9 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
     }
 
     private String getStatusDesc(Integer status) {
-        if (status == null) return "";
+        if (status == null) {
+            return "";
+        }
         switch (status) {
             case 0: return "正常";
             case 1: return "已暂停";

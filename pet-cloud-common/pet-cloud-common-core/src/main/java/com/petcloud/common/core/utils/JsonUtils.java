@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -27,15 +27,15 @@ public class JsonUtils {
     private static ObjectMapper createObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
 
-        // 注册Java8时间模块
+        // 注册Java8时间模块（线程安全）
         mapper.registerModule(new JavaTimeModule());
 
         // 基础配置
         mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        // 日期格式
-        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        // 使用线程安全的 StdDateFormat 替代 SimpleDateFormat
+        mapper.setDateFormat(new StdDateFormat());
 
         return mapper;
     }

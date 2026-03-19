@@ -25,7 +25,9 @@ public class ConsultationReviewServiceImpl implements ConsultationReviewService 
     public void submitReview(Long userId, String userNickname, Long consultationId, Long doctorId, Integer rating, String content) {
         LambdaQueryWrapper<ConsultationReview> check = new LambdaQueryWrapper<>();
         check.eq(ConsultationReview::getConsultationId, consultationId);
-        if (consultationReviewMapper.selectCount(check) > 0) {
+        Long existCount = consultationReviewMapper.selectCount(check);
+        // 防止 NPE：如果 selectCount 返回 null，视为 0
+        if (existCount != null && existCount > 0) {
             throw new BusinessException(RespType.CONSULTATION_ALREADY_REVIEWED);
         }
 
@@ -52,7 +54,7 @@ public class ConsultationReviewServiceImpl implements ConsultationReviewService 
                         .userId(r.getUserId())
                         .userNickname(r.getUserNickname())
                         .rating(r.getRating())
-                        .isGood(r.getIsGood() != null && r.getIsGood() == 1)
+                        .isGood(Integer.valueOf(1).equals(r.getIsGood()))
                         .content(r.getContent())
                         .createTime(r.getCreateTime())
                         .build())

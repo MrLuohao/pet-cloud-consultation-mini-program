@@ -7,6 +7,31 @@
 -- ============================================================
 -- 1. course 表扩展（讲师信息 + 章节JSON）
 -- ============================================================
+
+CREATE TABLE IF NOT EXISTS `order_status_history` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
+    `order_id` BIGINT NOT NULL COMMENT '订单ID',
+    `order_no` VARCHAR(64) DEFAULT NULL COMMENT '订单号',
+    `from_status` TINYINT DEFAULT NULL COMMENT '原状态',
+    `to_status` TINYINT DEFAULT NULL COMMENT '目标状态',
+    `action` VARCHAR(50) NOT NULL COMMENT '动作标识',
+    `operator_type` VARCHAR(30) DEFAULT NULL COMMENT '操作人类型',
+    `operator_id` BIGINT DEFAULT NULL COMMENT '操作人ID',
+    `operator_name` VARCHAR(100) DEFAULT NULL COMMENT '操作人名称',
+    `logistics_company` VARCHAR(50) DEFAULT NULL COMMENT '物流公司',
+    `tracking_no` VARCHAR(64) DEFAULT NULL COMMENT '物流单号',
+    `remark` VARCHAR(255) DEFAULT NULL COMMENT '备注',
+    `operate_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
+    `creator_id` BIGINT DEFAULT NULL,
+    `creator_name` VARCHAR(100) DEFAULT NULL,
+    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `modifier_id` BIGINT DEFAULT NULL,
+    `modifier_name` VARCHAR(100) DEFAULT NULL,
+    `modify_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `is_deleted` TINYINT DEFAULT 0,
+    KEY `idx_order_status_history_order` (`order_id`),
+    KEY `idx_order_status_history_time` (`operate_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单状态历史';
 SET @col_exists = (SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'course' AND column_name = 'instructor_name');
 SET @sql = IF(@col_exists = 0, 'ALTER TABLE `course` ADD COLUMN `instructor_name` VARCHAR(50) DEFAULT NULL COMMENT ''讲师姓名'' AFTER `sort_order`', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
@@ -218,6 +243,55 @@ CREATE TABLE IF NOT EXISTS `community_post` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='社区动态';
 
 -- ============================================================
+-- 12. 首页精选内容发布表
+-- ============================================================
+CREATE TABLE IF NOT EXISTS `featured_content_publish` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `publish_date` DATE DEFAULT NULL COMMENT '发布日期',
+    `position_no` INT DEFAULT 0 COMMENT '首页排序位次',
+    `draft_id` BIGINT DEFAULT NULL COMMENT '来源草稿ID',
+    `title` VARCHAR(120) NOT NULL COMMENT '内容标题',
+    `summary` VARCHAR(500) DEFAULT NULL COMMENT '内容摘要',
+    `tag` VARCHAR(50) DEFAULT NULL COMMENT '标签',
+    `reason_label` VARCHAR(50) DEFAULT NULL COMMENT '推荐理由标签',
+    `cover_url` VARCHAR(500) DEFAULT NULL COMMENT '封面图',
+    `target_page` VARCHAR(50) DEFAULT NULL COMMENT '跳转页面类型',
+    `target_id` BIGINT DEFAULT NULL COMMENT '跳转目标ID',
+    `status` VARCHAR(20) NOT NULL DEFAULT 'published' COMMENT '状态: published/offline',
+    `start_time` DATETIME NOT NULL COMMENT '生效开始时间',
+    `end_time` DATETIME DEFAULT NULL COMMENT '生效结束时间',
+    `creator_id` BIGINT DEFAULT NULL,
+    `creator_name` VARCHAR(50) DEFAULT NULL,
+    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `modifier_id` BIGINT DEFAULT NULL,
+    `modifier_name` VARCHAR(50) DEFAULT NULL,
+    `modify_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `is_deleted` TINYINT DEFAULT 0,
+    PRIMARY KEY (`id`),
+    KEY `idx_featured_publish_status_time` (`status`, `start_time`, `end_time`),
+    KEY `idx_featured_publish_date_position` (`publish_date`, `position_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='首页精选内容发布表';
+
+-- ============================================================
+-- 13. 商品详情结构化配置 + 购物车规格唯一键
+-- ============================================================
+SET @col_exists = (SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'product' AND column_name = 'spec_groups_json');
+SET @sql = IF(@col_exists = 0, 'ALTER TABLE `product` ADD COLUMN `spec_groups_json` LONGTEXT DEFAULT NULL COMMENT ''规格组配置(JSON)'' AFTER `default_spec`', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @col_exists = (SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'product' AND column_name = 'detail_content_json');
+SET @sql = IF(@col_exists = 0, 'ALTER TABLE `product` ADD COLUMN `detail_content_json` LONGTEXT DEFAULT NULL COMMENT ''详情内容配置(JSON)'' AFTER `spec_groups_json`', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @idx_exists = (SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'shopping_cart' AND index_name = 'uk_user_product');
+SET @sql = IF(@idx_exists > 0, 'ALTER TABLE `shopping_cart` DROP INDEX `uk_user_product`', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @idx_exists = (SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'shopping_cart' AND index_name = 'uk_user_product_spec');
+SET @sql = IF(@idx_exists = 0, 'ALTER TABLE `shopping_cart` ADD UNIQUE KEY `uk_user_product_spec` (`user_id`, `product_id`, `spec_label`)', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+-- ============================================================
 -- 12. 新建 community_post_like 表（动态点赞）
 -- ============================================================
 CREATE TABLE IF NOT EXISTS `community_post_like` (
@@ -244,6 +318,8 @@ CREATE TABLE IF NOT EXISTS `community_comment` (
     `post_id`       BIGINT       NOT NULL                 COMMENT '动态ID',
     `user_id`       BIGINT       NOT NULL                 COMMENT '评论者用户ID',
     `content`       VARCHAR(500) NOT NULL                 COMMENT '评论内容',
+    `media_urls`    JSON         DEFAULT NULL             COMMENT '评论媒体URL数组（JSON）',
+    `media_type`    VARCHAR(10)  DEFAULT NULL             COMMENT '评论媒体类型: image/video',
     `is_deleted`    TINYINT      NOT NULL DEFAULT 0       COMMENT '删除标识',
     `creator_id`    BIGINT       DEFAULT NULL,
     `creator_name`  VARCHAR(100) DEFAULT NULL,

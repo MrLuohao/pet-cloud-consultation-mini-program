@@ -1,10 +1,12 @@
 package com.petcloud.user.interfaces.controller;
 
 import com.petcloud.common.core.exception.BusinessException;
-import com.petcloud.common.core.exception.RespType;
 import com.petcloud.common.core.response.Response;
 import com.petcloud.common.web.utils.UserContextHolderWeb;
 import com.petcloud.user.domain.dto.AiDiagnosisDTO;
+import com.petcloud.user.domain.enums.DiagnosisGuestLimitType;
+import com.petcloud.user.domain.enums.UserTaskCode;
+import com.petcloud.user.domain.enums.UserRespType;
 import com.petcloud.user.domain.service.AiDiagnosisService;
 import com.petcloud.user.domain.service.GuestLimitService;
 import com.petcloud.user.domain.service.TaskService;
@@ -37,11 +39,6 @@ public class AiDiagnosisController {
     private final UserContextHolderWeb userContextHolderWeb;
 
     /**
-     * 访客限制类型标识
-     */
-    private static final String LIMIT_TYPE = "ai_diagnosis";
-
-    /**
      * 宠物AI健康诊断
      *
      * @param diagnosisDTO 诊断请求
@@ -66,11 +63,11 @@ public class AiDiagnosisController {
         if (!isLoggedIn) {
             // 检查设备ID
             if (deviceId == null || deviceId.trim().isEmpty()) {
-                throw new BusinessException(RespType.PARAMETER_ERROR.getCode(), "设备ID不能为空");
+                throw new BusinessException(UserRespType.DIAGNOSIS_DEVICE_ID_REQUIRED);
             }
 
             // 检查是否还有使用次数
-            if (!guestLimitService.canUse(deviceId, LIMIT_TYPE)) {
+            if (!guestLimitService.canUse(deviceId, DiagnosisGuestLimitType.AI_DIAGNOSIS.getCode())) {
                 log.info("访客已达使用上限，deviceId: {}", deviceId);
                 AiDiagnosisResultVO result = AiDiagnosisResultVO.builder()
                         .isLoggedIn(false)
@@ -88,13 +85,13 @@ public class AiDiagnosisController {
         // 记录访客使用次数
         int remainingCount = -1;
         if (!isLoggedIn && deviceId != null) {
-            remainingCount = guestLimitService.recordUsage(deviceId, LIMIT_TYPE);
+            remainingCount = guestLimitService.recordUsage(deviceId, DiagnosisGuestLimitType.AI_DIAGNOSIS.getCode());
         }
 
         // 登录用户完成任务
         if (isLoggedIn) {
             try {
-                taskService.completeTaskByCode(userId, "AI_DIAGNOSIS");
+                taskService.completeTaskByCode(userId, UserTaskCode.AI_DIAGNOSIS.getCode());
                 log.info("用户 {} 完成健康检测任务", userId);
             } catch (Exception e) {
                 log.warn("完成健康检测任务失败: {}", e.getMessage());
@@ -136,7 +133,7 @@ public class AiDiagnosisController {
         }
 
         // 访客返回剩余次数
-        int remainingCount = guestLimitService.getRemainingCount(deviceId, LIMIT_TYPE);
+        int remainingCount = guestLimitService.getRemainingCount(deviceId, DiagnosisGuestLimitType.AI_DIAGNOSIS.getCode());
 
         return Response.succeed(AiDiagnosisResultVO.builder()
                 .isLoggedIn(false)
@@ -152,7 +149,7 @@ public class AiDiagnosisController {
      */
     @PostMapping("/diagnosis/reset")
     public Response<Void> resetGuestUsage(@RequestParam String deviceId) {
-        guestLimitService.resetUsage(deviceId, LIMIT_TYPE);
+        guestLimitService.resetUsage(deviceId, DiagnosisGuestLimitType.AI_DIAGNOSIS.getCode());
         return Response.succeed();
     }
 }

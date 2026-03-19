@@ -1,5 +1,6 @@
 package com.petcloud.user.application.impl;
 
+import com.petcloud.user.domain.enums.DiagnosisGuestLimitType;
 import com.petcloud.user.domain.service.GuestLimitService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,12 +63,14 @@ public class GuestLimitServiceImpl implements GuestLimitService {
 
         // 增加使用次数（永不过期）
         Long newCount = stringRedisTemplate.opsForValue().increment(key);
+        // 防止 NPE：如果 increment 返回 null，默认为 0
+        long countValue = newCount != null ? newCount : 0L;
 
         int maxCount = getMaxCount(limitType);
-        int remaining = Math.max(0, maxCount - newCount.intValue());
+        int remaining = Math.max(0, maxCount - (int) countValue);
 
         log.info("访客使用记录，设备: {}, 类型: {}, 已用: {}, 剩余: {}",
-                deviceId, limitType, newCount, remaining);
+                deviceId, limitType, countValue, remaining);
 
         return remaining;
     }
@@ -90,10 +93,9 @@ public class GuestLimitServiceImpl implements GuestLimitService {
      * 获取最大免费次数
      */
     private int getMaxCount(String limitType) {
-        // 可根据不同类型配置不同次数
-        return switch (limitType) {
-            case "ai_diagnosis" -> AI_DIAGNOSIS_FREE_COUNT;
-            default -> 0;
-        };
+        if (DiagnosisGuestLimitType.AI_DIAGNOSIS.getCode().equals(limitType)) {
+            return AI_DIAGNOSIS_FREE_COUNT;
+        }
+        return 0;
     }
 }

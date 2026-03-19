@@ -1,6 +1,7 @@
 package com.petcloud.user.application.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.petcloud.user.domain.dto.CourseProgressDTO;
 import com.petcloud.user.domain.entity.CourseProgress;
 import com.petcloud.user.domain.service.CourseProgressService;
 import com.petcloud.user.domain.vo.CourseProgressVO;
@@ -30,33 +31,33 @@ public class CourseProgressServiceImpl implements CourseProgressService {
                 .chapterId(progress.getChapterId())
                 .progress(progress.getProgress())
                 .watchSeconds(progress.getWatchSeconds())
-                .isCompleted(progress.getIsCompleted() != null && progress.getIsCompleted() == 1)
+                .isCompleted(Integer.valueOf(1).equals(progress.getIsCompleted()))
                 .build();
     }
 
     @Override
-    public void updateProgress(Long userId, Long courseId, String chapterId, Integer progress, Integer watchSeconds) {
+    public void updateProgress(Long userId, Long courseId, CourseProgressDTO dto) {
         LambdaQueryWrapper<CourseProgress> query = new LambdaQueryWrapper<>();
         query.eq(CourseProgress::getUserId, userId)
                 .eq(CourseProgress::getCourseId, courseId);
         CourseProgress existing = courseProgressMapper.selectOne(query);
 
-        int safeProgress = Math.min(100, Math.max(0, progress == null ? 0 : progress));
+        int safeProgress = Math.min(100, Math.max(0, dto.getProgress() == null ? 0 : dto.getProgress()));
 
         if (existing == null) {
             CourseProgress newProgress = new CourseProgress();
             newProgress.setUserId(userId);
             newProgress.setCourseId(courseId);
-            newProgress.setChapterId(chapterId);
+            newProgress.setChapterId(dto.getChapterId());
             newProgress.setProgress(safeProgress);
-            newProgress.setWatchSeconds(watchSeconds == null ? 0 : watchSeconds);
+            newProgress.setWatchSeconds(dto.getWatchSeconds() == null ? 0 : dto.getWatchSeconds());
             newProgress.setIsCompleted(safeProgress >= 100 ? 1 : 0);
             courseProgressMapper.insert(newProgress);
         } else {
-            existing.setChapterId(chapterId);
+            existing.setChapterId(dto.getChapterId());
             existing.setProgress(safeProgress);
-            if (watchSeconds != null && watchSeconds > (existing.getWatchSeconds() == null ? 0 : existing.getWatchSeconds())) {
-                existing.setWatchSeconds(watchSeconds);
+            if (dto.getWatchSeconds() != null && dto.getWatchSeconds() > (existing.getWatchSeconds() == null ? 0 : existing.getWatchSeconds())) {
+                existing.setWatchSeconds(dto.getWatchSeconds());
             }
             if (safeProgress >= 100) {
                 existing.setIsCompleted(1);

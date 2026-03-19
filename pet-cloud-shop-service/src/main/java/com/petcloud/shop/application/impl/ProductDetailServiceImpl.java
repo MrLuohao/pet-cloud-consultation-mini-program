@@ -1,6 +1,8 @@
 package com.petcloud.shop.application.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petcloud.shop.domain.entity.OrderInfo;
 import com.petcloud.shop.domain.entity.OrderItem;
@@ -13,9 +15,15 @@ import com.petcloud.shop.domain.service.ProductDetailService;
 import com.petcloud.shop.domain.service.UserRemoteService;
 import com.petcloud.shop.domain.vo.ProductDetailVO;
 import com.petcloud.shop.domain.vo.ProductReviewVO;
+import com.petcloud.shop.domain.vo.ProductSpecGroupVO;
+import com.petcloud.shop.domain.vo.ProductSpecOptionVO;
+import com.petcloud.shop.domain.vo.ProductStorySectionVO;
+import com.petcloud.shop.domain.vo.ProductUsageNoteVO;
 import com.petcloud.shop.domain.vo.ReviewSummaryVO;
 import com.petcloud.shop.domain.vo.ReviewableOrderItemVO;
 import com.petcloud.shop.domain.vo.UserBriefVO;
+import com.petcloud.shop.domain.dto.ProductReviewDTO;
+import com.petcloud.shop.domain.enums.ProductReviewFilterType;
 import com.petcloud.shop.infrastructure.persistence.mapper.OrderInfoMapper;
 import com.petcloud.shop.infrastructure.persistence.mapper.OrderItemMapper;
 import com.petcloud.shop.infrastructure.persistence.mapper.ProductMapper;
@@ -28,8 +36,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -44,9 +60,11 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     private static final Logger log = LoggerFactory.getLogger(ProductDetailServiceImpl.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final ThreadLocal<SimpleDateFormat> dateFormat = ThreadLocal.withInitial(
-            () -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-    );
+
+    private static final int RATING_GOOD_MIN = 4;
+    private static final int RATING_BAD_MAX = 2;
+    private static final int DEFAULT_REVIEW_LIMIT = 3;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final ProductMapper productMapper;
     private final ProductCategoryMapper productCategoryMapper;
@@ -75,9 +93,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         // 获取评价列表
         LambdaQueryWrapper<ProductReview> reviewWrapper = new LambdaQueryWrapper<>();
         reviewWrapper.eq(ProductReview::getProductId, productId)
-                .orderByDesc(ProductReview::getCreateTime)
-                .last("LIMIT 5");
-        List<ProductReview> reviews = productReviewMapper.selectList(reviewWrapper);
+                .orderByDesc(ProductReview::getCreateTime);
+
+        Page<ProductReview> reviewPage = new Page<>(1, DEFAULT_REVIEW_LIMIT);
+        List<ProductReview> reviews = productReviewMapper.selectPage(reviewPage, reviewWrapper).getRecords();
 
         // 批量获取用户信息
         Map<Long, UserBriefVO> userMap = Collections.emptyMap();
@@ -91,6 +110,8 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
         // 解析商品图片
         List<String> imageUrlList = parseJsonArray(product.getImageUrls());
+        List<ProductSpecGroupVO> specGroups = parseSpecGroups(product);
+        ProductDetailContentConfig detailContent = parseDetailContent(product.getDetailContentJson());
 
         final Map<Long, UserBriefVO> finalUserMap = userMap;
         return ProductDetailVO.builder()
@@ -108,6 +129,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 .rating(product.getRating())
                 .reviewCount(product.getReviewCount())
                 .tag(product.getTag())
+                .specGroups(specGroups)
+                .highlights(detailContent.getHighlights())
+                .storySections(detailContent.getStorySections())
+                .usageNote(detailContent.getUsageNote())
                 .reviews(reviews.stream()
                         .map(r -> convertToReviewVO(r, false, finalUserMap.get(r.getUserId())))
                         .collect(Collectors.toList()))
@@ -116,32 +141,35 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Override
     public List<ProductReviewVO> getProductReviews(Long productId, Integer page, Integer pageSize) {
-        return getProductReviewsWithFilter(productId, "all", page, pageSize, null);
+        return getProductReviewsWithFilter(productId, ProductReviewFilterType.DEFAULT_CODE, page, pageSize, null);
     }
 
     @Override
     public List<ProductReviewVO> getProductReviewsWithFilter(Long productId, String filter, Integer page, Integer pageSize, Long userId) {
         int size = pageSize != null && pageSize > 0 ? pageSize : 10;
         int offset = (page != null && page > 0 ? page - 1 : 0) * size;
+        int currentPage = page != null && page > 0 ? page : 1;
 
         LambdaQueryWrapper<ProductReview> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ProductReview::getProductId, productId);
 
         // 根据筛选条件添加过滤
         // 好评: 4-5星, 差评: 1-2星
-        if ("good".equals(filter)) {
-            queryWrapper.ge(ProductReview::getRating, 4);
-        } else if ("bad".equals(filter)) {
-            queryWrapper.le(ProductReview::getRating, 2);
-        } else if ("withImages".equals(filter)) {
+        ProductReviewFilterType filterType = ProductReviewFilterType.fromCode(filter);
+        if (ProductReviewFilterType.GOOD == filterType) {
+            queryWrapper.ge(ProductReview::getRating, RATING_GOOD_MIN);
+        } else if (ProductReviewFilterType.BAD == filterType) {
+            queryWrapper.le(ProductReview::getRating, RATING_BAD_MAX);
+        } else if (ProductReviewFilterType.WITH_IMAGES == filterType) {
             // 使用 JSON_LENGTH 判断数组是否非空
             queryWrapper.apply("JSON_LENGTH(images) > 0");
         }
 
-        queryWrapper.orderByDesc(ProductReview::getCreateTime)
-                .last("LIMIT " + offset + ", " + size);
+        queryWrapper.orderByDesc(ProductReview::getCreateTime);
 
-        List<ProductReview> reviews = productReviewMapper.selectList(queryWrapper);
+        // 使用 Page API 避免 SQL 拼接
+        Page<ProductReview> pageParam = new Page<>(currentPage, size);
+        List<ProductReview> reviews = productReviewMapper.selectPage(pageParam, queryWrapper).getRecords();
 
         // 批量获取用户信息
         Map<Long, UserBriefVO> userMap = Collections.emptyMap();
@@ -179,16 +207,32 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Override
     @Transactional
-    public void createReview(Long userId, Long orderItemId, Long productId, Integer rating, String content, String images) {
-        // 参数校验
+    public void createReview(Long userId, ProductReviewDTO dto) {
+        validateReviewParams(dto.getRating(), dto.getContent());
+        OrderItem orderItem = validateAndGetOrderItem(userId, dto.getOrderItemId(), dto.getProductId());
+        UserBriefVO userInfo = getUserInfo(userId);
+        ProductReview review = buildReviewEntity(userId, dto.getOrderItemId(), dto.getProductId(),
+                dto.getRating(), dto.getContent(), dto.getImages(), userInfo);
+        productReviewMapper.insert(review);
+        updateProductReviewStats(dto.getProductId());
+    }
+
+    /**
+     * 验证评价参数
+     */
+    private void validateReviewParams(Integer rating, String content) {
         if (rating == null || rating < 1 || rating > 5) {
             throw new BusinessException(RespType.REVIEW_RATING_INVALID);
         }
         if (content != null && content.length() > 500) {
             throw new BusinessException(RespType.REVIEW_CONTENT_TOO_LONG);
         }
+    }
 
-        // 验证订单项存在且属于该用户
+    /**
+     * 验证订单项并返回
+     */
+    private OrderItem validateAndGetOrderItem(Long userId, Long orderItemId, Long productId) {
         if (orderItemId == null) {
             throw new BusinessException(RespType.ORDER_ITEM_NOT_FOUND);
         }
@@ -202,25 +246,36 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             throw new BusinessException(RespType.ORDER_NO_PERMISSION);
         }
 
-        // 验证订单是否已完成
         if (!OrderInfo.Status.COMPLETED.getCode().equals(orderInfo.getStatus())) {
             throw new BusinessException(RespType.ORDER_NOT_COMPLETED);
         }
 
-        // 验证订单项是否已评价
         LambdaQueryWrapper<ProductReview> existWrapper = new LambdaQueryWrapper<>();
         existWrapper.eq(ProductReview::getOrderItemId, orderItemId);
-        if (productReviewMapper.selectCount(existWrapper) > 0) {
+        Long existCount = productReviewMapper.selectCount(existWrapper);
+        // 防止 NPE：如果 selectCount 返回 null，视为 0
+        if (existCount != null && existCount > 0) {
             throw new BusinessException(RespType.REVIEW_ALREADY_EXISTS);
         }
 
-        // 验证商品ID与订单项中的商品ID一致
         if (!orderItem.getProductId().equals(productId)) {
             throw new BusinessException(RespType.PRODUCT_NOT_MATCH);
         }
+        return orderItem;
+    }
 
-        // 从用户服务获取用户信息
-        UserBriefVO userInfo = userRemoteService.getUser(userId);
+    /**
+     * 获取用户信息
+     */
+    private UserBriefVO getUserInfo(Long userId) {
+        return userRemoteService.getUser(userId);
+    }
+
+    /**
+     * 构建评价实体
+     */
+    private ProductReview buildReviewEntity(Long userId, Long orderItemId, Long productId,
+                                            Integer rating, String content, String images, UserBriefVO userInfo) {
         String nickname = userInfo != null && userInfo.getNickname() != null ? userInfo.getNickname() : "用户" + userId;
         String avatarUrl = userInfo != null ? userInfo.getAvatarUrl() : null;
 
@@ -232,25 +287,28 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         review.setUserAvatar(avatarUrl);
         review.setRating(rating);
         review.setContent(content);
-        // 处理图片：将逗号分隔的字符串转换为JSON数组格式
-        String imagesJson = null;
-        if (images != null && !images.trim().isEmpty()) {
-            // 转换为JSON数组格式
-            String[] imageArray = images.split(",");
-            StringBuilder sb = new StringBuilder("[");
-            for (int i = 0; i < imageArray.length; i++) {
-                if (i > 0) sb.append(",");
-                sb.append("\"").append(imageArray[i].trim()).append("\"");
-            }
-            sb.append("]");
-            imagesJson = sb.toString();
-        }
-        review.setImages(imagesJson);
+        review.setImages(formatReviewImages(images));
         review.setLikeCount(0);
-        productReviewMapper.insert(review);
+        return review;
+    }
 
-        // 更新商品评价数和评分
-        updateProductReviewStats(productId);
+    /**
+     * 格式化评价图片为JSON数组
+     */
+    private String formatReviewImages(String images) {
+        if (images == null || images.trim().isEmpty()) {
+            return null;
+        }
+        String[] imageArray = images.split(",");
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < imageArray.length; i++) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append("\"").append(imageArray[i].trim()).append("\"");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     @Override
@@ -374,7 +432,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     public void updateReview(Long userId, Long reviewId, Integer rating, String content, String images) {
         ProductReview review = productReviewMapper.selectById(reviewId);
         if (review == null) {
-            throw new RuntimeException("评价不存在");
+            throw new BusinessException(RespType.REVIEW_NOT_FOUND);
         }
 
         // 验证是否是自己的评价
@@ -504,7 +562,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (date == null) {
             return null;
         }
-        return dateFormat.get().format(date);
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).format(DATE_TIME_FORMATTER);
     }
 
     private void updateProductReviewStats(Long productId) {
@@ -546,6 +604,96 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         } catch (Exception e) {
             // 尝试逗号分隔格式
             return List.of(json.split(","));
+        }
+    }
+
+    private List<ProductSpecGroupVO> parseSpecGroups(Product product) {
+        List<ProductSpecGroupVO> specGroups = readJson(
+                product.getSpecGroupsJson(),
+                new TypeReference<List<ProductSpecGroupVO>>() {},
+                List.of()
+        );
+
+        if (!specGroups.isEmpty()) {
+            return specGroups;
+        }
+
+        String defaultSpec = safeText(product.getDefaultSpec());
+        if (defaultSpec.isEmpty()) {
+            return List.of();
+        }
+
+        return List.of(ProductSpecGroupVO.builder()
+                .key("default")
+                .label("规格")
+                .selectedValue(defaultSpec)
+                .options(List.of(ProductSpecOptionVO.builder()
+                        .value(defaultSpec)
+                        .label(defaultSpec)
+                        .hint("默认")
+                        .build()))
+                .build());
+    }
+
+    private ProductDetailContentConfig parseDetailContent(String json) {
+        ProductDetailContentConfig config = readJson(
+                json,
+                new TypeReference<ProductDetailContentConfig>() {},
+                new ProductDetailContentConfig()
+        );
+
+        if (config.getHighlights() == null) {
+            config.setHighlights(List.of());
+        }
+        if (config.getStorySections() == null) {
+            config.setStorySections(List.of());
+        }
+        return config;
+    }
+
+    private <T> T readJson(String json, TypeReference<T> typeReference, T fallback) {
+        if (json == null || json.isBlank()) {
+            return fallback;
+        }
+        try {
+            return objectMapper.readValue(json, typeReference);
+        } catch (Exception e) {
+            log.warn("解析商品扩展配置失败: {}", json, e);
+            return fallback;
+        }
+    }
+
+    private String safeText(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private static class ProductDetailContentConfig {
+        private List<String> highlights = List.of();
+        private List<ProductStorySectionVO> storySections = List.of();
+        private ProductUsageNoteVO usageNote;
+
+        public List<String> getHighlights() {
+            return highlights;
+        }
+
+        public void setHighlights(List<String> highlights) {
+            this.highlights = highlights;
+        }
+
+        public List<ProductStorySectionVO> getStorySections() {
+            return storySections;
+        }
+
+        public void setStorySections(List<ProductStorySectionVO> storySections) {
+            this.storySections = storySections;
+        }
+
+        public ProductUsageNoteVO getUsageNote() {
+            return usageNote;
+        }
+
+        public void setUsageNote(ProductUsageNoteVO usageNote) {
+            this.usageNote = usageNote;
         }
     }
 }

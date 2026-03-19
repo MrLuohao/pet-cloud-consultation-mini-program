@@ -32,6 +32,16 @@ public class ProductCategoryVO {
     private String icon;
 
     /**
+     * 默认图标 key
+     */
+    private String iconKey;
+
+    /**
+     * 激活图标 key
+     */
+    private String activeIconKey;
+
+    /**
      * 排序
      */
     private Integer sortOrder;
@@ -56,6 +66,16 @@ public class ProductCategoryVO {
 
         public Builder icon(String icon) {
             vo.icon = icon;
+            return this;
+        }
+
+        public Builder iconKey(String iconKey) {
+            vo.iconKey = iconKey;
+            return this;
+        }
+
+        public Builder activeIconKey(String activeIconKey) {
+            vo.activeIconKey = activeIconKey;
             return this;
         }
 

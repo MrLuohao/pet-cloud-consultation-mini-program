@@ -19,6 +19,24 @@ public class CommunityTopic extends BaseEntity {
     @TableField("name")
     private String name;
 
+    /**
+     * 话题图标
+     */
+    @TableField("icon")
+    private String icon;
+
+    /**
+     * 话题描述
+     */
+    @TableField("description")
+    private String description;
+
+    /**
+     * 话题封面
+     */
+    @TableField("cover_url")
+    private String coverUrl;
+
     @TableField("post_count")
     private Integer postCount;
 

@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,12 +50,14 @@ public class CouponServiceImpl implements CouponService {
                     userCouponWrapper.eq(UserCoupon::getUserId, userId)
                             .eq(UserCoupon::getCouponId, coupon.getId());
                     Long count = userCouponMapper.selectCount(userCouponWrapper);
+                    // 防止 NPE：如果 selectCount 返回 null，视为 0（未领取）
+                    long countValue = count != null ? count : 0L;
 
                     return CouponVO.builder()
                             .id(coupon.getId())
                             .name(coupon.getName())
                             .type(coupon.getType())
-                            .typeDesc(coupon.getType() == 1 ? "满减券" : "折扣券")
+                            .typeDesc(Integer.valueOf(1).equals(coupon.getType()) ? "满减券" : "折扣券")
                             .discountAmount(coupon.getDiscountAmount())
                             .discountRate(coupon.getDiscountRate())
                             .minAmount(coupon.getMinAmount())
@@ -65,7 +68,7 @@ public class CouponServiceImpl implements CouponService {
                             .description(coupon.getDescription())
                             .totalCount(coupon.getTotalCount())
                             .receivedCount(coupon.getReceivedCount() != null ? coupon.getReceivedCount() : 0)
-                            .canReceive(count == 0 && coupon.getReceivedCount() < coupon.getTotalCount())
+                            .canReceive(countValue == 0 && coupon.getReceivedCount() < coupon.getTotalCount())
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -86,13 +89,13 @@ public class CouponServiceImpl implements CouponService {
         return userCoupons.stream()
                 .map(uc -> {
                     // 检查是否过期
-                    boolean expired = uc.getExpireTime() != null && uc.getExpireTime().compareTo(now) < 0 && uc.getStatus() == 0;
+                    boolean expired = uc.getExpireTime() != null && uc.getExpireTime().compareTo(now) < 0 && Integer.valueOf(0).equals(uc.getStatus());
                     return UserCouponVO.builder()
                             .id(uc.getId())
                             .couponId(uc.getCouponId())
                             .couponName(uc.getCouponName())
                             .couponType(uc.getCouponType())
-                            .typeDesc(uc.getCouponType() == 1 ? "满减券" : "折扣券")
+                            .typeDesc(Integer.valueOf(1).equals(uc.getCouponType()) ? "满减券" : "折扣券")
                             .discountAmount(uc.getDiscountAmount())
                             .discountRate(uc.getDiscountRate())
                             .minAmount(uc.getMinAmount())
@@ -100,7 +103,7 @@ public class CouponServiceImpl implements CouponService {
                             .status(expired ? 2 : uc.getStatus())
                             .statusDesc(getStatusDesc(expired ? 2 : uc.getStatus()))
                             .expireTime(uc.getExpireTime())
-                            .available(uc.getStatus() == 0 && !expired)
+                            .available(Integer.valueOf(0).equals(uc.getStatus()) && !expired)
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -109,7 +112,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public Boolean receiveCoupon(Long userId, Long couponId) {
         Coupon coupon = couponMapper.selectById(couponId);
-        if (coupon == null || coupon.getStatus() != 1) {
+        if (coupon == null || !Integer.valueOf(1).equals(coupon.getStatus())) {
             throw new BusinessException(RespType.COUPON_NOT_FOUND);
         }
 
@@ -194,7 +197,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public BigDecimal calculateDiscount(Long userCouponId, BigDecimal orderAmount) {
         UserCoupon userCoupon = userCouponMapper.selectById(userCouponId);
-        if (userCoupon == null || userCoupon.getStatus() != 0) {
+        if (userCoupon == null || !Integer.valueOf(0).equals(userCoupon.getStatus())) {
             return BigDecimal.ZERO;
         }
 
@@ -210,7 +213,7 @@ public class CouponServiceImpl implements CouponService {
         }
 
         // 计算优惠金额
-        if (userCoupon.getCouponType() == 1) {
+        if (Integer.valueOf(1).equals(userCoupon.getCouponType())) {
             // 满减券
             return userCoupon.getDiscountAmount() != null ? userCoupon.getDiscountAmount() : BigDecimal.ZERO;
         } else {
@@ -228,15 +231,13 @@ public class CouponServiceImpl implements CouponService {
     }
 
     private String getStatusDesc(Integer status) {
-        switch (status) {
-            case 0:
-                return "未使用";
-            case 1:
-                return "已使用";
-            case 2:
-                return "已过期";
-            default:
-                return "";
+        if (status == null) {
+            return "";
         }
+        return Arrays.stream(com.petcloud.shop.domain.entity.UserCoupon.Status.values())
+                .filter(s -> s.getCode().equals(status))
+                .findFirst()
+                .map(com.petcloud.shop.domain.entity.UserCoupon.Status::getDesc)
+                .orElse("");
     }
 }

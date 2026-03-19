@@ -3,14 +3,21 @@ package com.petcloud.user.interfaces.controller;
 import com.petcloud.common.core.exception.RespType;
 import com.petcloud.common.core.response.Response;
 import com.petcloud.common.web.utils.FileUploadUtil;
+import com.petcloud.common.web.utils.UserContextHolderWeb;
+import com.petcloud.user.domain.enums.MediaOwnerType;
+import com.petcloud.user.domain.enums.MediaType;
+import com.petcloud.user.domain.enums.UserRespType;
+import com.petcloud.user.domain.vo.MediaUploadVO;
+import com.petcloud.user.infrastructure.feign.MediaServiceClient;
+import com.petcloud.user.infrastructure.feign.dto.MediaAssetVO;
+import com.petcloud.user.infrastructure.feign.dto.RegisterMediaAssetRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-
 /**
  * 文件上传控制器
  *
@@ -18,53 +25,52 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/upload")
 @RequiredArgsConstructor
 public class UploadController {
 
     private final FileUploadUtil fileUploadUtil;
+    private final UserContextHolderWeb userContextHolderWeb;
+    private final MediaServiceClient mediaServiceClient;
 
-    /**
-     * 上传单张图片
-     *
-     * @param file 图片文件
-     * @return 图片URL
-     */
-    @PostMapping("/image")
-    public Response<String> uploadImage(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/api/media/upload")
+    public Response<MediaUploadVO> uploadMedia(@RequestParam("file") MultipartFile file,
+                                               @RequestParam(defaultValue = MediaOwnerType.DEFAULT_CODE) String ownerType,
+                                               HttpServletRequest request) {
         try {
-            log.info("上传图片，文件名: {}, 大小: {} bytes", file.getOriginalFilename(), file.getSize());
-            String imageUrl = fileUploadUtil.uploadFile(file);
-            log.info("图片上传成功: {}", imageUrl);
-            return Response.succeed(imageUrl);
+            Long userId = userContextHolderWeb.getCurrentUserId(request);
+            String fileUrl = fileUploadUtil.uploadMediaFile(file);
+
+            RegisterMediaAssetRequest registerRequest = new RegisterMediaAssetRequest();
+            registerRequest.setUserId(userId);
+            registerRequest.setOwnerType(resolveOwnerType(ownerType));
+            registerRequest.setMediaType(MediaType.fromMimeType(file.getContentType()).getCode());
+            registerRequest.setUrl(fileUrl);
+            registerRequest.setMimeType(file.getContentType());
+            registerRequest.setFileSize(file.getSize());
+            registerRequest.setOriginalFilename(file.getOriginalFilename());
+
+            MediaAssetVO assetVO = mediaServiceClient.registerMediaAsset(registerRequest).getData();
+            return Response.succeed(MediaUploadVO.builder()
+                    .assetId(assetVO.getAssetId())
+                    .assetNo(assetVO.getAssetNo())
+                    .url(assetVO.getUrl())
+                    .mediaType(assetVO.getMediaType())
+                    .uploadStatus(assetVO.getUploadStatus())
+                    .moderationStatus(assetVO.getModerationStatus())
+                    .availableForSubmit(assetVO.getAvailableForSubmit())
+                    .riskTags(assetVO.getRiskTags())
+                    .reason(assetVO.getReason())
+                    .build());
         } catch (IOException e) {
-            log.error("图片上传失败", e);
-            return Response.error(RespType.PARAMETER_ERROR, "图片上传失败: " + e.getMessage());
+            log.error("统一媒体上传失败", e);
+            return Response.error(UserRespType.MEDIA_UPLOAD_FAILED, e.getMessage());
         } catch (IllegalArgumentException e) {
-            log.warn("图片上传参数错误: {}", e.getMessage());
-            return Response.error(RespType.PARAMETER_ERROR, e.getMessage());
+            log.warn("统一媒体上传参数错误: {}", e.getMessage());
+            return Response.of(RespType.PARAMETER_ERROR, e.getMessage());
         }
     }
 
-    /**
-     * 批量上传图片
-     *
-     * @param files 图片文件数组
-     * @return 图片URL列表
-     */
-    @PostMapping("/images")
-    public Response<List<String>> uploadImages(@RequestParam("files") MultipartFile[] files) {
-        try {
-            log.info("批量上传图片，数量: {}", files.length);
-            List<String> imageUrls = fileUploadUtil.uploadFiles(files);
-            log.info("批量图片上传成功，数量: {}", imageUrls.size());
-            return Response.succeed(imageUrls);
-        } catch (IOException e) {
-            log.error("批量图片上传失败", e);
-            return Response.error(RespType.PARAMETER_ERROR, "图片上传失败: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            log.warn("图片上传参数错误: {}", e.getMessage());
-            return Response.error(RespType.PARAMETER_ERROR, e.getMessage());
-        }
+    private String resolveOwnerType(String ownerType) {
+        return MediaOwnerType.normalize(ownerType);
     }
 }

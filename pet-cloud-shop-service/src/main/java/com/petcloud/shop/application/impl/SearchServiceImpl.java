@@ -2,6 +2,7 @@ package com.petcloud.shop.application.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.petcloud.shop.domain.entity.Product;
+import com.petcloud.shop.domain.entity.ProductCategory;
 import com.petcloud.shop.domain.service.SearchService;
 import com.petcloud.shop.domain.vo.ProductVO;
 import com.petcloud.shop.infrastructure.persistence.mapper.ProductMapper;
@@ -56,8 +57,7 @@ public class SearchServiceImpl implements SearchService {
         if (!categoryIds.isEmpty()) {
             categoryNameMap = productCategoryMapper.selectBatchIds(categoryIds)
                     .stream()
-                    .collect(Collectors.toMap(com.petcloud.shop.domain.entity.ProductCategory::getId,
-                            com.petcloud.shop.domain.entity.ProductCategory::getName));
+                    .collect(Collectors.toMap(ProductCategory::getId, ProductCategory::getName));
         } else {
             categoryNameMap = Map.of();
         }

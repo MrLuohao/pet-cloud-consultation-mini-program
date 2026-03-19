@@ -44,24 +44,14 @@ public class PetController {
     @PostMapping("/create")
     public Response<Long> createPet(HttpServletRequest request, @RequestBody PetCreateDTO petRequest) {
         Long userId = userContextHolderWeb.getRequiredUserId(request);
-        Long petId = petService.createPet(
-                userId, petRequest.getName(), petRequest.getType(), petRequest.getBreed(),
-                petRequest.getGender(), petRequest.getBirthday(), petRequest.getWeight(),
-                petRequest.getAvatarUrl(), petRequest.getHealthStatus(),
-                petRequest.getPersonality(), petRequest.getMotto()
-        );
+        Long petId = petService.createPet(userId, petRequest);
         return Response.succeed(petId);
     }
 
     @PutMapping("/update")
     public Response<Void> updatePet(HttpServletRequest request, @RequestBody PetUpdateDTO petUpdateRequest) {
         Long userId = userContextHolderWeb.getRequiredUserId(request);
-        petService.updatePet(
-                petUpdateRequest.getId(), userId, petUpdateRequest.getName(), petUpdateRequest.getType(),
-                petUpdateRequest.getBreed(), petUpdateRequest.getGender(), petUpdateRequest.getBirthday(),
-                petUpdateRequest.getWeight(), petUpdateRequest.getAvatarUrl(), petUpdateRequest.getHealthStatus(),
-                petUpdateRequest.getPersonality(), petUpdateRequest.getMotto()
-        );
+        petService.updatePet(petUpdateRequest.getId(), userId, petUpdateRequest);
         return Response.succeed();
     }
 

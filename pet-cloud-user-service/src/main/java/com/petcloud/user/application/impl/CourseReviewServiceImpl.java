@@ -27,7 +27,9 @@ public class CourseReviewServiceImpl implements CourseReviewService {
         LambdaQueryWrapper<CourseReview> check = new LambdaQueryWrapper<>();
         check.eq(CourseReview::getUserId, userId)
                 .eq(CourseReview::getCourseId, courseId);
-        if (courseReviewMapper.selectCount(check) > 0) {
+        Long existCount = courseReviewMapper.selectCount(check);
+        // 防止 NPE：如果 selectCount 返回 null，视为 0
+        if (existCount != null && existCount > 0) {
             throw new BusinessException(RespType.COURSE_ALREADY_REVIEWED);
         }
 

@@ -58,16 +58,7 @@ public class AddressController {
                                        @RequestBody AddressCreateDTO addressRequest) {
         Long userId = userContextHolderWeb.getRequiredUserId(request);
         log.info("创建地址，userId: {}", userId);
-        Long addressId = addressService.createAddress(
-                userId,
-                addressRequest.getContactName(),
-                addressRequest.getContactPhone(),
-                addressRequest.getProvince(),
-                addressRequest.getCity(),
-                addressRequest.getDistrict(),
-                addressRequest.getDetailAddress(),
-                addressRequest.getIsDefault()
-        );
+        Long addressId = addressService.createAddress(userId, addressRequest);
         return Response.succeed(addressId);
     }
 
@@ -79,17 +70,7 @@ public class AddressController {
                                        @RequestBody AddressUpdateDTO addressRequest) {
         Long userId = userContextHolderWeb.getRequiredUserId(request);
         log.info("更新地址，userId: {}, addressId: {}", userId, addressRequest.getId());
-        addressService.updateAddress(
-                addressRequest.getId(),
-                userId,
-                addressRequest.getContactName(),
-                addressRequest.getContactPhone(),
-                addressRequest.getProvince(),
-                addressRequest.getCity(),
-                addressRequest.getDistrict(),
-                addressRequest.getDetailAddress(),
-                addressRequest.getIsDefault()
-        );
+        addressService.updateAddress(addressRequest.getId(), userId, addressRequest);
         return Response.succeed();
     }
 

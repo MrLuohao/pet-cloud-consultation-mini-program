@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInt
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.petcloud.common.core.domain.UserContextHolder;
 import org.apache.ibatis.reflection.MetaObject;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +21,6 @@ import java.util.Date;
  */
 @AutoConfiguration
 @ConditionalOnClass(MybatisPlusInterceptor.class)
-@MapperScan("${mybatis-plus.mapper-scan:com.**.mapper}")
 public class MybatisPlusConfig {
 
     /**

@@ -25,6 +25,8 @@ public enum RespType implements IRespType {
     // ========== AI 相关错误 ==========
     ALI_AI_TEXT_TO_IMAGE_ERROR(false, "99990006", "通义千问-文生图异常{}"),
     ALI_AI_IMAGE_EDIT_ERROR(false, "99990007", "通义千问-图像编辑失败{}"),
+    AI_DIAGNOSIS_ERROR(false, "99990008", "AI诊断服务暂时不可用，请稍后再试"),
+    ALI_AI_TEXT_TO_IMAGE_V2_ERROR(false, "99990009", "文生图V2失败{}"),
 
     // ========== 用户相关错误 ==========
     USER_NOT_FOUND(false, "40010001", "用户不存在"),

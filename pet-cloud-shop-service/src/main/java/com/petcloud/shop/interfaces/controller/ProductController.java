@@ -4,6 +4,7 @@ import com.petcloud.common.core.exception.RespType;
 import com.petcloud.common.core.response.PageVO;
 import com.petcloud.common.core.response.Response;
 import com.petcloud.common.web.utils.FileUploadUtil;
+import com.petcloud.shop.domain.enums.ShopRespType;
 import com.petcloud.shop.domain.service.ProductService;
 import com.petcloud.shop.domain.vo.ProductCategoryVO;
 import com.petcloud.shop.domain.vo.ProductVO;
@@ -87,7 +88,7 @@ public class ProductController {
             return Response.succeed(imageUrls);
         } catch (IOException e) {
             log.error("图片上传失败", e);
-            return Response.error(RespType.PARAMETER_ERROR, "图片上传失败: " + e.getMessage());
+            return Response.error(ShopRespType.PRODUCT_IMAGE_UPLOAD_FAILED, e.getMessage());
         }
     }
 }

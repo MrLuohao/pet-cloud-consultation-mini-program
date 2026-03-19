@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 /**
  * 用户收货地址VO
  *
@@ -60,4 +62,14 @@ public class UserAddressVO {
      * 是否默认地址
      */
     private Integer isDefault;
+
+    private BigDecimal longitude;
+    private BigDecimal latitude;
+    private String businessArea;
+    private String doorNo;
+    private String rawText;
+    private String parsedName;
+    private String parsedPhone;
+    private String mapAddress;
+    private String addressTag;
 }

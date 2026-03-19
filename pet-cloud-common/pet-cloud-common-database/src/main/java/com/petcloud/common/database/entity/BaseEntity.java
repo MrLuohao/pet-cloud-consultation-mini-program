@@ -1,11 +1,11 @@
 package com.petcloud.common.database.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,8 +20,6 @@ import java.util.Date;
  * @author luohao
  */
 @Data
-@Getter
-@Setter
 public abstract class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,7 +27,7 @@ public abstract class BaseEntity implements Serializable {
     /**
      * 主键ID
      */
-    @TableField("id")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**

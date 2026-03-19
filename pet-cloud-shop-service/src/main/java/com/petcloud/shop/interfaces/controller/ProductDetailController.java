@@ -3,6 +3,7 @@ package com.petcloud.shop.interfaces.controller;
 import com.petcloud.common.core.response.Response;
 import com.petcloud.common.web.utils.UserContextHolderWeb;
 import com.petcloud.shop.domain.dto.ProductReviewDTO;
+import com.petcloud.shop.domain.enums.ProductReviewFilterType;
 import com.petcloud.shop.domain.service.ProductDetailService;
 import com.petcloud.shop.domain.vo.ProductDetailVO;
 import com.petcloud.shop.domain.vo.ProductReviewVO;
@@ -47,18 +48,19 @@ public class ProductDetailController {
     @GetMapping("/{id}/reviews")
     public Response<List<ProductReviewVO>> getProductReviews(
             @PathVariable Long id,
-            @RequestParam(defaultValue = "all") String filter,
+            @RequestParam(defaultValue = ProductReviewFilterType.DEFAULT_CODE) String filter,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             HttpServletRequest request) {
-        log.info("获取商品评价，productId: {}, filter: {}, page: {}, size: {}", id, filter, page, size);
+        ProductReviewFilterType filterType = ProductReviewFilterType.fromCode(filter);
+        log.info("获取商品评价，productId: {}, filter: {}, page: {}, size: {}", id, filterType.getCode(), page, size);
         Long userId = null;
         try {
             userId = userContextHolderWeb.getRequiredUserId(request);
         } catch (Exception e) {
             log.debug("未登录用户访问评价列表，productId: {}", id);
         }
-        List<ProductReviewVO> reviews = productDetailService.getProductReviewsWithFilter(id, filter, page, size, userId);
+        List<ProductReviewVO> reviews = productDetailService.getProductReviewsWithFilter(id, filterType.getCode(), page, size, userId);
         return Response.succeed(reviews);
     }
 
@@ -70,14 +72,7 @@ public class ProductDetailController {
                                     @RequestBody ProductReviewDTO reviewRequest) {
         Long userId = userContextHolderWeb.getRequiredUserId(request);
         log.info("提交商品评价，userId: {}, productId: {}", userId, reviewRequest.getProductId());
-        productDetailService.createReview(
-                userId,
-                reviewRequest.getOrderItemId(),
-                reviewRequest.getProductId(),
-                reviewRequest.getRating(),
-                reviewRequest.getContent(),
-                reviewRequest.getImages()
-        );
+        productDetailService.createReview(userId, reviewRequest);
         return Response.succeed();
     }
 

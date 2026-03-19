@@ -19,6 +19,16 @@ import java.util.List;
 public class MessageCenterVO {
 
     /**
+     * 页面快捷入口
+     */
+    private List<QuickEntryVO> quickEntries;
+
+    /**
+     * 未读汇总
+     */
+    private UnreadSummaryVO unreadSummary;
+
+    /**
      * 总未读数
      */
     private Integer totalUnreadCount;
@@ -47,6 +57,54 @@ public class MessageCenterVO {
      * 最近系统通知
      */
     private List<MessageVO> recentNotifications;
+
+    /**
+     * 系统通知列表
+     */
+    private List<MessageVO> systemNotifications;
+
+    /**
+     * 页面事件槽位
+     */
+    private List<EventSlotVO> eventSlots;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QuickEntryVO {
+
+        private String key;
+
+        private String title;
+
+        private String subtitle;
+
+        private String iconKey;
+
+        private Integer unreadCount;
+
+        private String navigateUrl;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UnreadSummaryVO {
+
+        private Integer totalUnreadCount;
+
+        private Integer conversationUnreadCount;
+
+        private Integer notificationUnreadCount;
+
+        private Integer aiUnreadCount;
+
+        private Integer consultationUnreadCount;
+
+        private Integer customerServiceUnreadCount;
+    }
 
     /**
      * 系统通知统计
@@ -80,5 +138,22 @@ public class MessageCenterVO {
          * 总数
          */
         private Integer totalCount;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class EventSlotVO {
+
+        private String key;
+
+        private String title;
+
+        private String description;
+
+        private Integer unreadCount;
+
+        private Boolean enabled;
     }
 }

@@ -95,6 +95,15 @@ CREATE TABLE IF NOT EXISTS `user_address` (
   `district` VARCHAR(50) NOT NULL COMMENT '区/县',
   `detail_address` VARCHAR(200) NOT NULL COMMENT '详细地址',
   `is_default` TINYINT DEFAULT 0 COMMENT '是否默认: 0-否 1-是',
+  `longitude` DECIMAL(11,6) DEFAULT NULL COMMENT '经度',
+  `latitude` DECIMAL(10,6) DEFAULT NULL COMMENT '纬度',
+  `business_area` VARCHAR(100) DEFAULT NULL COMMENT '商圈',
+  `door_no` VARCHAR(100) DEFAULT NULL COMMENT '门牌号',
+  `raw_text` VARCHAR(500) DEFAULT NULL COMMENT '原始粘贴文本',
+  `parsed_name` VARCHAR(50) DEFAULT NULL COMMENT '解析联系人',
+  `parsed_phone` VARCHAR(20) DEFAULT NULL COMMENT '解析手机号',
+  `map_address` VARCHAR(300) DEFAULT NULL COMMENT '地图地址描述',
+  `address_tag` VARCHAR(50) DEFAULT NULL COMMENT '地址标签',
   `creator_id` BIGINT DEFAULT NULL COMMENT '创建人ID',
   `creator_name` VARCHAR(100) DEFAULT NULL COMMENT '创建人',
   `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -394,6 +403,12 @@ CREATE TABLE IF NOT EXISTS `product` (
   `rating` DECIMAL(3,2) DEFAULT 5.0 COMMENT '评分',
   `review_count` INT DEFAULT 0 COMMENT '评价数',
   `tag` VARCHAR(50) DEFAULT NULL COMMENT '标签: 热门/新品/推荐',
+  `shop_id` VARCHAR(64) DEFAULT NULL COMMENT '店铺标识',
+  `shop_name` VARCHAR(100) DEFAULT NULL COMMENT '店铺名称',
+  `service_text` VARCHAR(100) DEFAULT NULL COMMENT '服务文案',
+  `default_spec` VARCHAR(100) DEFAULT NULL COMMENT '默认规格',
+  `spec_groups_json` LONGTEXT DEFAULT NULL COMMENT '规格组配置(JSON)',
+  `detail_content_json` LONGTEXT DEFAULT NULL COMMENT '详情内容配置(JSON)',
   `status` TINYINT DEFAULT 1 COMMENT '状态: 0-下架 1-上架',
   `sort_order` INT DEFAULT 0 COMMENT '排序',
   `creator_id` BIGINT DEFAULT NULL COMMENT '创建人ID',
@@ -436,6 +451,32 @@ CREATE TABLE IF NOT EXISTS `order_info` (
   KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表';
 
+-- 订单状态流转历史表
+CREATE TABLE IF NOT EXISTS `order_status_history` (
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
+  `order_id` BIGINT NOT NULL COMMENT '订单ID',
+  `order_no` VARCHAR(32) DEFAULT NULL COMMENT '订单号',
+  `from_status` TINYINT DEFAULT NULL COMMENT '原状态',
+  `to_status` TINYINT DEFAULT NULL COMMENT '目标状态',
+  `action` VARCHAR(50) NOT NULL COMMENT '动作标识',
+  `operator_type` VARCHAR(30) DEFAULT NULL COMMENT '操作人类型',
+  `operator_id` BIGINT DEFAULT NULL COMMENT '操作人ID',
+  `operator_name` VARCHAR(100) DEFAULT NULL COMMENT '操作人名称',
+  `logistics_company` VARCHAR(50) DEFAULT NULL COMMENT '物流公司',
+  `tracking_no` VARCHAR(64) DEFAULT NULL COMMENT '物流单号',
+  `remark` VARCHAR(255) DEFAULT NULL COMMENT '备注',
+  `operate_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
+  `creator_id` BIGINT DEFAULT NULL COMMENT '创建人ID',
+  `creator_name` VARCHAR(100) DEFAULT NULL COMMENT '创建人',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `modifier_id` BIGINT DEFAULT NULL COMMENT '修改人ID',
+  `modifier_name` VARCHAR(100) DEFAULT NULL COMMENT '修改人',
+  `modify_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  `is_deleted` TINYINT DEFAULT 0 COMMENT '删除标识',
+  KEY `idx_order_status_history_order` (`order_id`),
+  KEY `idx_order_status_history_time` (`operate_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单状态历史';
+
 -- 订单商品表
 CREATE TABLE IF NOT EXISTS `order_item` (
   `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
@@ -443,7 +484,13 @@ CREATE TABLE IF NOT EXISTS `order_item` (
   `product_id` BIGINT NOT NULL COMMENT '商品ID',
   `product_name` VARCHAR(100) NOT NULL COMMENT '商品名称',
   `cover_url` VARCHAR(500) DEFAULT NULL COMMENT '商品封面',
+  `shop_id` VARCHAR(64) DEFAULT NULL COMMENT '店铺标识',
+  `shop_name` VARCHAR(100) DEFAULT NULL COMMENT '店铺名称',
+  `service_text` VARCHAR(100) DEFAULT NULL COMMENT '服务文案',
+  `spec_snapshot` VARCHAR(100) DEFAULT NULL COMMENT '规格快照',
+  `sku_snapshot` VARCHAR(100) DEFAULT NULL COMMENT 'SKU快照',
   `price` DECIMAL(10,2) NOT NULL COMMENT '商品单价',
+  `original_price` DECIMAL(10,2) DEFAULT NULL COMMENT '商品原价',
   `quantity` INT NOT NULL COMMENT '购买数量',
   `subtotal` DECIMAL(10,2) NOT NULL COMMENT '小计',
   `creator_id` BIGINT DEFAULT NULL COMMENT '创建人ID',
@@ -462,6 +509,15 @@ CREATE TABLE IF NOT EXISTS `shopping_cart` (
   `user_id` BIGINT NOT NULL COMMENT '用户ID',
   `product_id` BIGINT NOT NULL COMMENT '商品ID',
   `quantity` INT NOT NULL DEFAULT 1 COMMENT '数量',
+  `shop_id` VARCHAR(64) DEFAULT NULL COMMENT '店铺标识',
+  `shop_name` VARCHAR(100) DEFAULT NULL COMMENT '店铺名称',
+  `service_text` VARCHAR(100) DEFAULT NULL COMMENT '服务文案',
+  `spec_label` VARCHAR(100) DEFAULT NULL COMMENT '规格说明',
+  `sku_code` VARCHAR(64) DEFAULT NULL COMMENT 'SKU编码',
+  `selected` TINYINT NOT NULL DEFAULT 1 COMMENT '是否选中',
+  `status` VARCHAR(20) NOT NULL DEFAULT 'active' COMMENT '状态 active/invalid',
+  `price_snapshot` DECIMAL(10,2) DEFAULT NULL COMMENT '价格快照',
+  `original_price_snapshot` DECIMAL(10,2) DEFAULT NULL COMMENT '原价快照',
   `creator_id` BIGINT DEFAULT NULL COMMENT '创建人ID',
   `creator_name` VARCHAR(100) DEFAULT NULL COMMENT '创建人',
   `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -470,7 +526,7 @@ CREATE TABLE IF NOT EXISTS `shopping_cart` (
   `modify_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `is_deleted` TINYINT DEFAULT 0 COMMENT '删除标识',
   INDEX `idx_user_id` (`user_id`),
-  UNIQUE KEY `uk_user_product` (`user_id`, `product_id`)
+  UNIQUE KEY `uk_user_product_spec` (`user_id`, `product_id`, `spec_label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='购物车';
 
 -- 商品评价表
@@ -556,7 +612,11 @@ CREATE TABLE IF NOT EXISTS `payment_record` (
   `order_no` VARCHAR(64) NOT NULL COMMENT '订单号',
   `user_id` BIGINT NOT NULL COMMENT '用户ID',
   `amount` DECIMAL(10,2) NOT NULL COMMENT '支付金额',
-  `payment_method` VARCHAR(20) COMMENT '支付方式：wechat,balance',
+  `payment_method` VARCHAR(20) COMMENT '支付方式：wechat,alipay,bank,credit',
+  `payment_channel` VARCHAR(20) DEFAULT NULL COMMENT '支付渠道',
+  `verify_type` VARCHAR(20) DEFAULT NULL COMMENT '验证方式',
+  `status_detail` VARCHAR(100) DEFAULT NULL COMMENT '状态说明',
+  `client_scene` VARCHAR(30) DEFAULT NULL COMMENT '客户端场景',
   `transaction_id` VARCHAR(64) COMMENT '第三方交易号',
   `status` TINYINT DEFAULT 0 COMMENT '状态：0待支付 1已支付 2已退款',
   `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

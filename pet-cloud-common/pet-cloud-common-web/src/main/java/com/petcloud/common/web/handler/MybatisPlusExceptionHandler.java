@@ -1,8 +1,10 @@
 package com.petcloud.common.web.handler;
 
+import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.petcloud.common.core.exception.RespType;
 import com.petcloud.common.core.response.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -19,8 +21,8 @@ public class MybatisPlusExceptionHandler {
      * 处理 MyBatis-Plus 相关异常
      */
     @ExceptionHandler({
-            com.baomidou.mybatisplus.core.exceptions.MybatisPlusException.class,
-            org.apache.ibatis.exceptions.PersistenceException.class
+            MybatisPlusException.class,
+            PersistenceException.class
     })
     public Response<?> handleMybatisPlusException(Exception ex) {
         log.error("数据库操作异常: ", ex);

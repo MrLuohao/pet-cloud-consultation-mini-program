@@ -34,7 +34,7 @@ public class WxAuthController {
      */
     @PostMapping("/login")
     public Response<LoginVO> login(@Valid @RequestBody WxLoginDTO loginDTO) {
-        log.info("微信登录请求，code: {}", loginDTO.getCode());
+        log.info("微信登录请求");
         LoginVO loginVO = wxAuthService.login(loginDTO);
         return Response.succeed(loginVO);
     }

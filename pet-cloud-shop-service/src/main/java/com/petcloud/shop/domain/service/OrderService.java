@@ -1,7 +1,9 @@
 package com.petcloud.shop.domain.service;
 
+import com.petcloud.shop.domain.dto.OrderSubmitDTO;
 import com.petcloud.shop.domain.vo.OrderConfirmVO;
 import com.petcloud.shop.domain.vo.OrderDetailVO;
+import com.petcloud.shop.domain.vo.OrderTimelineVO;
 import com.petcloud.shop.domain.vo.PendingReviewOrderVO;
 
 import java.util.List;
@@ -22,20 +24,16 @@ public interface OrderService {
      * @param cartIds    购物车ID列表（从购物车下单时使用）
      * @return 订单确认VO
      */
-    OrderConfirmVO getOrderConfirm(Long userId, List<Long> productIds, List<Integer> quantities, List<Long> cartIds);
+    OrderConfirmVO getOrderConfirm(Long userId, List<Long> productIds, List<Integer> quantities, List<Long> cartIds, List<String> specLabels);
 
     /**
      * 提交订单
      *
-     * @param userId         用户ID
-     * @param productIds     商品ID列表
-     * @param quantities     数量列表
-     * @param addressId      地址ID
-     * @param couponId       优惠券ID
-     * @param remark         备注
+     * @param userId 用户ID
+     * @param dto    订单提交DTO
      * @return 订单ID
      */
-    Long submitOrder(Long userId, List<Long> productIds, List<Integer> quantities, Long addressId, Long couponId, String remark);
+    Long submitOrder(Long userId, OrderSubmitDTO dto);
 
     /**
      * 获取订单列表
@@ -105,4 +103,8 @@ public interface OrderService {
      * @return 待评价商品数量
      */
     Integer getPendingReviewCount(Long userId);
+
+    void shipOrder(Long orderId, String logisticsCompany, String trackingNo, String remark, Long operatorId, String operatorName);
+
+    List<OrderTimelineVO> getOrderTimeline(Long orderId);
 }

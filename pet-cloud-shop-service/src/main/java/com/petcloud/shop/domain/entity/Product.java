@@ -91,6 +91,42 @@ public class Product extends BaseEntity {
     private String tag;
 
     /**
+     * 店铺标识
+     */
+    @TableField("shop_id")
+    private String shopId;
+
+    /**
+     * 店铺名称
+     */
+    @TableField("shop_name")
+    private String shopName;
+
+    /**
+     * 服务文案
+     */
+    @TableField("service_text")
+    private String serviceText;
+
+    /**
+     * 默认规格
+     */
+    @TableField("default_spec")
+    private String defaultSpec;
+
+    /**
+     * 规格组配置(JSON)
+     */
+    @TableField("spec_groups_json")
+    private String specGroupsJson;
+
+    /**
+     * 详情内容配置(JSON)
+     */
+    @TableField("detail_content_json")
+    private String detailContentJson;
+
+    /**
      * 状态(0下架/1上架)
      */
     @TableField("status")

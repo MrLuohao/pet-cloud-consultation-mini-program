@@ -34,7 +34,7 @@ public class TaskGenerationController {
             return taskGenerationService.textToImage(userMessage);
         } catch (Exception e) {
             log.error("文生图失败", e);
-            return "通义千问-文生图失败：" + e.getMessage();
+            return "通义千问-文生图失败，请稍后重试";
         }
     }
 
@@ -47,7 +47,7 @@ public class TaskGenerationController {
             return Response.succeed(taskGenerationService.textToImageV2(userMessage));
         } catch (Exception e) {
             log.error("文生图V2失败", e);
-            return Response.error(RespType.ALI_AI_TEXT_TO_IMAGE_ERROR, e.getMessage(), e);
+            return Response.error(RespType.ALI_AI_TEXT_TO_IMAGE_ERROR);
         }
     }
 
@@ -60,7 +60,7 @@ public class TaskGenerationController {
             return Response.succeed(taskGenerationService.imageEdit(dto));
         } catch (Exception e) {
             log.error("图像编辑失败", e);
-            return Response.error(RespType.ALI_AI_IMAGE_EDIT_ERROR, e.getMessage(), e);
+            return Response.error(RespType.ALI_AI_IMAGE_EDIT_ERROR);
         }
     }
 }

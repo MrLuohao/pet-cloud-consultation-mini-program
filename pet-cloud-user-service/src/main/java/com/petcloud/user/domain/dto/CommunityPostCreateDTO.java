@@ -33,6 +33,11 @@ public class CommunityPostCreateDTO {
     private List<String> mediaUrls;
 
     /**
+     * 审核通过的媒体资产ID列表
+     */
+    private List<Long> mediaAssetIds;
+
+    /**
      * 媒体类型（image/video）
      */
     private String mediaType;

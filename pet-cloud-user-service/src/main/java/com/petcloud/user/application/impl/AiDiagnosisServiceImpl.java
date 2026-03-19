@@ -5,6 +5,8 @@ import com.alibaba.dashscope.aigc.generation.GenerationParam;
 import com.alibaba.dashscope.aigc.generation.GenerationResult;
 import com.alibaba.dashscope.common.Message;
 import com.alibaba.dashscope.common.Role;
+import com.petcloud.common.core.exception.BusinessException;
+import com.petcloud.common.core.exception.RespType;
 import com.petcloud.user.application.config.AliYunAiConfig;
 import com.petcloud.user.domain.dto.AiDiagnosisDTO;
 import com.petcloud.user.domain.service.AiDiagnosisService;
@@ -74,7 +76,7 @@ public class AiDiagnosisServiceImpl implements AiDiagnosisService {
 
         } catch (Exception e) {
             log.error("AI诊断调用失败", e);
-            throw new RuntimeException("AI诊断服务暂时不可用，请稍后再试");
+            throw new BusinessException(RespType.AI_DIAGNOSIS_ERROR);
         }
     }
 

@@ -6,14 +6,12 @@ import com.petcloud.shop.domain.dto.CartAddDTO;
 import com.petcloud.shop.domain.dto.CartDeleteDTO;
 import com.petcloud.shop.domain.dto.CartUpdateDTO;
 import com.petcloud.shop.domain.service.CartService;
-import com.petcloud.shop.domain.vo.CartVO;
+import com.petcloud.shop.domain.vo.CartPageVO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 购物车控制器
@@ -34,11 +32,11 @@ public class CartController {
      * 获取购物车列表
      */
     @GetMapping("/list")
-    public Response<List<CartVO>> getCartList(HttpServletRequest request) {
+    public Response<CartPageVO> getCartList(HttpServletRequest request) {
         Long userId = userContextHolder.getRequiredUserId(request);
         log.info("获取购物车列表，userId: {}", userId);
-        List<CartVO> cartList = cartService.getCartList(userId);
-        return Response.succeed(cartList);
+        CartPageVO cartPage = cartService.getCartList(userId);
+        return Response.succeed(cartPage);
     }
 
     /**
@@ -48,8 +46,9 @@ public class CartController {
     public Response<Long> addToCart(HttpServletRequest request,
                                       @RequestBody CartAddDTO addRequest) {
         Long userId = userContextHolder.getRequiredUserId(request);
-        log.info("添加商品到购物车，userId: {}, productId: {}, quantity: {}", userId, addRequest.getProductId(), addRequest.getQuantity());
-        Long cartId = cartService.addToCart(userId, addRequest.getProductId(), addRequest.getQuantity());
+        log.info("添加商品到购物车，userId: {}, productId: {}, quantity: {}, specLabel: {}",
+                userId, addRequest.getProductId(), addRequest.getQuantity(), addRequest.getSpecLabel());
+        Long cartId = cartService.addToCart(userId, addRequest.getProductId(), addRequest.getQuantity(), addRequest.getSpecLabel());
         return Response.succeed(cartId);
     }
 

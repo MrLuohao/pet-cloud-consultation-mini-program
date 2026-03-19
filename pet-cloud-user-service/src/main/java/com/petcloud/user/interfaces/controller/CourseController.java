@@ -60,7 +60,7 @@ public class CourseController {
                                          @PathVariable Long id,
                                          @RequestBody CourseProgressDTO dto) {
         Long userId = userContextHolderWeb.getRequiredUserId(request);
-        courseProgressService.updateProgress(userId, id, dto.getChapterId(), dto.getProgress(), dto.getWatchSeconds());
+        courseProgressService.updateProgress(userId, id, dto);
         return Response.succeed();
     }
 

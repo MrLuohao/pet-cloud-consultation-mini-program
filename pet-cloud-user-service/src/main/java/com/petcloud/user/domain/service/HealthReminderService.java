@@ -1,8 +1,8 @@
 package com.petcloud.user.domain.service;
 
+import com.petcloud.user.domain.dto.HealthReminderCreateDTO;
 import com.petcloud.user.domain.vo.HealthReminderVO;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -12,7 +12,7 @@ public interface HealthReminderService {
 
     List<HealthReminderVO> getList(Long userId);
 
-    Long create(Long userId, Long petId, String petName, String reminderType, String title, LocalDate remindDate, String note);
+    Long create(Long userId, HealthReminderCreateDTO dto);
 
     void markDone(Long reminderId, Long userId);
 

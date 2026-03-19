@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.petcloud.common.core.exception.BusinessException;
 import com.petcloud.common.core.exception.RespType;
 import com.petcloud.user.domain.entity.HealthRecord;
+import com.petcloud.user.domain.entity.UserPet;
 import com.petcloud.user.domain.service.HealthRecordService;
 import com.petcloud.user.domain.vo.HealthRecordVO;
 import com.petcloud.user.infrastructure.persistence.mapper.HealthRecordMapper;
+import com.petcloud.user.infrastructure.persistence.mapper.UserPetMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
 public class HealthRecordServiceImpl implements HealthRecordService {
 
     private final HealthRecordMapper healthRecordMapper;
-    private final com.petcloud.user.infrastructure.persistence.mapper.UserPetMapper userPetMapper;
+    private final UserPetMapper userPetMapper;
 
     @Override
     public List<HealthRecordVO> getHealthRecordList(Long userId) {
@@ -44,7 +46,7 @@ public class HealthRecordServiceImpl implements HealthRecordService {
     @Override
     public List<HealthRecordVO> getHealthRecordsByPet(Long userId, Long petId) {
         // 验证宠物所有权
-        com.petcloud.user.domain.entity.UserPet pet = userPetMapper.selectById(petId);
+        UserPet pet = userPetMapper.selectById(petId);
         if (pet == null || !pet.getUserId().equals(userId)) {
             throw new BusinessException(RespType.PET_NOT_FOUND);
         }
@@ -65,7 +67,7 @@ public class HealthRecordServiceImpl implements HealthRecordService {
                                     String content, String hospitalName, String doctorName,
                                     LocalDate recordDate, LocalDate nextDate, String images) {
         // 验证宠物所有权
-        com.petcloud.user.domain.entity.UserPet pet = userPetMapper.selectById(petId);
+        UserPet pet = userPetMapper.selectById(petId);
         if (pet == null || !pet.getUserId().equals(userId)) {
             throw new BusinessException(RespType.PET_NOT_FOUND);
         }

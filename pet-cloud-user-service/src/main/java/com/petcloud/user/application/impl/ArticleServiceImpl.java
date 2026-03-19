@@ -403,12 +403,16 @@ public class ArticleServiceImpl implements ArticleService {
             LambdaQueryWrapper<ArticleLike> likeQuery = new LambdaQueryWrapper<>();
             likeQuery.eq(ArticleLike::getArticleId, article.getId())
                     .eq(ArticleLike::getUserId, userId);
-            isLiked = articleLikeMapper.selectCount(likeQuery) > 0;
+            Long likeCount = articleLikeMapper.selectCount(likeQuery);
+            // 防止 NPE：如果 selectCount 返回 null，视为 0
+            isLiked = likeCount != null && likeCount > 0;
 
             LambdaQueryWrapper<ArticleCollect> collectQuery = new LambdaQueryWrapper<>();
             collectQuery.eq(ArticleCollect::getArticleId, article.getId())
                     .eq(ArticleCollect::getUserId, userId);
-            isCollected = articleCollectMapper.selectCount(collectQuery) > 0;
+            Long collectCount = articleCollectMapper.selectCount(collectQuery);
+            // 防止 NPE：如果 selectCount 返回 null，视为 0
+            isCollected = collectCount != null && collectCount > 0;
         }
 
         return ArticleVO.builder()

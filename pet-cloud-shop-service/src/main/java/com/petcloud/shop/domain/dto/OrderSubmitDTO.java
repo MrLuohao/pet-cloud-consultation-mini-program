@@ -13,7 +13,11 @@ import java.util.List;
 public class OrderSubmitDTO {
     private List<Long> productIds;
     private List<Integer> quantities;
+    private List<Long> cartIds;
+    private List<String> specLabels;
     private Long addressId;
     private Long couponId;
     private String remark;
+    private String paymentMethod;
+    private String verificationType;
 }

@@ -1,5 +1,7 @@
 package com.petcloud.user.domain.service;
 
+import com.petcloud.user.domain.dto.AddressCreateDTO;
+import com.petcloud.user.domain.dto.AddressUpdateDTO;
 import com.petcloud.user.domain.vo.UserAddressVO;
 
 import java.util.List;
@@ -41,9 +43,7 @@ public interface AddressService {
      * @param isDefault    是否默认
      * @return 地址ID
      */
-    Long createAddress(Long userId, String contactName, String contactPhone,
-                       String province, String city, String district,
-                       String detailAddress, Integer isDefault);
+    Long createAddress(Long userId, AddressCreateDTO request);
 
     /**
      * 更新地址
@@ -58,9 +58,7 @@ public interface AddressService {
      * @param detailAddress 详细地址
      * @param isDefault    是否默认
      */
-    void updateAddress(Long addressId, Long userId, String contactName, String contactPhone,
-                       String province, String city, String district,
-                       String detailAddress, Integer isDefault);
+    void updateAddress(Long addressId, Long userId, AddressUpdateDTO request);
 
     /**
      * 删除地址

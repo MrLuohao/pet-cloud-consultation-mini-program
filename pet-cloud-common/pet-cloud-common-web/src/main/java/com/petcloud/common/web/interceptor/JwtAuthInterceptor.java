@@ -90,7 +90,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
                 return false;
             }
         } catch (Exception e) {
-            log.warn("JWT认证失败: {}", e.getMessage());
+            log.warn("JWT认证失败", e);
             sendUnauthorizedResponse(response, "认证失败，请重新登录");
             return false;
         }

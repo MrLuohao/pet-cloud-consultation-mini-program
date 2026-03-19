@@ -3,6 +3,7 @@ package com.petcloud.user.application.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.petcloud.common.core.exception.BusinessException;
 import com.petcloud.common.core.exception.RespType;
+import com.petcloud.user.domain.dto.HealthReminderCreateDTO;
 import com.petcloud.user.domain.entity.HealthReminder;
 import com.petcloud.user.domain.service.HealthReminderService;
 import com.petcloud.user.domain.vo.HealthReminderVO;
@@ -33,15 +34,15 @@ public class HealthReminderServiceImpl implements HealthReminderService {
     }
 
     @Override
-    public Long create(Long userId, Long petId, String petName, String reminderType, String title, LocalDate remindDate, String note) {
+    public Long create(Long userId, HealthReminderCreateDTO dto) {
         HealthReminder reminder = new HealthReminder();
         reminder.setUserId(userId);
-        reminder.setPetId(petId);
-        reminder.setPetName(petName);
-        reminder.setReminderType(reminderType);
-        reminder.setTitle(title);
-        reminder.setRemindDate(remindDate);
-        reminder.setNote(note);
+        reminder.setPetId(dto.getPetId());
+        reminder.setPetName(dto.getPetName());
+        reminder.setReminderType(dto.getReminderType());
+        reminder.setTitle(dto.getTitle());
+        reminder.setRemindDate(dto.getRemindDate());
+        reminder.setNote(dto.getNote());
         reminder.setIsDone(0);
         healthReminderMapper.insert(reminder);
         return reminder.getId();
@@ -74,7 +75,7 @@ public class HealthReminderServiceImpl implements HealthReminderService {
                 .reminderType(r.getReminderType())
                 .title(r.getTitle())
                 .remindDate(r.getRemindDate())
-                .isDone(r.getIsDone() != null && r.getIsDone() == 1)
+                .isDone(Integer.valueOf(1).equals(r.getIsDone()))
                 .note(r.getNote())
                 .createTime(r.getCreateTime())
                 .build();

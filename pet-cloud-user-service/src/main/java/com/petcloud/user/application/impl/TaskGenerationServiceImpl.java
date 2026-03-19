@@ -11,14 +11,21 @@ import com.alibaba.dashscope.common.Role;
 import com.alibaba.dashscope.exception.ApiException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.exception.UploadFileException;
+import com.petcloud.common.core.exception.BusinessException;
+import com.petcloud.common.core.exception.RespType;
 import com.petcloud.user.application.config.AliYunAiConfig;
 import com.petcloud.user.domain.dto.ImageEditDTO;
 import com.petcloud.user.domain.service.TaskGenerationService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,10 +36,10 @@ import java.util.stream.Stream;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TaskGenerationServiceImpl implements TaskGenerationService {
 
-    @Autowired
-    private AliYunAiConfig aliyunAiConfig;
+    private final AliYunAiConfig aliyunAiConfig;
 
     @Override
     public String textToImage(String userMessage) {
@@ -60,7 +67,7 @@ public class TaskGenerationServiceImpl implements TaskGenerationService {
             return conv.call(param).getOutput().getChoices().get(0).getMessage().getContent().get(0).get("image").toString();
         } catch (Exception e) {
             log.error("文生图失败", e);
-            throw new RuntimeException("文生图失败: " + e.getMessage(), e);
+            throw new BusinessException(RespType.ALI_AI_TEXT_TO_IMAGE_ERROR, e.getMessage());
         }
     }
 
@@ -86,7 +93,7 @@ public class TaskGenerationServiceImpl implements TaskGenerationService {
             parameters.put("n", dto.getPutSize());
             parameters.put("prompt_extend", true);
 
-            if (dto.getPutSize() == 1 && dto.getSize() != null) {
+            if (Integer.valueOf(1).equals(dto.getPutSize()) && dto.getSize() != null) {
                 parameters.put("size", dto.getSize());
             }
 
@@ -109,7 +116,7 @@ public class TaskGenerationServiceImpl implements TaskGenerationService {
             return images;
         } catch (Exception e) {
             log.error("图片编辑失败", e);
-            throw new RuntimeException("图片编辑失败: " + e.getMessage(), e);
+            throw new BusinessException(RespType.ALI_AI_IMAGE_EDIT_ERROR, e.getMessage());
         }
     }
 
@@ -135,7 +142,7 @@ public class TaskGenerationServiceImpl implements TaskGenerationService {
             return imageSynthesis.call(param);
         } catch (ApiException | NoApiKeyException e) {
             log.error("文生图V2失败", e);
-            throw new RuntimeException("文生图V2失败: " + e.getMessage(), e);
+            throw new BusinessException(RespType.ALI_AI_TEXT_TO_IMAGE_V2_ERROR, e.getMessage());
         }
     }
 }

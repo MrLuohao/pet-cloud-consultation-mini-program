@@ -21,6 +21,11 @@
             <artifactId>pet-cloud-common-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
         <!-- 阿里云百炼SDK (AI功能) -->
         <dependency>
             <groupId>com.alibaba</groupId>

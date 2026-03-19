@@ -11,12 +11,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * 聊天控制器
@@ -27,12 +29,13 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor
-@CrossOrigin
 public class ChatController {
 
     private final ChatService chatService;
     private final ConversationService conversationService;
     private final UserContextHolderWeb userContextHolderWeb;
+    @Qualifier("chatSseExecutor")
+    private final Executor chatSseExecutor;
 
     /**
      * 聊天 qwen3Max
@@ -43,7 +46,7 @@ public class ChatController {
             return chatService.callWithMessageQwenMax3(userMessage);
         } catch (Exception e) {
             log.error("QwenMax3聊天失败", e);
-            return "聊天接口异常：" + e.getMessage();
+            return "聊天接口异常，请稍后重试";
         }
     }
 
@@ -56,7 +59,7 @@ public class ChatController {
             return chatService.callWithMessageDeepSeekV3(userMessage);
         } catch (Exception e) {
             log.error("DeepSeekV3聊天失败", e);
-            return "聊天接口异常：" + e.getMessage();
+            return "聊天接口异常，请稍后重试";
         }
     }
 
@@ -85,7 +88,7 @@ public class ChatController {
                 log.error("流式处理异常", e);
                 try {
                     emitter.send(SseEmitter.event()
-                            .data("【系统错误】: " + e.getMessage())
+                            .data("【系统错误】: 服务暂时不可用，请稍后重试")
                             .name("error")
                             .id("error"));
                     emitter.completeWithError(e);
@@ -93,7 +96,7 @@ public class ChatController {
                     log.error("发送错误信息失败", ex);
                 }
             }
-        });
+        }, chatSseExecutor);
 
         // 设置完成和超时回调
         emitter.onCompletion(() -> log.info("SSE连接完成"));
@@ -115,7 +118,7 @@ public class ChatController {
             return chatService.agentApplication(param);
         } catch (Exception e) {
             log.error("Agent应用调用失败", e);
-            return "访问agent应用失败：" + e.getMessage();
+            return "访问agent应用失败，请稍后重试";
         }
     }
 

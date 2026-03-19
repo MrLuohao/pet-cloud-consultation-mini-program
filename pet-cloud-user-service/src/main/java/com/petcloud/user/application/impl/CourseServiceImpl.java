@@ -71,7 +71,7 @@ public class CourseServiceImpl implements CourseService {
                         .chapterId(cp.getChapterId())
                         .progress(cp.getProgress())
                         .watchSeconds(cp.getWatchSeconds())
-                        .isCompleted(cp.getIsCompleted() != null && cp.getIsCompleted() == 1)
+                        .isCompleted(Integer.valueOf(1).equals(cp.getIsCompleted()))
                         .build();
             }
         }

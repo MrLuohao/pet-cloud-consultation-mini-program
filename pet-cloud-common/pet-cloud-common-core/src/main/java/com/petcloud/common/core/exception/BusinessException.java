@@ -25,8 +25,8 @@ public class BusinessException extends RuntimeException {
     private FormattingTuple formattingTuple;
 
     public BusinessException(IRespType respType) {
-        super(respType.getMessage());
-        this.respType = respType;
+        super(resolveRespTypeOrDefault(respType).getMessage());
+        this.respType = resolveRespTypeOrDefault(respType);
     }
 
     public BusinessException(Throwable throwable) {
@@ -48,7 +48,11 @@ public class BusinessException extends RuntimeException {
     }
 
     private IRespType resolveRespType(IRespType respType) {
-        return respType;
+        return resolveRespTypeOrDefault(respType);
+    }
+
+    private static IRespType resolveRespTypeOrDefault(IRespType respType) {
+        return respType == null ? RespType.BUSINESS_ERROR : respType;
     }
 
     private FormattingTuple createFormattingTuple(IRespType respType, Object... args) {

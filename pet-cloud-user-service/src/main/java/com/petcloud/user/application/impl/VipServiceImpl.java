@@ -4,6 +4,8 @@ import cn.hutool.core.util.IdUtil;
 import com.petcloud.common.core.exception.BusinessException;
 import com.petcloud.common.core.exception.RespType;
 import com.petcloud.user.domain.dto.VipSubscribeDTO;
+import com.petcloud.user.domain.enums.UserRespType;
+import com.petcloud.user.domain.enums.VipPlanType;
 import com.petcloud.user.domain.entity.VipOrder;
 import com.petcloud.user.domain.entity.WxUser;
 import com.petcloud.user.domain.service.VipService;
@@ -19,7 +21,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * 会员服务实现
@@ -35,12 +36,12 @@ public class VipServiceImpl implements VipService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public UserInfoVO subscribe(Long userId, VipSubscribeDTO dto) {
-        VipPlan plan = VipPlan.fromId(dto.getPlanId());
+        VipPlanType plan = VipPlanType.fromCode(dto.getPlanId());
         if (plan == null) {
             throw new BusinessException(RespType.PARAMETER_ERROR);
         }
         if (!Boolean.TRUE.equals(dto.getPayConfirmed())) {
-            throw new BusinessException(RespType.PARAMETER_ERROR, "请先完成支付");
+            throw new BusinessException(UserRespType.VIP_PAYMENT_NOT_CONFIRMED);
         }
 
         WxUser wxUser = wxUserMapper.selectById(userId);
@@ -50,7 +51,7 @@ public class VipServiceImpl implements VipService {
 
         Date now = new Date();
         Date baseTime = getBaseExpireTime(wxUser, now);
-        Date expireTime = addDays(baseTime, plan.durationDays);
+        Date expireTime = addDays(baseTime, plan.getDurationDays());
 
         if (wxUser.getVipStartTime() == null || baseTime.equals(now)) {
             wxUser.setVipStartTime(now);
@@ -68,10 +69,10 @@ public class VipServiceImpl implements VipService {
         VipOrder order = new VipOrder();
         order.setOrderNo(generateOrderNo());
         order.setUserId(userId);
-        order.setPlanId(plan.planId);
-        order.setPlanName(plan.planName);
-        order.setAmount(plan.price);
-        order.setDurationDays(plan.durationDays);
+        order.setPlanId(plan.getCode());
+        order.setPlanName(plan.getDisplayName());
+        order.setAmount(plan.getPrice());
+        order.setDurationDays(plan.getDurationDays());
         order.setStatus(1);
         order.setPayTime(now);
         order.setExpireTime(expireTime);
@@ -115,37 +116,5 @@ public class VipServiceImpl implements VipService {
             return "0.00";
         }
         return amount.setScale(2, RoundingMode.HALF_UP).toPlainString();
-    }
-
-    private enum VipPlan {
-        MONTHLY("monthly", "月卡", new BigDecimal("19.9"), new BigDecimal("29.9"), 30),
-        QUARTERLY("quarterly", "季卡", new BigDecimal("49.9"), new BigDecimal("89.7"), 90),
-        YEARLY("yearly", "年卡", new BigDecimal("149.9"), new BigDecimal("358.8"), 365);
-
-        private final String planId;
-        private final String planName;
-        private final BigDecimal price;
-        private final BigDecimal originalPrice;
-        private final int durationDays;
-
-        VipPlan(String planId, String planName, BigDecimal price, BigDecimal originalPrice, int durationDays) {
-            this.planId = planId;
-            this.planName = planName;
-            this.price = price;
-            this.originalPrice = originalPrice;
-            this.durationDays = durationDays;
-        }
-
-        public static VipPlan fromId(String planId) {
-            if (planId == null) {
-                return null;
-            }
-            for (VipPlan plan : VipPlan.values()) {
-                if (Objects.equals(plan.planId, planId)) {
-                    return plan;
-                }
-            }
-            return null;
-        }
     }
 }
