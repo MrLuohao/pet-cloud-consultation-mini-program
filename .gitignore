@@ -1,27 +1,10 @@
-# macOS
-.DS_Store
+/apps/frontend/miniprogram/project.config.json
 
-# IDE
+# IDE files
 .idea/
-.vscode/
-*.iml
-*.ipr
-*.iws
 
-# Node
-node_modules/
+# OS metadata
+docs/.DS_Store
 
-# Java / Maven
-**/target/
-
-# Runtime artifacts
-uploads/
-*.log
-
-# Local config
-project.private.config.json
-application-local.properties
-
-# AI / workflow helper dirs
-.claude/
-_bmad/
+# Maven build outputs
+apps/backend/pet-cloud-consultation/**/target/
