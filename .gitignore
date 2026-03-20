@@ -1,5 +1,7 @@
 /apps/frontend/miniprogram/project.config.json
 
+node_modules/
+
 # IDE files
 .idea/
 
