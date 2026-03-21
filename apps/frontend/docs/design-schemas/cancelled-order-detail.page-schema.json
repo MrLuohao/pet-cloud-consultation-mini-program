@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "pageKey": "cancelled-order-detail",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "yxr2Z",
+    "frameName": "订单详情页 Cancelled Order Detail"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "surface": "#FFFEFB",
+      "surfaceWarm": "#FBF7F0",
+      "surfaceTint": "#FFF7EE",
+      "textPrimary": "#20252C",
+      "textSecondary": "#6E7681",
+      "textMuted": "#8E8880",
+      "borderSoft": "#EDE6DC",
+      "borderTint": "#F0E1D3",
+      "actionPrimary": "#3A3D45",
+      "actionSecondary": "#F6F2EC"
+    },
+    "radius": {
+      "card": 22,
+      "statusCard": 26,
+      "pill": 14,
+      "button": 10
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+      "amount": { "fontFamily": "Inter", "fontSize": 18, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "bJjqh", "copy": ["9:41", "5G   100%"] },
+    { "key": "toast", "type": "order_cancelled_toast", "sourceNodeId": "HeT1e", "copy": ["订单已取消"] },
+    { "key": "status_card", "type": "cancelled_order_status_card", "sourceNodeId": "jH9Lt", "copy": ["已取消", "订单已取消，当前不再保留支付资格。", "已取消", "如仍有需要，可通过再次购买重新下单。"] },
+    { "key": "address_card", "type": "order_address_card", "sourceNodeId": "Zh02f", "copy": ["收货信息"] },
+    { "key": "product_card", "type": "order_product_card", "sourceNodeId": "zb8CK", "copy": ["商品信息"] },
+    { "key": "amount_card", "type": "cancelled_order_amount_card", "sourceNodeId": "7um7p", "copy": ["金额明细", "商品金额", "运费", "优惠", "待支付金额"] },
+    { "key": "info_card", "type": "cancelled_order_info_card", "sourceNodeId": "SgSkR", "copy": ["订单信息", "订单编号", "创建时间", "取消时间", "取消原因"] },
+    { "key": "bottom_action", "type": "cancelled_order_actions", "sourceNodeId": "03UK4", "copy": ["联系客服", "再次购买"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "toast",
+      "api": "GET /api/order/{id}",
+      "fields": ["status", "statusDesc"]
+    },
+    {
+      "sectionKey": "status_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["status", "statusDesc", "cancelledHint", "cancelledAt"]
+    },
+    {
+      "sectionKey": "address_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["receiverName", "receiverPhone", "receiverAddress"]
+    },
+    {
+      "sectionKey": "product_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["items[].productName", "items[].specLabel", "items[].coverUrl", "items[].price", "items[].quantity"]
+    },
+    {
+      "sectionKey": "amount_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["totalAmount", "freight", "couponDiscount", "payAmount"]
+    },
+    {
+      "sectionKey": "info_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["orderNo", "createTime", "cancelTime", "cancelReason"]
+    }
+  ],
+  "actions": [
+    { "name": "contactCustomerService", "target": "customer-service-entry", "sectionKey": "bottom_action" },
+    { "name": "buyAgain", "target": "POST /api/order/rebuy", "sectionKey": "bottom_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "yxr2Z",
+    "criticalCheckpoints": [
+      "a light cancellation toast appears above the main status card instead of a full success page",
+      "status card keeps warm neutral transaction styling and the progress bar becomes fully muted",
+      "bottom actions switch to light customer-service plus dark buy-again rather than cancel plus pay"
+    ]
+  }
+}

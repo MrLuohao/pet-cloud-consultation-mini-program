@@ -47,10 +47,14 @@ For every page:
 - `login.page-schema.json`: login reference implementation
 - `order-detail.page-schema.json`: pending order detail reference implementation
 - `completed-order-detail.page-schema.json`: completed order detail reference implementation
+- `cancelled-order-detail.page-schema.json`: cancelled order detail reference implementation
 - `cancel-order-modal.page-schema.json`: cancel order modal reference implementation
+- `diagnosis-detail.page-schema.json`: complete AI diagnosis report reference implementation
 - `order-review.page-schema.json`: order review reference implementation
 - `pet-list.page-schema.json`: pet gallery list reference implementation
 - `pet-profile.page-schema.json`: pet health profile reference implementation
+- `pet-edit.page-schema.json`: pet edit reference implementation
+- `pet-timeline.page-schema.json`: pet growth archive reference implementation
 
 ## Required implementation rules
 
@@ -81,14 +85,15 @@ Implementation discipline:
 - if the code needs a visual block not present in `sections`, add it to schema first
 - if a schema contains `status_bar`, treat it as OS chrome reference by default; page code should usually start from the first business section
 
-## Next rollout pages
+## Current sync notes
 
-- diagnosis
-- news/message center
-- shop
-- user
-- community
-- pet-profile
+- when a `.pen` frame changes, update its corresponding schema in the same round before any frontend code work
+- use `batch_get` as the primary schema source and `get_screenshot` only as final verification
+- `yxr2Z / 订单详情页 Cancelled Order Detail` now has a matching `cancelled-order-detail.page-schema.json`
+- `cKCx8 / 我的宠物列表 My Pets` now exposes dual `健康档案 / 成长档案` entries and its schema must track that split
+- `cAZG0 / 宠物成长档案页 Pet Growth Timeline` now has a matching `pet-timeline.page-schema.json`
+- `K1C5b / 完整诊断报告页 AI Diagnosis Report` now has a matching `diagnosis-detail.page-schema.json`
+- `pet-edit.page-schema.json` now covers both `FLS1j / 宠物编辑页 Pet Edit` and `CiXLc / 新增宠物页 Pet Add`; the create state adds a light breed image gallery while edit mode stays form-first
 
 ## Review checklist
 

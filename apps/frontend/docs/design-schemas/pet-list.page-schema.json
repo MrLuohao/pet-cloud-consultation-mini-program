@@ -2,14 +2,14 @@
   "meta": {
     "pageKey": "pet-list",
     "platform": "wechat-miniprogram",
-    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "penFile": "/Users/luohao/Desktop/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
     "frameId": "cKCx8",
     "frameName": "我的宠物列表 My Pets"
   },
   "layout": {
     "background": "#F8F8F8",
     "contentPadding": [8, 16, 24, 16],
-    "sectionGap": 12,
+    "sectionGap": 14,
     "safeAreaTop": true
   },
   "tokens": {
@@ -17,13 +17,13 @@
       "pageBackground": "#F8F8F8",
       "surface": "#FFFFFF",
       "surfaceSoft": "#FBF8FF",
-      "surfaceSecondary": "#F6F8FF",
+      "surfaceSecondary": "#F4EEFF",
       "textPrimary": "#1F2937",
       "textSecondary": "#8B879A",
       "accentPrimary": "#6D32FF",
-      "accentSecondary": "#5F74DA",
+      "accentSecondary": "#7C6DB0",
       "borderSoft": "#EEE6FB",
-      "ctaDark": "#30343C"
+      "chipText": "#A094BA"
     },
     "radius": {
       "card": 30,
@@ -32,35 +32,65 @@
       "pill": 999
     },
     "typography": {
-      "title": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "700" },
-      "cardTitle": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "700" },
+      "title": { "fontFamily": "Inter", "fontSize": 24, "fontWeight": "700" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
       "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "600" },
       "button": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" }
     }
   },
   "sections": [
     { "key": "status_bar", "type": "status_bar", "sourceNodeId": "Cgtlw", "copy": ["9:41", "5G   100%"] },
-    { "key": "pet_gallery_stage", "type": "pet_gallery_stage", "sourceNodeId": "BBTly", "copy": ["宠物档案", "查看档案", "新增宠物"] },
-    { "key": "empty_state", "type": "pet_gallery_empty_state", "copy": ["还没有宠物档案", "开始记录成长与健康信息"] },
-    { "key": "bottom_action", "type": "pet_add_action", "sourceNodeId": "syMJB", "copy": ["新增宠物"] }
+    {
+      "key": "page_header",
+      "type": "pet_browser_header",
+      "sourceNodeId": "1K05J",
+      "copy": ["我的宠物", "左右滑动切换宠物，进入各自独立的成长与健康档案。", "新增"]
+    },
+    {
+      "key": "pet_hero_card",
+      "type": "pet_browser_hero_card",
+      "sourceNodeId": "kgRDC",
+      "copy": ["照片 1/3", "团子", "女孩", "英短蓝猫 · 2岁3个月", "今日稳定"]
+    },
+    {
+      "key": "archive_actions",
+      "type": "pet_archive_entry_actions",
+      "sourceNodeId": "3SdCX",
+      "copy": ["健康档案", "AI诊断 · 用药记录", "成长档案", "照片回忆 · 成长节点"]
+    },
+    {
+      "key": "pet_navigation",
+      "type": "pet_browser_navigation",
+      "sourceNodeId": "YJCLF",
+      "copy": ["宠物 01 / 03", "可乐", "米粒"]
+    }
   ],
   "dataBindings": [
     {
-      "sectionKey": "pet_gallery_stage",
+      "sectionKey": "pet_hero_card",
       "api": "GET /api/pets",
-      "fields": ["[].id", "[].name", "[].avatarUrl", "[].gender", "[].genderDesc", "[].type", "[].typeDesc", "[].breed", "[].age", "[].birthday", "[].healthStatus"]
+      "fields": ["[].id", "[].name", "[].avatarUrl", "[].photoUrls", "[].gender", "[].genderDesc", "[].breed", "[].ageText", "[].healthStatus"]
+    },
+    {
+      "sectionKey": "pet_navigation",
+      "api": "GET /api/pets",
+      "fields": ["[].id", "[].name", "[].avatarUrl"]
     }
   ],
   "actions": [
-    { "name": "openArchive", "target": "/pages/pet/edit", "sectionKey": "pet_gallery_stage" },
-    { "name": "addPet", "target": "/pages/pet/edit", "sectionKey": "bottom_action" }
+    { "name": "switchPetPhoto", "target": "current-pet-photo-carousel", "sectionKey": "pet_hero_card" },
+    { "name": "switchCurrentPet", "target": "current-pet-carousel", "sectionKey": "pet_navigation" },
+    { "name": "openHealthArchive", "target": "/pages/pet/profile/index", "sectionKey": "archive_actions" },
+    { "name": "openGrowthArchive", "target": "/pages/pet/timeline/index", "sectionKey": "archive_actions" },
+    { "name": "addPet", "target": "/pages/pet/edit", "sectionKey": "page_header" }
   ],
   "verification": {
     "sourceScreenshotNodeId": "cKCx8",
     "criticalCheckpoints": [
-      "page uses a single large gallery card as the main focus instead of a stacked list",
-      "next pet preview only peeks from the bottom and never fully overtakes the main card",
-      "bottom action remains a single dark add button fixed near the safe area"
+      "page uses one single hero card instead of stacked or half-revealed large cards",
+      "hero card exposes two equal archive entries for health archive and growth archive",
+      "photo pagination stays inside the media area while pet pagination stays below the main card",
+      "add pet entry is a light top-right chip and the bottom area only keeps lightweight pet switching navigation"
     ]
   }
 }

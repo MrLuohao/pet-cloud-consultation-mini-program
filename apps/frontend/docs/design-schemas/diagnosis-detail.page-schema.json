@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "pageKey": "diagnosis-detail",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Users/luohao/Desktop/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "K1C5b",
+    "frameName": "完整诊断报告页 AI Diagnosis Report"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFFEFC",
+      "surfaceCompare": "#FFFEFD",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#746C86",
+      "textMuted": "#8A81A0",
+      "accentPrimary": "#5C35D6",
+      "accentDanger": "#C0614B",
+      "accentWarm": "#B77434",
+      "borderSoft": "#F3EEF9",
+      "borderWarm": "#F3E8DE"
+    },
+    "radius": {
+      "summaryCard": 24,
+      "card": 18,
+      "button": 20,
+      "pill": 999
+    },
+    "typography": {
+      "pageTitle": { "fontFamily": "Inter", "fontSize": 24, "fontWeight": "700" },
+      "sectionTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "summaryTitle": { "fontFamily": "Inter", "fontSize": 22, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+      "bodyStrong": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "600" },
+      "button": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "nLWAA", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_title", "type": "page_title", "sourceNodeId": "MsRoL", "copy": ["AI 诊断报告"] },
+    {
+      "key": "report_meta_card",
+      "type": "diagnosis_report_meta_card",
+      "sourceNodeId": "HLHEJ",
+      "copy": ["诊断时间 · 2026.03.21 09:20", "记录 #DX-0321-01", "团子 · 英短蓝猫 · 2岁3个月", "本报告基于本次 AI 初筛生成，可在后续补充线下诊疗资料，不替代专业兽医诊疗。"]
+    },
+    {
+      "key": "summary_card",
+      "type": "diagnosis_report_summary_card",
+      "sourceNodeId": "sDTxG",
+      "copy": ["中高风险", "疑似皮肤敏感或寄生虫刺激", "建议 24 小时内线下复诊，并继续记录抓挠频率、局部泛红范围与精神状态变化。", "是否建议线下", "建议尽快就医", "重点关注", "抓挠 / 泛红 / 食欲", "AI 原始结论已存档，后续线下资料将追加展示。", "补充线下记录"]
+    },
+    {
+      "key": "evidence_card",
+      "type": "diagnosis_report_evidence_card",
+      "sourceNodeId": "avynU",
+      "copy": ["本次诊断依据", "症状描述", "持续 3 天", "耳后反复抓挠，局部泛红，最近两天抓挠频率明显升高，精神状态轻微下降，但仍有正常进食。", "上传照片 3 张", "近期洗护 1 次", "无呕吐腹泻"]
+    },
+    {
+      "key": "analysis_card",
+      "type": "diagnosis_report_analysis_card",
+      "sourceNodeId": "ilGOk",
+      "copy": ["AI 详细判断", "疑似问题方向", "重点关注项", "建议动作"]
+    },
+    {
+      "key": "offline_supplement_card",
+      "type": "offline_supplement_card",
+      "sourceNodeId": "dr8yy",
+      "copy": ["线下诊疗补充", "已补充 1 次", "就诊机构", "友宠动物医院 · 2026.03.21 18:40", "线下结论", "疑似真菌感染，建议药浴与外用喷剂联合观察。", "检查：伍德灯", "处置：药浴 + 喷剂", "报告图 1", "报告图 2"]
+    },
+    {
+      "key": "comparison_card",
+      "type": "diagnosis_comparison_card",
+      "sourceNodeId": "qT4gB",
+      "copy": ["结果对照", "AI 初筛方向", "皮肤敏感 / 寄生虫刺激", "线下确认结果", "疑似真菌感染"]
+    },
+    {
+      "key": "bottom_action",
+      "type": "diagnosis_report_bottom_action",
+      "sourceNodeId": "goN6S",
+      "copy": ["补充线下记录", "再次发起诊断", "查看诊断历史"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "report_meta_card",
+      "api": "GET /api/diagnosis/records/{recordId}",
+      "fields": ["recordId", "diagnosisTime", "pet.name", "pet.breed", "pet.ageText", "reportDisclaimer"]
+    },
+    {
+      "sectionKey": "summary_card",
+      "api": "GET /api/diagnosis/records/{recordId}",
+      "fields": ["riskLevel", "summaryTitle", "summaryText", "needOfflineVisit", "focusSummary", "reportStatusText"]
+    },
+    {
+      "sectionKey": "evidence_card",
+      "api": "GET /api/diagnosis/records/{recordId}",
+      "fields": ["symptomDescription", "durationText", "photoCount", "triggerFactors[]", "negativeSymptoms[]"]
+    },
+    {
+      "sectionKey": "analysis_card",
+      "api": "GET /api/diagnosis/records/{recordId}",
+      "fields": ["suspectedIssues[]", "focusItems[]", "recommendations[]"]
+    },
+    {
+      "sectionKey": "offline_supplement_card",
+      "api": "GET /api/health/offline-records?diagnosisRecordId={recordId}",
+      "fields": ["records[].visitTime", "records[].clinicName", "records[].diagnosisSummary", "records[].checkItems[]", "records[].treatments[]", "records[].attachments[]"]
+    },
+    {
+      "sectionKey": "comparison_card",
+      "api": "GET /api/diagnosis/records/{recordId}/comparison",
+      "fields": ["aiSummary", "offlineSummary", "comparisonNote"]
+    }
+  ],
+  "actions": [
+    { "name": "addOfflineRecord", "target": "/pages/health/edit", "sectionKey": "summary_card" },
+    { "name": "addOfflineRecordPrimary", "target": "/pages/health/edit", "sectionKey": "bottom_action" },
+    { "name": "restartDiagnosis", "target": "/pages/diagnosis/diagnosis", "sectionKey": "bottom_action" },
+    { "name": "openDiagnosisHistoryList", "target": "diagnosis-history-list-flow", "sectionKey": "bottom_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "K1C5b",
+    "criticalCheckpoints": [
+      "page reads as a complete AI diagnosis report rather than a generic health card list",
+      "AI original report content and offline supplement content remain clearly separated by source",
+      "comparison card appears only as a structured summary and does not overpower the primary diagnosis summary",
+      "bottom actions keep offline supplement as the strongest next step"
+    ]
+  }
+}
