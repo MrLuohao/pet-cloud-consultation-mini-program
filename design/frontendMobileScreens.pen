@@ -33997,6 +33997,1072 @@
           "fontWeight": "600"
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "Mpxrb",
+      "x": 0,
+      "y": 13466,
+      "name": "护理首页 Beauty Care Home",
+      "clip": true,
+      "width": 390,
+      "height": 930,
+      "fill": "#F8F8F8",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "EVI3D",
+          "name": "status",
+          "width": "fill_container",
+          "height": 62,
+          "fill": "#F8F8F8",
+          "padding": [
+            18,
+            20,
+            12,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "vAGPa",
+              "name": "timeC",
+              "fill": "#111111",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "0EDIT",
+              "name": "iconsC",
+              "fill": "#111111",
+              "content": "5G   100%",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Whknv",
+          "name": "navTopic",
+          "width": "fill_container",
+          "height": 32,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon_font",
+              "id": "CbgGp",
+              "name": "back",
+              "width": 20,
+              "height": 20,
+              "iconFontName": "chevron-left",
+              "iconFontFamily": "lucide",
+              "fill": "#20252C"
+            },
+            {
+              "type": "text",
+              "id": "zF84G",
+              "name": "navTitle",
+              "fill": "#20252C",
+              "content": "皮毛护理",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "7PP66",
+              "name": "navGhost",
+              "width": 24,
+              "height": 24,
+              "fill": "#F8F7F4"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Cqaj9",
+          "name": "homeContent",
+          "width": 390,
+          "height": 836,
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            10,
+            16,
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "btfMN",
+              "width": "fill_container",
+              "fill": "#FFF7F1",
+              "cornerRadius": 24,
+              "layout": "vertical",
+              "gap": 12,
+              "padding": 18,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "bGLP5",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "aKBGW",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 999,
+                      "padding": [
+                        6,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "77YVy",
+                          "fill": "#B4701F",
+                          "content": "皮肤毛发护理",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "vYreg",
+                      "fill": "#F7E6D7",
+                      "cornerRadius": 999,
+                      "padding": [
+                        6,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Gj3mA",
+                          "fill": "#D88428",
+                          "content": "后台可配",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "uGjEU",
+                  "fill": "#2F2347",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "把护理知识做成每天都能看懂的轻内容",
+                  "lineHeight": 1.25,
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "o1G2q",
+                  "fill": "#7E7395",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "首页只保留高频、可读、可配置的护理热点内容。用户先理解护理判断，再决定是否去附近找机构。",
+                  "lineHeight": 1.6,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "h2m9J",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "T2EU3",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 999,
+                      "padding": [
+                        7,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "8JKEE",
+                          "fill": "#5D2FE5",
+                          "content": "掉毛异常",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TTCw5",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 999,
+                      "padding": [
+                        7,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ngvUS",
+                          "fill": "#D88428",
+                          "content": "耳后发红",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "JjY4J",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 999,
+                      "padding": [
+                        7,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "5i7Oy",
+                          "fill": "#7E7395",
+                          "content": "频繁抓挠",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "GSLfS",
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 12,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "OBbvG",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "CV95D",
+                      "fill": "#2F2347",
+                      "content": "护理热点",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "0LBZo",
+                      "fill": "#8B839F",
+                      "content": "按后台配置更新",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "0LyKd",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FIM2u",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "xv3yL",
+                          "fill": "#2F2347",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "换季掉毛明显增多，先别急着频繁洗护",
+                          "lineHeight": 1.35,
+                          "fontFamily": "Inter",
+                          "fontSize": 17,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "RPtd9",
+                          "fill": "#7E7395",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "先停最近新增的洗护产品，连续两天记录掉毛量和抓挠频率，再看是否持续异常。",
+                          "lineHeight": 1.55,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "kjHyR",
+                          "fill": "#5D2FE5",
+                          "content": "护理判断",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "nCj6h",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "#F1ECF7"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "y32v8",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "OTCdO",
+                          "fill": "#2F2347",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "耳后轻度发红，48 小时内重点看什么",
+                          "lineHeight": 1.35,
+                          "fontFamily": "Inter",
+                          "fontSize": 17,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "KhVGj",
+                          "fill": "#7E7395",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "如果只是轻度泛红，先减少刺激、补自然光近照；只有持续扩大或伴随异味时才需要更快线下确认。",
+                          "lineHeight": 1.55,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "DKXtq",
+                          "fill": "#D88428",
+                          "content": "观察建议",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "S0COz",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "#F1ECF7"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Dk7AJ",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "qS7JU",
+                          "fill": "#2F2347",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "频繁抓挠时，去机构前建议先准备哪些信息",
+                          "lineHeight": 1.35,
+                          "fontFamily": "Inter",
+                          "fontSize": 17,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "FkjaS",
+                          "fill": "#7E7395",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "把近 3 天的照片、抓挠时间段、近期洗护与饮食变化记下来，到店沟通会更高效。",
+                          "lineHeight": 1.55,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "aiHF4",
+                          "fill": "#8B839F",
+                          "content": "到店准备",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "HS7lK",
+              "width": "fill_container",
+              "fill": "#FCFBFF",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 12,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "w4moq",
+                  "fill": "#2F2347",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "需要线下确认时，再去附近找机构",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "b6Ixa",
+                  "fill": "#7E7395",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "只保留一个搜索入口，避免多层跳转。后续页面直接按地图搜索结果样式展示机构与地址。",
+                  "lineHeight": 1.55,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "s44Bl",
+                  "width": "fill_container",
+                  "height": 54,
+                  "fill": "#5D2FE5",
+                  "cornerRadius": 16,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "9Lo7y",
+                      "fill": "#FFFFFF",
+                      "content": "附近找机构",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ex1sD",
+      "x": 489,
+      "y": 13466,
+      "name": "附近机构搜索页 Beauty Nearby Search",
+      "clip": true,
+      "width": 390,
+      "height": 930,
+      "fill": "#F8F8F8",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "jV05M",
+          "name": "status",
+          "width": "fill_container",
+          "height": 62,
+          "fill": "#F8F8F8",
+          "padding": [
+            18,
+            20,
+            12,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "lrbxc",
+              "name": "statusTime",
+              "fill": "#111111",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "rXEAm",
+              "name": "statusIcons",
+              "fill": "#111111",
+              "content": "5G   100%",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "N6cls",
+          "name": "navSearch",
+          "width": "fill_container",
+          "height": 32,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon_font",
+              "id": "ePK1Y",
+              "name": "back",
+              "width": 20,
+              "height": 20,
+              "iconFontName": "chevron-left",
+              "iconFontFamily": "lucide",
+              "fill": "#20252C"
+            },
+            {
+              "type": "text",
+              "id": "3iF4V",
+              "name": "navTitle",
+              "fill": "#20252C",
+              "content": "附近找机构",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "BzkvB",
+              "name": "navGhost",
+              "width": 24,
+              "height": 24,
+              "fill": "#F8F7F4"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "78R4g",
+          "name": "searchContent",
+          "width": 390,
+          "height": 836,
+          "layout": "vertical",
+          "gap": 12,
+          "padding": [
+            8,
+            16,
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "A8Aya",
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fY8i3",
+                  "width": "fill_container",
+                  "height": 46,
+                  "fill": "#F8F6FC",
+                  "cornerRadius": 16,
+                  "padding": [
+                    0,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "vGJBA",
+                      "fill": "#B1A9C2",
+                      "content": "搜索机构名、商圈或小区",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "5a08j",
+                  "fill": "#8B839F",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "支持直接输入机构名，也可以按附近商圈搜索。",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "BRK0y",
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 18,
+              "padding": [
+                12,
+                14
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "t1cjr",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "X7clK",
+                      "fill": "#8B839F",
+                      "content": "当前位置",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "0Kdbd",
+                      "fill": "#2F2347",
+                      "content": "上海市浦东新区 · 附近 3 公里",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "UUwqW",
+                  "fill": "#F4EEFF",
+                  "cornerRadius": 999,
+                  "padding": [
+                    6,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Dw41q",
+                      "fill": "#6D4BEF",
+                      "content": "可切换",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "kEk69",
+              "width": "fill_container",
+              "fill": "#FFF8EE",
+              "cornerRadius": 16,
+              "padding": [
+                10,
+                14
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "f02Bt",
+                  "fill": "#8A775A",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "建议先电话确认是否接诊皮肤毛发问题，再决定是否前往。",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "eNl2r",
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "5de6U",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "2Zr6o",
+                      "fill": "#2F2347",
+                      "content": "附近结果",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "N3PSo",
+                      "fill": "#8B839F",
+                      "content": "像地图搜索一样直接看地址",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xrzoh",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "QPH0p",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "padding": [
+                        12,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "yR5ei",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "JtqZa",
+                              "fill": "#2F2347",
+                              "content": "浦东康牧宠物医院 · 张江店",
+                              "fontFamily": "Inter",
+                              "fontSize": 15,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "TuRgP",
+                              "fill": "#D88428",
+                              "content": "680m",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "RxHpu",
+                          "fill": "#7E7395",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "上海市浦东新区碧波路 118 号 1 层",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Z72qz",
+                          "fill": "#8B839F",
+                          "content": "宠物医院 · 021-5080 2219",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Nb1Cn",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "#F1ECF7"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "2HTho",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "padding": [
+                        12,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "p8c1m",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "pgvMn",
+                              "fill": "#2F2347",
+                              "content": "毛球生活馆 · 花木店",
+                              "fontFamily": "Inter",
+                              "fontSize": 15,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "uTMvn",
+                              "fill": "#6D4BEF",
+                              "content": "1.2km",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "nfuEr",
+                          "fill": "#7E7395",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "上海市浦东新区梅花路 216 号临街",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "b6OyD",
+                          "fill": "#8B839F",
+                          "content": "洗护护理 · 021-6876 9011",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "x3Bgp",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "#F1ECF7"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "uFlLn",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "padding": [
+                        12,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "BdzWK",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "nsLfy",
+                              "fill": "#2F2347",
+                              "content": "安宠综合门诊部 · 联洋店",
+                              "fontFamily": "Inter",
+                              "fontSize": 15,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "gkQX8",
+                              "fill": "#D88428",
+                              "content": "2.4km",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "voduG",
+                          "fill": "#7E7395",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "上海市浦东新区丁香路 889 号社区底商",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "HZipN",
+                          "fill": "#8B839F",
+                          "content": "综合门诊 · 021-5098 7716",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "iSStj",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "#F1ECF7"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "XATXi",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "padding": [
+                        12,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "k7FBa",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "w2Tz2",
+                              "fill": "#2F2347",
+                              "content": "仁宠门诊 · 金桥店",
+                              "fontFamily": "Inter",
+                              "fontSize": 15,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "bWGD7",
+                              "fill": "#8B839F",
+                              "content": "3.0km",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "W6mz4",
+                          "fill": "#7E7395",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "上海市浦东新区金藏路 58 号沿街",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "p8xk1",
+                          "fill": "#8B839F",
+                          "content": "综合门诊 · 021-5011 2238",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

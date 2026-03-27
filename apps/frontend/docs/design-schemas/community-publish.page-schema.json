@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "pageKey": "community-publish",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "GFqFg",
+    "frameName": "社区发布页 Community Publish"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFFEFD",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#5E566F",
+      "textMuted": "#B4ABC8",
+      "textWarm": "#C47C36",
+      "accentPrimary": "#5C35D6",
+      "accentSecondary": "#6D32FF",
+      "borderSoft": "#ECE7F4",
+      "borderSoftAlt": "#F3EEF9",
+      "borderWarm": "#F5EDE4",
+      "borderWarmAlt": "#F0E8DD"
+    },
+    "radius": {
+      "card": 22,
+      "subCard": 18,
+      "field": 16,
+      "pill": 999,
+      "button": 18
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "500", "lineHeight": 1.5 },
+      "meta": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "700" },
+      "metaSmall": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "600" },
+      "button": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "48x3e", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_header", "type": "page_title", "sourceNodeId": "pEa8s", "copy": ["发布动态"] },
+    {
+      "key": "publish_editor_card",
+      "type": "community_publish_editor_card",
+      "sourceNodeId": "tqB7B",
+      "copy": ["这一刻想分享什么？", "今天洗完澡以后，团子耳后还是有点发红，准备先减少洗护频率再观察两天。", "已填 56 / 1000"]
+    },
+    {
+      "key": "media_upload_card",
+      "type": "community_publish_media_card",
+      "sourceNodeId": "3Lz74",
+      "copy": ["媒体内容", "+", "图片最多 9 张，视频单选"]
+    },
+    {
+      "key": "publish_meta_card",
+      "type": "community_publish_meta_card",
+      "sourceNodeId": "DFgUd",
+      "copy": ["关联信息", "# 皮肤护理 · 预设带入", "更换话题", "关联宠物：团子", "重新选择", "公开", "部分可见", "仅自己"]
+    },
+    {
+      "key": "submit_button",
+      "type": "primary_button",
+      "sourceNodeId": "Gk6w5",
+      "copy": ["发布动态"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "publish_meta_card",
+      "api": "GET /api/community/publish/preset",
+      "fields": ["preset.topicId", "preset.topicName", "preset.petId", "preset.petName", "preset.visibility"]
+    },
+    {
+      "sectionKey": "media_upload_card",
+      "api": "POST /api/media/upload?ownerType=community",
+      "fields": ["mediaAssetIds[]"]
+    },
+    {
+      "sectionKey": "submit_button",
+      "api": "POST /api/community/post",
+      "fields": ["content", "topicId", "petId", "visibility", "mediaAssetIds[]"]
+    }
+  ],
+  "actions": [
+    { "name": "pickPublishMedia", "target": "community-publish-media-picker", "sectionKey": "media_upload_card" },
+    { "name": "changePublishTopic", "target": "/pages/community/search?mode=topic", "sectionKey": "publish_meta_card" },
+    { "name": "changePublishPet", "target": "community-publish-pet-picker", "sectionKey": "publish_meta_card" },
+    { "name": "changePublishVisibility", "target": "community-publish-visibility-picker", "sectionKey": "publish_meta_card" },
+    { "name": "submitCommunityPost", "target": "POST /api/community/post", "sectionKey": "submit_button" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "GFqFg",
+    "criticalCheckpoints": [
+      "publish page keeps a stacked editor, media and relation-info composition instead of modal-heavy flow fragments",
+      "media area reads as a single upload dropzone with centered plus badge",
+      "topic, pet and visibility choices stay inside one warm metadata card",
+      "submit CTA is full-width and docked at the bottom"
+    ]
+  }
+}

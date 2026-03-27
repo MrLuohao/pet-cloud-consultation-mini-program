@@ -21,6 +21,6 @@ public interface CommunityPostReportMapper extends BaseMapper<CommunityPostRepor
      * @param userId 用户ID
      * @return 是否存在举报记录
      */
-    @Select("SELECT COUNT(*) > 0 FROM community_post_report WHERE post_id = #{postId} AND user_id = #{userId} AND is_deleted = 0")
+    @Select("SELECT COUNT(*) > 0 FROM community_post_report WHERE post_id = #{postId} AND user_id = #{userId}")
     boolean hasReported(@Param("postId") Long postId, @Param("userId") Long userId);
 }

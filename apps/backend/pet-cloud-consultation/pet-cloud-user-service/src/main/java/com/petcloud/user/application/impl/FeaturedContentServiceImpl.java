@@ -27,7 +27,6 @@ public class FeaturedContentServiceImpl implements FeaturedContentService {
 
         LambdaQueryWrapper<FeaturedContentPublish> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(FeaturedContentPublish::getStatus, FeaturedContentPublish.Status.PUBLISHED.getCode())
-                .eq(FeaturedContentPublish::getIsDeleted, 0)
                 .le(FeaturedContentPublish::getStartTime, now)
                 .and(wrapper -> wrapper.isNull(FeaturedContentPublish::getEndTime)
                         .or()

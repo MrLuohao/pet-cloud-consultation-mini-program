@@ -1,0 +1,103 @@
+{
+  "meta": {
+    "pageKey": "consultation-doctor-list",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "Y55fu",
+    "frameName": "问诊医生列表页 Consultation Doctor List"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFF7F1",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "textWarm": "#C47C36",
+      "accentPrimary": "#5C35D6",
+      "accentSecondary": "#6D32FF",
+      "accentWarm": "#C47C36",
+      "borderSoft": "#F3EEF9",
+      "borderWarm": "#F0E1D6"
+    },
+    "radius": {
+      "heroCard": 22,
+      "card": 18,
+      "pill": 999,
+      "button": 16
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "700" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "bodyStrong": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "700" },
+      "button": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "kpHaM", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_header", "type": "page_title", "sourceNodeId": "mrZ8A", "copy": ["在线问诊"] },
+    {
+      "key": "doctor_hero",
+      "type": "consultation_doctor_list_hero",
+      "sourceNodeId": "r6auV",
+      "copy": ["16 位在线", "紧急通道可用", "优先看响应速度和擅长方向", "症状急、精神差或持续呕吐腹泻，直接走加急问诊。"]
+    },
+    {
+      "key": "filter_area",
+      "type": "consultation_doctor_filter_area",
+      "sourceNodeId": "faYeF",
+      "copy": ["搜索医生姓名、擅长方向", "搜索", "全部", "皮肤", "肠胃", "呼吸", "眼耳鼻", "骨科", "幼宠", "老年宠", "行为", "用药复诊"]
+    },
+    {
+      "key": "doctor_cards",
+      "type": "consultation_doctor_cards",
+      "sourceNodeId": "xU9hd",
+      "copy": ["李医生", "皮肤专科 · 伴宠中心医院", "皮肤过敏 · 反复抓挠 · 耳道问题", "2 分钟内", "图文 ¥39 · 已接 1820 单", "去咨询", "周医生", "肠胃专科 · 城市宠物医院", "软便呕吐 · 饮食不耐受 · 慢性肠胃", "10 分钟内", "图文 ¥29 · 已接 960 单", "去咨询"]
+    },
+    { "key": "bottom_primary_action", "type": "primary_button", "sourceNodeId": "It7k0", "copy": ["我的咨询"] },
+    { "key": "bottom_secondary_action", "type": "secondary_button", "sourceNodeId": "zLLRK", "copy": ["紧急问诊"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "doctor_hero",
+      "api": "GET /api/doctor/list",
+      "fields": ["summary.onlineCountLabel", "summary.urgentAvailableLabel", "summary.title", "summary.description"]
+    },
+    {
+      "sectionKey": "filter_area",
+      "api": "GET /api/doctor/departments",
+      "fields": ["searchKeyword", "selectedDepartment", "departments[]"]
+    },
+    {
+      "sectionKey": "doctor_cards",
+      "api": "GET /api/doctor/list?department={department}",
+      "fields": ["doctors[].id", "doctors[].name", "doctors[].department", "doctors[].hospitalName", "doctors[].specialty", "doctors[].avgResponseLabel", "doctors[].consultationPriceLabel", "doctors[].consultationCountLabel"]
+    }
+  ],
+  "actions": [
+    { "name": "searchDoctor", "target": "consultation-doctor-search-flow", "sectionKey": "filter_area" },
+    { "name": "filterDoctorByDepartment", "target": "consultation-doctor-department-filter", "sectionKey": "filter_area" },
+    { "name": "openDoctorDetail", "target": "/pages/consultation/doctor-detail?id={doctorId}", "sectionKey": "doctor_cards" },
+    { "name": "openConsultationList", "target": "/pages/consultation/list", "sectionKey": "bottom_primary_action" },
+    { "name": "openUrgentConsultation", "target": "/pages/consultation/urgent/index", "sectionKey": "bottom_secondary_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "Y55fu",
+    "criticalCheckpoints": [
+      "page leads with online-count and urgent-availability hero messaging before the doctor cards",
+      "filters read as lightweight chips rather than a heavy search/filter form",
+      "doctor cards emphasize response speed, specialty direction and consultation entry in a compact editorial card style",
+      "bottom actions split regular consultation history and urgent entry into two equal choices"
+    ]
+  }
+}

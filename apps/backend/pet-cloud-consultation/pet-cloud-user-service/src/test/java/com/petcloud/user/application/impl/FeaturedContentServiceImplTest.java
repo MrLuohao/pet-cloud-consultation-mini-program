@@ -60,7 +60,6 @@ class FeaturedContentServiceImplTest {
         publish.setPositionNo(positionNo);
         publish.setStatus(FeaturedContentPublish.Status.PUBLISHED.getCode());
         publish.setStartTime(new Date());
-        publish.setIsDeleted(0);
         return publish;
     }
 

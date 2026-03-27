@@ -7,13 +7,16 @@
 后续所有判断统一按下面顺序执行：
 
 1. `.pen` 最新正式画布
-2. `docs/project-rules.md`
-3. `docs/rules/global-project-rules.md`
-4. `docs/rules/design-source-rules.md`
-5. `docs/rules/frontend-implementation-rules.md`
-6. `docs/rules/backend-development-rules.md`
-7. `apps/frontend/docs/design-schemas/README.md`
-8. 现有代码
+2. `docs/rules/global-project-rules.md`
+3. `docs/rules/design-source-rules.md`
+4. `docs/rules/frontend-implementation-rules.md`
+5. `docs/rules/backend-development-rules.md`
+6. `apps/frontend/docs/design-schemas/README.md`
+7. 现有代码
+
+说明：
+
+- `docs/project-rules.md` 是规则导航页，不作为业务事实源参与冲突仲裁。
 
 ## 全局协作铁律
 
@@ -26,7 +29,7 @@
 ## 文档职责分层
 
 - `docs/project-rules.md`
-  - 只做规则总入口、分类说明、优先阅读顺序。
+  - 只做规则总入口、分类说明、建议阅读顺序。
 - `docs/rules/global-project-rules.md`
   - 只放全局协作规则、同步规则、交接边界。
 - `docs/rules/design-source-rules.md`
@@ -52,11 +55,12 @@
 
 同步要求：
 
-- 全局规则变化：更新 `docs/project-rules.md` 与 `docs/rules/global-project-rules.md`
+- 全局规则体系变化：更新 `docs/project-rules.md` 与 `docs/rules/global-project-rules.md`
+- 如果只是某一类规则正文调整，优先更新对应细则文件；只有入口、分工或阅读顺序变化时才同步修改 `docs/project-rules.md`
 - 设计规则变化：更新 `docs/rules/design-source-rules.md`
 - 前端规则变化：更新 `docs/rules/frontend-implementation-rules.md`
 - 后端规则变化：更新 `docs/rules/backend-development-rules.md`
-- 前端页面执行状态变化：更新 `docs/plans/2026-03-21-frontend-page-status-matrix.md`
+- 前端页面执行状态变化：更新 `docs/plans/frontend-page-status-matrix.md`
 - 如果本轮变更会影响下次接手判断：同步更新 `memory/project-context-handoff.md`
 
 ## Handoff 边界

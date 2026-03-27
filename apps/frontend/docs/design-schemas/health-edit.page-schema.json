@@ -1,0 +1,206 @@
+{
+  "meta": {
+    "pageKey": "health-edit",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "kabmm",
+    "frameName": "编辑健康记录页 Health Record Edit",
+    "variantFrameIds": {
+      "create": "7YI5K",
+      "edit": "kabmm"
+    }
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFFEFD",
+      "surfaceNotice": "#FFF7F1",
+      "surfaceDanger": "#FFFBFA",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#7F7399",
+      "textWarm": "#C47C36",
+      "textDanger": "#A66052",
+      "accentPrimary": "#5C35D6",
+      "accentSecondary": "#6D32FF",
+      "accentWarm": "#C47C36",
+      "borderSoft": "#ECE7F4",
+      "borderCard": "#ECE5F3",
+      "borderWarm": "#F0E1D6",
+      "borderDanger": "#F3E4DF"
+    },
+    "radius": {
+      "identityCard": 22,
+      "card": 18,
+      "field": 16,
+      "button": 18,
+      "pill": 999
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" },
+      "fieldLabel": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "600" },
+      "fieldValue": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "bodyStrong": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "700" },
+      "button": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "JO8hZ",
+      "copy": ["9:41", "5G   100%"],
+      "modes": ["create", "edit"],
+      "modeSourceNodeIds": {
+        "create": "34sNM",
+        "edit": "JO8hZ"
+      }
+    },
+    {
+      "key": "page_header",
+      "type": "page_title",
+      "sourceNodeId": "02Awq",
+      "copy": ["编辑健康记录"],
+      "modes": ["create", "edit"],
+      "modeSourceNodeIds": {
+        "create": "lwPmx",
+        "edit": "02Awq"
+      },
+      "modeCopy": {
+        "create": ["新增健康记录"],
+        "edit": ["编辑健康记录"]
+      }
+    },
+    {
+      "key": "identity_preview_card",
+      "type": "health_record_identity_preview_card",
+      "sourceNodeId": "NTRNp",
+      "copy": ["团子", "英短银渐层 · 2 岁 3 个月 · 4.3 kg", "已纳入时间线", "最近记录", "03/24 21:15", "建议复查", "03/27", "如果这次是复查结果，建议补清楚变化点，后续回看会更有价值。", "继续填写"],
+      "modes": ["create", "edit"],
+      "modeSourceNodeIds": {
+        "create": "U0izm",
+        "edit": "NTRNp"
+      }
+    },
+    {
+      "key": "basic_info_card",
+      "type": "health_record_basic_info_card",
+      "sourceNodeId": "LQyrG",
+      "copy": ["这次记录什么", "选择宠物", "团子", "元宝", "奶盖", "记录类型", "AI 诊断", "日常观察", "线下就诊", "记录标题", "皮肤瘙痒第 3 天，抓挠频次下降"],
+      "modes": ["create", "edit"],
+      "modeSourceNodeIds": {
+        "create": "Xp4kh",
+        "edit": "LQyrG"
+      }
+    },
+    {
+      "key": "detail_card",
+      "type": "health_record_detail_card",
+      "sourceNodeId": "fNDe2",
+      "copy": ["观察内容", "补充说明", "晚饭后精神更放松，抓挠从昨晚的 8 次降到 3 次，耳后轻微发红还在，但面积没有继续扩大。", "建议同时记录饮食、洗护和情绪变化。", "记录日期", "2026-03-26", "下次复查", "2026-03-27"],
+      "modes": ["create", "edit"],
+      "modeSourceNodeIds": {
+        "create": "nw0JA",
+        "edit": "fNDe2"
+      }
+    },
+    {
+      "key": "clinic_card",
+      "type": "health_record_clinic_card",
+      "sourceNodeId": "iPxBS",
+      "copy": ["就诊与附件", "医院名称", "伴宠中心医院", "医生", "陈医生", "症状相关图片", "+", "补充患处照片", "如后续要和 AI 诊断或线下记录对照，图片会比纯文字更容易回看。"],
+      "modes": ["create", "edit"],
+      "modeSourceNodeIds": {
+        "create": "qczOB",
+        "edit": "iPxBS"
+      }
+    },
+    {
+      "key": "reminder_suggest_card",
+      "type": "health_record_reminder_suggest_card",
+      "sourceNodeId": "sqXPo",
+      "copy": ["同步提醒", "如果这次记录需要继续追踪，建议顺手带一条提醒，不用明天再回来补。", "明天复查", "3 天后观察", "暂不需要"],
+      "modes": ["create", "edit"],
+      "modeSourceNodeIds": {
+        "create": "rBDZV",
+        "edit": "sqXPo"
+      }
+    },
+    {
+      "key": "delete_block",
+      "type": "health_record_delete_notice",
+      "sourceNodeId": "TNzqv",
+      "copy": ["删除当前记录", "仅在确认这条记录无保留价值时再删除，避免影响后续回看与提醒判断。"],
+      "modes": ["edit"]
+    },
+    {
+      "key": "bottom_actions",
+      "type": "health_record_bottom_actions",
+      "sourceNodeId": "wMiOJ",
+      "copy": ["删除记录", "保存修改"],
+      "modes": ["create", "edit"],
+      "modeSourceNodeIds": {
+        "create": "e2TG2",
+        "edit": "wMiOJ"
+      },
+      "modeCopy": {
+        "create": ["稍后再填", "创建记录"],
+        "edit": ["删除记录", "保存修改"]
+      }
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "identity_preview_card",
+      "api": "GET /api/pets/{petId}",
+      "fields": ["id", "name", "breed", "ageText", "weight", "latestRecordTime", "nextReviewDate", "timelineStatusLabel"]
+    },
+    {
+      "sectionKey": "basic_info_card",
+      "api": "GET /api/pets/list | GET /api/health/{recordId}",
+      "fields": ["petOptions[].id", "petOptions[].name", "petId", "recordType", "title"]
+    },
+    {
+      "sectionKey": "detail_card",
+      "api": "GET /api/health/{recordId}",
+      "fields": ["content", "contentHint", "recordDate", "nextDate"]
+    },
+    {
+      "sectionKey": "clinic_card",
+      "api": "GET /api/health/{recordId}",
+      "fields": ["hospitalName", "doctorName", "images[]", "attachmentHint"]
+    },
+    {
+      "sectionKey": "reminder_suggest_card",
+      "fields": ["reminderPreset", "reminderPresetOptions[]"]
+    }
+  ],
+  "actions": [
+    { "name": "selectPet", "target": "health-record-pet-picker", "sectionKey": "basic_info_card" },
+    { "name": "selectRecordType", "target": "health-record-type-picker", "sectionKey": "basic_info_card" },
+    { "name": "uploadRecordImages", "target": "health-record-image-picker", "sectionKey": "clinic_card" },
+    { "name": "chooseReminderPreset", "target": "health-record-reminder-preset", "sectionKey": "reminder_suggest_card" },
+    { "name": "createHealthRecord", "target": "save-new-health-record", "sectionKey": "bottom_actions" },
+    { "name": "saveHealthRecord", "target": "save-health-record-update", "sectionKey": "bottom_actions" },
+    { "name": "deleteHealthRecord", "target": "delete-health-record", "sectionKey": "bottom_actions" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "kabmm",
+    "criticalCheckpoints": [
+      "create and edit states share one calm single-page card form language instead of modal-heavy CRUD editing",
+      "identity preview card always anchors the top of the form before any editable fields",
+      "form cards separate basic info, detail notes, clinic attachments and reminder suggestions into stacked editorial blocks",
+      "edit state keeps a visible destructive path while create state uses a softer secondary cancel action"
+    ]
+  }
+}

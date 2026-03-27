@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "pageKey": "community-topic",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "gDeKf",
+    "frameName": "社区话题页 Community Topic"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 8,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFFEFD",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "accentPrimary": "#5C35D6",
+      "accentSecondary": "#6D32FF",
+      "borderSoft": "#F0EAFE",
+      "borderWarm": "#F5EDE4"
+    },
+    "radius": {
+      "heroCard": 20,
+      "card": 20,
+      "pill": 999,
+      "button": 18
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 18, "fontWeight": "700" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "lineHeight": 1.45 },
+      "button": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "huEbS", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_header", "type": "page_title", "sourceNodeId": "SD45O", "copy": ["话题广场"] },
+    {
+      "key": "topic_hero",
+      "type": "community_topic_hero",
+      "sourceNodeId": "HH1yK",
+      "copy": ["# 皮肤护理", "842 条动态 · 最近更关注耳后发红、换季敏感和洗护频率。", "正在升温", "参与话题"]
+    },
+    {
+      "key": "topic_feed_cards",
+      "type": "community_topic_feed_cards",
+      "sourceNodeId": "G5osf",
+      "copy": [
+        "洗护后耳后还是有一点发红，正常吗？",
+        "团子妈妈 · 89 赞 · 24 评论",
+        "换季时掉毛厉害，梳毛频率怎么调更合适？",
+        "柴团成长日记 · 63 赞 · 12 评论"
+      ]
+    },
+    {
+      "key": "participate_button",
+      "type": "primary_button",
+      "sourceNodeId": "9HVnU",
+      "copy": ["参与话题"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "topic_hero",
+      "api": "GET /api/community/topics/{topicId}",
+      "fields": ["topic.id", "topic.name", "topic.postCount", "topic.summary", "topic.trendLabel"]
+    },
+    {
+      "sectionKey": "topic_feed_cards",
+      "api": "GET /api/community/topics/{topicId}/posts",
+      "fields": ["posts[].id", "posts[].title", "posts[].authorNickname", "posts[].likeCount", "posts[].commentCount"]
+    }
+  ],
+  "actions": [
+    { "name": "openTopicPostDetail", "target": "/pages/community/detail?id={postId}", "sectionKey": "topic_feed_cards" },
+    { "name": "participateTopicPublish", "target": "/pages/community/publish?topicId={topicId}", "sectionKey": "participate_button" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "gDeKf",
+    "criticalCheckpoints": [
+      "topic page opens with a summary hero instead of a generic banner",
+      "topic hero keeps trend chip and participate link on the same lightweight row",
+      "two discussion cards use cool and warm surfaces to create hierarchy",
+      "participate CTA sits as a compact bottom-right primary action, not a full-width footer"
+    ]
+  }
+}

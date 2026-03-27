@@ -31,7 +31,7 @@ public interface UserFollowMapper extends BaseMapper<UserFollow> {
      * @param userId 用户ID
      * @return 粉丝数量
      */
-    @Select("SELECT COUNT(*) FROM user_follow WHERE following_id = #{userId} AND is_deleted = 0")
+    @Select("SELECT COUNT(*) FROM user_follow WHERE following_id = #{userId}")
     int countFollowers(@Param("userId") Long userId);
 
     /**
@@ -40,6 +40,6 @@ public interface UserFollowMapper extends BaseMapper<UserFollow> {
      * @param userId 用户ID
      * @return 关注数量
      */
-    @Select("SELECT COUNT(*) FROM user_follow WHERE follower_id = #{userId} AND is_deleted = 0")
+    @Select("SELECT COUNT(*) FROM user_follow WHERE follower_id = #{userId}")
     int countFollowings(@Param("userId") Long userId);
 }

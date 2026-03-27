@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "pageKey": "consultation-create",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "oKwYh",
+    "frameName": "发起问诊页 Consultation Create"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFF7F1",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "textWarm": "#C47C36",
+      "accentPrimary": "#5C35D6",
+      "accentWarm": "#C47C36",
+      "borderSoft": "#F3EEF9",
+      "borderWarm": "#F0E1D6"
+    },
+    "radius": {
+      "heroCard": 22,
+      "card": 18,
+      "field": 16,
+      "button": 18,
+      "pill": 999
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "bodyStrong": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "700" },
+      "button": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "xIwcT", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_header", "type": "page_title", "sourceNodeId": "QsXJh", "copy": ["发起问诊"] },
+    {
+      "key": "doctor_card",
+      "type": "consultation_create_doctor_card",
+      "sourceNodeId": "Hd4nd",
+      "copy": ["李医生", "皮肤专科 · 图文 ¥39 起 · 已接 1820 单", "2 分钟回复", "如未指定医生，将按症状优先分配对应专科医生。"]
+    },
+    {
+      "key": "pet_row",
+      "type": "consultation_create_pet_row",
+      "sourceNodeId": "aytAx",
+      "copy": ["团子", "元宝"]
+    },
+    {
+      "key": "type_row",
+      "type": "consultation_create_type_row",
+      "sourceNodeId": "Cab2b",
+      "copy": ["普通咨询", "¥39 起 · 图文问诊 · 预计 10 分钟内回复", "电话咨询", "¥59 起 · 语音沟通 · 适合情况复杂时快速确认"]
+    },
+    {
+      "key": "description_card",
+      "type": "consultation_create_description_card",
+      "sourceNodeId": "WNtvN",
+      "copy": ["病情描述", "请写清楚症状持续多久、是否呕吐腹泻、精神食欲变化，以及近期是否换粮、洗护或服药。", "已填 168 / 500", "症状相关图片", "+", "最多上传 4 张，皮肤、便便、检查单都可以上传"]
+    },
+    {
+      "key": "note_card",
+      "type": "consultation_create_note_card",
+      "sourceNodeId": "ZoqEQ",
+      "copy": ["咨询说明", "提交后会直接进入会话页。若出现持续恶化、呼吸异常或精神极差，请优先线下就诊。"]
+    },
+    { "key": "bottom_primary_action", "type": "primary_button", "sourceNodeId": "BocfR", "copy": ["提交问诊"] },
+    { "key": "bottom_action_note", "type": "button_note", "sourceNodeId": "PazZs", "copy": ["提交后进入问诊会话，仍可继续补充图片和症状。"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "doctor_card",
+      "api": "GET /api/doctor/{id}",
+      "fields": ["doctor.id", "doctor.name", "doctor.department", "doctor.consultationFeeLabel", "doctor.consultationCountLabel", "doctor.avgResponseLabel", "doctor.assignmentHint"]
+    },
+    {
+      "sectionKey": "pet_row",
+      "api": "GET /api/pets/list",
+      "fields": ["pets[].id", "pets[].name", "selectedPetId"]
+    },
+    {
+      "sectionKey": "type_row",
+      "fields": ["consultType", "consultTypes[].type", "consultTypes[].priceLabel", "consultTypes[].description"]
+    },
+    {
+      "sectionKey": "description_card",
+      "fields": ["description", "descriptionCount", "images[]", "imageLimitHint"]
+    }
+  ],
+  "actions": [
+    { "name": "selectConsultPet", "target": "consultation-create-pet-select", "sectionKey": "pet_row" },
+    { "name": "selectConsultType", "target": "consultation-create-type-select", "sectionKey": "type_row" },
+    { "name": "uploadConsultImages", "target": "consultation-create-image-picker", "sectionKey": "description_card" },
+    { "name": "submitConsultation", "target": "consultation-submit", "sectionKey": "bottom_primary_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "oKwYh",
+    "criticalCheckpoints": [
+      "page reads as a guided consultation intake instead of a generic long form",
+      "doctor card, pet picker and consultation type are settled before symptom description begins",
+      "symptom description and image upload live in one unified narrative card",
+      "submission CTA is singular and strong with a quiet follow-up note underneath"
+    ]
+  }
+}

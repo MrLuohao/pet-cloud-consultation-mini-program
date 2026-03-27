@@ -2,7 +2,7 @@
   "meta": {
     "pageKey": "order-detail",
     "platform": "wechat-miniprogram",
-    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
     "frameId": "HJ257",
     "frameName": "订单详情页 Pending Payment Order Detail"
   },

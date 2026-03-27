@@ -1,8 +1,8 @@
 # Project Rules
 
-适用范围：`/Users/luohao/Desktop/pet-cloud-consultation-mini-program`
+适用范围：`/Volumes/Beelink/software/pet-cloud-consultation-mini-program`
 
-这份文档只作为规则总入口，不再承接具体规则正文。
+这份文档只作为规则总入口、阅读导航与职责分层说明，不承接具体规则正文，也不作为业务事实冲突时的仲裁文件。
 
 ## 1. 规则分工
 
@@ -56,7 +56,7 @@
 
 ### 页面状态与执行进度
 
-- `docs/plans/2026-03-21-frontend-page-status-matrix.md`
+- `docs/plans/frontend-page-status-matrix.md`
 
 负责：
 
@@ -93,16 +93,21 @@
 - 定义长期规则
 - 重复复制规则正文
 
-## 3. 当前优先阅读顺序
+## 3. 建议阅读顺序
 
 1. `design/frontendMobileScreens.pen`
 2. `docs/rules/global-project-rules.md`
 3. `docs/rules/design-source-rules.md`
 4. `docs/rules/frontend-implementation-rules.md`
 5. `docs/rules/backend-development-rules.md`
-6. `docs/plans/2026-03-21-frontend-page-status-matrix.md`
+6. `docs/plans/frontend-page-status-matrix.md`
 7. `apps/frontend/docs/design-schemas/README.md`
 8. `memory/project-context-handoff.md`
+
+说明：
+
+- 如果只是想知道“规则分工和去哪里看”，先读本文件。
+- 如果遇到具体业务、设计、前端、后端判断冲突，以对应细则文件为准，而不是以本文件正文为准。
 
 ## 4. 当前目录建议理解
 

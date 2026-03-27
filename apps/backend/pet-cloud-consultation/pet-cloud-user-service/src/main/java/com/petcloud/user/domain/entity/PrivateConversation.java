@@ -53,4 +53,16 @@ public class PrivateConversation extends BaseEntity {
      */
     @TableField("unread_2")
     private Integer unread2;
+
+    /**
+     * 用户1隐藏时间
+     */
+    @TableField("user1_hidden_time")
+    private Date user1HiddenTime;
+
+    /**
+     * 用户2隐藏时间
+     */
+    @TableField("user2_hidden_time")
+    private Date user2HiddenTime;
 }

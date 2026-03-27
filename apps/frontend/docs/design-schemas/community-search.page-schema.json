@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "pageKey": "community-search",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "RKyhI",
+    "frameName": "社区搜索页 Community Search"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [4, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFFEFD",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "accentPrimary": "#5C35D6",
+      "accentSecondary": "#6D32FF",
+      "borderSoft": "#F0EAFE",
+      "borderWarm": "#F5EDE4"
+    },
+    "radius": {
+      "search": 20,
+      "card": 20,
+      "pill": 999
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+      "meta": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "button": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "RUTF8", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_header", "type": "page_title", "sourceNodeId": "woQZz", "copy": ["社区搜索"] },
+    {
+      "key": "search_top",
+      "type": "community_search_top",
+      "sourceNodeId": "mzFnP",
+      "copy": ["搜索话题、动态内容", "帖子", "话题"]
+    },
+    {
+      "key": "recent_searches",
+      "type": "community_search_recent",
+      "sourceNodeId": "FSEwA",
+      "copy": ["最近搜索", "清空", "春季掉毛", "皮肤护理", "幼犬训练"]
+    },
+    {
+      "key": "search_results",
+      "type": "community_search_results",
+      "sourceNodeId": "q6UkT",
+      "copy": [
+        "春天掉毛是不是会更明显？",
+        "团子妈妈 · 128 赞 · 36 评论",
+        "# 皮肤护理",
+        "话题下已有 842 条动态，最近更关注耳后发红和换季敏感。"
+      ]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "recent_searches",
+      "api": "GET /api/community/search/history",
+      "fields": ["historyKeywords[]"]
+    },
+    {
+      "sectionKey": "search_results",
+      "api": "GET /api/community/search?q={keyword}&mode={mode}",
+      "fields": [
+        "result.posts[].id",
+        "result.posts[].title",
+        "result.posts[].authorNickname",
+        "result.posts[].likeCount",
+        "result.posts[].commentCount",
+        "result.topics[].id",
+        "result.topics[].name",
+        "result.topics[].postCount",
+        "result.topics[].summary"
+      ]
+    }
+  ],
+  "actions": [
+    { "name": "submitCommunitySearch", "target": "community-search-submit", "sectionKey": "search_top" },
+    { "name": "switchSearchMode", "target": "community-search-mode-switch", "sectionKey": "search_top" },
+    { "name": "clearSearchHistory", "target": "community-search-history-clear", "sectionKey": "recent_searches" },
+    { "name": "openSearchPostDetail", "target": "/pages/community/detail?id={postId}", "sectionKey": "search_results" },
+    { "name": "openSearchTopicDetail", "target": "/pages/community/topic?id={topicId}", "sectionKey": "search_results" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "RKyhI",
+    "criticalCheckpoints": [
+      "search input is a full-width soft field above the result mode pills",
+      "recent searches render as compact chips inside a dedicated card",
+      "results mix a post card and a topic card with distinct cool vs warm surfaces",
+      "overall page stays lightweight and does not revert to a heavy tabbed search hub"
+    ]
+  }
+}

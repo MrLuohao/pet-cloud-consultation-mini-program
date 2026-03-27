@@ -88,7 +88,6 @@ class MediaAssetServiceImplTest {
         asset.setModerationStatus("pass");
         asset.setRiskTagsJson("[]");
         asset.setReason("内容审核通过");
-        asset.setIsDeleted(0);
 
         when(mediaAssetMapper.selectList(any())).thenReturn(List.of(asset));
 

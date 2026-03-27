@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "pageKey": "consultation-chat",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "ob35v",
+    "frameName": "问诊会话页 Consultation Chat"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 16, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFF7F1",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "textWarm": "#C47C36",
+      "accentPrimary": "#5C35D6",
+      "accentWarm": "#C47C36",
+      "success": "#4EA772",
+      "borderSoft": "#F3EEF9",
+      "borderWarm": "#F0E1D6"
+    },
+    "radius": {
+      "heroCard": 22,
+      "bubble": 18,
+      "imageBubble": 16,
+      "button": 22,
+      "pill": 999
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+      "bodyStrong": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "700" },
+      "button": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "SAvrC", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_header", "type": "page_title", "sourceNodeId": "MwzEM", "copy": ["问诊会话"] },
+    {
+      "key": "consultation_hero",
+      "type": "consultation_chat_hero",
+      "sourceNodeId": "9P4vp",
+      "copy": ["团子 · 皮肤瘙痒反复", "进行中", "李医生 · 图文咨询 · 最近回复 12 分钟前"]
+    },
+    {
+      "key": "messages_stream",
+      "type": "consultation_chat_messages_stream",
+      "sourceNodeId": "c0mRm",
+      "copy": ["这两天抓挠减少了，但耳后还是发红。", "09:42", "收到。先继续观察抓挠频次，今晚补一张耳后照片，我帮你对比是否继续扩大。", "李医生 · 09:45", "09:47"]
+    },
+    {
+      "key": "urgent_switch_notice",
+      "type": "consultation_chat_urgent_switch_notice",
+      "sourceNodeId": "czQOd",
+      "copy": ["如症状明显加重，可直接结束普通咨询并改走加急通道。", "去加急"]
+    },
+    {
+      "key": "input_bar",
+      "type": "consultation_chat_input_bar",
+      "sourceNodeId": "WKANj",
+      "copy": ["+", "继续描述变化或补充图片...", "发送"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "consultation_hero",
+      "api": "GET /api/consultation/{id}",
+      "fields": ["consultation.id", "consultation.petName", "consultation.title", "consultation.statusLabel", "consultation.doctorName", "consultation.typeLabel", "consultation.lastReplyAtLabel"]
+    },
+    {
+      "sectionKey": "messages_stream",
+      "api": "GET /api/consultation/{id}/messages",
+      "fields": ["messages[].id", "messages[].senderType", "messages[].content", "messages[].mediaUrl", "messages[].timeLabel", "messages[].doctorSignature"]
+    }
+  ],
+  "actions": [
+    { "name": "pickChatImage", "target": "consultation-chat-image-picker", "sectionKey": "input_bar" },
+    { "name": "sendChatMessage", "target": "consultation-chat-send", "sectionKey": "input_bar" },
+    { "name": "switchToUrgentConsultation", "target": "/pages/consultation/urgent/index?consultationId={consultationId}", "sectionKey": "urgent_switch_notice" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "ob35v",
+    "criticalCheckpoints": [
+      "chat starts with a compact consultation summary card before the message stream",
+      "message stream alternates user bubble, doctor bubble and image bubble with clear quiet timestamps",
+      "urgent escalation notice remains visible but secondary to the ongoing dialogue",
+      "input bar is rounded, lightweight and clearly supports both image and text continuation"
+    ]
+  }
+}

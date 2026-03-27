@@ -1,0 +1,125 @@
+{
+  "meta": {
+    "pageKey": "health-reminder",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "wfnjI",
+    "frameName": "健康提醒页 Health Reminder"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFFDFC",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "textWarm": "#C47C36",
+      "accentPrimary": "#5C35D6",
+      "accentSecondary": "#6D32FF",
+      "accentWarm": "#C47C36",
+      "borderSoft": "#F3EEF9",
+      "borderCard": "#EFE9F5",
+      "borderWarm": "#ECDACA"
+    },
+    "radius": {
+      "summaryCard": 20,
+      "card": 16,
+      "pill": 999,
+      "button": 18
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "summaryTitle": { "fontFamily": "Inter", "fontSize": 18, "fontWeight": "700" },
+      "sectionTitle": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "bodyStrong": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "700" },
+      "button": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "bCeGX",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "page_header",
+      "type": "page_title",
+      "sourceNodeId": "t3IA1",
+      "copy": ["健康提醒"]
+    },
+    {
+      "key": "summary_card",
+      "type": "health_reminder_summary_card",
+      "sourceNodeId": "dfDPF",
+      "copy": ["今日优先", "1 条逾期", "今天有 3 条提醒", "先处理今天和逾期事项，再查看已完成历史。", "02", "今天到期", "01", "已逾期", "06", "已完成"]
+    },
+    {
+      "key": "filter_block",
+      "type": "health_reminder_filter_block",
+      "sourceNodeId": "Q5ZZG",
+      "copy": ["筛选提醒", "待处理优先", "待处理", "今天", "已完成", "全部宠物", "团子", "元宝"]
+    },
+    {
+      "key": "reminder_card",
+      "type": "health_reminder_list_card",
+      "sourceNodeId": "UTSTS",
+      "copy": ["待处理提醒", "9 条全部提醒", "团子 · 复查提醒", "今天", "皮肤复查，补充这两天的抓挠频次和照片变化", "提醒时间 03/26 18:00 · 先补结果，再决定是否继续线下就诊。", "备注：医生建议连续观察 3 天", "完成提醒", "元宝 · 驱虫提醒", "已逾期 2 天", "口服驱虫还未完成，建议今天处理后再补一条健康观察。", "原计划：03/24", "标记完成", "奶盖 · 疫苗提醒", "已完成", "三联加强针已在昨日完成，建议补上医院信息方便后续回看。", "完成于 03/25 11:30", "查看记录"]
+    },
+    {
+      "key": "bottom_primary_action",
+      "type": "primary_button",
+      "sourceNodeId": "K3k5D",
+      "copy": ["新增提醒"]
+    },
+    {
+      "key": "bottom_secondary_action",
+      "type": "secondary_button",
+      "sourceNodeId": "PQ0mZ",
+      "copy": ["查看记录"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "summary_card",
+      "api": "GET /api/health/reminder/list",
+      "fields": ["summary.todayPriorityLabel", "summary.overdueCount", "summary.todayTotal", "summary.description", "summary.todayDueCount", "summary.overdueCount", "summary.completedCount"]
+    },
+    {
+      "sectionKey": "filter_block",
+      "api": "GET /api/pets/list",
+      "fields": ["statusFilter", "timeFilter", "petFilter", "pets[].id", "pets[].name"]
+    },
+    {
+      "sectionKey": "reminder_card",
+      "api": "GET /api/health/reminder/list",
+      "fields": ["reminders[].id", "reminders[].petName", "reminders[].reminderTypeLabel", "reminders[].statusLabel", "reminders[].title", "reminders[].description", "reminders[].note", "reminders[].ctaLabel", "reminders[].completedRecordLabel"]
+    }
+  ],
+  "actions": [
+    { "name": "filterHealthReminders", "target": "health-reminder-filter-flow", "sectionKey": "filter_block" },
+    { "name": "createHealthReminder", "target": "health-reminder-create-flow", "sectionKey": "bottom_primary_action" },
+    { "name": "openHealthRecordList", "target": "/pages/health/list", "sectionKey": "bottom_secondary_action" },
+    { "name": "markHealthReminderDone", "target": "health-reminder-done", "sectionKey": "reminder_card" },
+    { "name": "openCompletedHealthRecord", "target": "/pages/health/list", "sectionKey": "reminder_card" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "wfnjI",
+    "criticalCheckpoints": [
+      "summary card clearly prioritizes today and overdue reminders before the list body",
+      "filters stay lightweight pills rather than form rows or modal controls",
+      "list cards visually separate overdue, due-today and completed reminders with distinct chip emphasis",
+      "bottom action row balances a strong create-reminder entry with a softer link back to health records"
+    ]
+  }
+}

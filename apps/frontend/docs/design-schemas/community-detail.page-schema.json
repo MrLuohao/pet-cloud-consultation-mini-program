@@ -1,0 +1,133 @@
+{
+  "meta": {
+    "pageKey": "community-detail",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "WnUMs",
+    "frameName": "社区详情页 Community Detail"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 18, 16],
+    "sectionGap": 10,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFFEFD",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "accentPrimary": "#6D32FF",
+      "accentWarm": "#C47C36",
+      "borderSoft": "#ECE7F4",
+      "borderWarm": "#F5EDE4",
+      "dividerSoft": "#F2EDF8"
+    },
+    "radius": {
+      "card": 22,
+      "media": 24,
+      "pill": 999,
+      "replyBar": 22
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "500", "lineHeight": 1.5 },
+      "bodySmall": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "lineHeight": 1.45 },
+      "meta": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "metaStrong": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "600" },
+      "button": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "IBJcU", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_header", "type": "page_title", "sourceNodeId": "dsSK6", "copy": ["动态详情"] },
+    {
+      "key": "post_detail_card",
+      "type": "community_detail_post_card",
+      "sourceNodeId": "VNnmZ",
+      "copy": [
+        "团子妈妈",
+        "英短妈妈 · 23 分钟前",
+        "已关注",
+        "今天洗完澡以后，团子耳后还是有点发红，准备先减少洗护频率再观察两天。最近状态还算稳定，胃口也没有受影响。",
+        "# 皮肤护理 · 查看话题",
+        "赞 128   评论 36   收藏 12",
+        "回复"
+      ]
+    },
+    {
+      "key": "comments_panel",
+      "type": "community_detail_comments_panel",
+      "sourceNodeId": "oGISL",
+      "copy": [
+        "评论 36",
+        "最热",
+        "猫尾巴研究员 · 18 分钟前",
+        "我家也是这个位置容易红，后来把洗护频率从每周一次改成两周一次就好多了。",
+        "回复 12 · 赞 36",
+        "李医生 · 9 分钟前",
+        "如果耳后发红继续扩大，建议先停掉新洗护产品，再补一张自然光下的近景。"
+      ]
+    },
+    {
+      "key": "reply_bar",
+      "type": "community_detail_reply_bar",
+      "sourceNodeId": "fFap5",
+      "copy": ["写下你的回复...", "发送"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "post_detail_card",
+      "api": "GET /api/community/posts/{postId}",
+      "fields": [
+        "post.id",
+        "post.author.nickname",
+        "post.author.roleLabel",
+        "post.publishTimeLabel",
+        "post.author.avatarUrl",
+        "post.isFollowed",
+        "post.content",
+        "post.topic.id",
+        "post.topic.name",
+        "post.mediaUrls",
+        "post.likeCount",
+        "post.commentCount",
+        "post.collectCount"
+      ]
+    },
+    {
+      "sectionKey": "comments_panel",
+      "api": "GET /api/community/posts/{postId}/comments",
+      "fields": [
+        "comments[].id",
+        "comments[].authorNickname",
+        "comments[].publishTimeLabel",
+        "comments[].content",
+        "comments[].replyCount",
+        "comments[].likeCount",
+        "comments[].isLiked"
+      ]
+    }
+  ],
+  "actions": [
+    { "name": "openTopicDetail", "target": "/pages/community/topic?id={topicId}", "sectionKey": "post_detail_card" },
+    { "name": "previewPostMedia", "target": "image-preview", "sectionKey": "post_detail_card" },
+    { "name": "switchCommentSort", "target": "community-detail-comment-sort", "sectionKey": "comments_panel" },
+    { "name": "submitCommentReply", "target": "community-detail-reply-submit", "sectionKey": "reply_bar" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "WnUMs",
+    "criticalCheckpoints": [
+      "detail page reads as a calm post-reading view rather than a dense interaction feed",
+      "author card keeps avatar, role-time meta, follow chip, topic entry and media in one continuous surface",
+      "comments remain in a separate warm card with lightweight dividers and compact meta lines",
+      "bottom reply bar stays docked and visually lighter than the post card"
+    ]
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "pageKey": "health-list",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "2fI4W",
+    "frameName": "健康记录列表页 Health Record List"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFFEFD",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "accentPrimary": "#5C35D6",
+      "accentSecondary": "#6D32FF",
+      "accentWarm": "#C47C36",
+      "borderSoft": "#F3EEF9",
+      "borderWarm": "#F3EEE8"
+    },
+    "radius": {
+      "summaryCard": 20,
+      "card": 16,
+      "pill": 999,
+      "button": 18
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "sectionTitle": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" },
+      "metricValue": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "bodyStrong": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "700" },
+      "button": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "u19aJ",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "page_header",
+      "type": "page_title",
+      "sourceNodeId": "S4nse",
+      "copy": ["健康记录"]
+    },
+    {
+      "key": "filter_block",
+      "type": "health_record_filter_block",
+      "sourceNodeId": "8Yhv6",
+      "copy": ["筛选记录", "最近 30 天", "全部", "团子", "元宝", "奶盖"]
+    },
+    {
+      "key": "summary_card",
+      "type": "health_record_summary_card",
+      "sourceNodeId": "vi0ud",
+      "copy": ["全部宠物", "2 条待跟进", "24 条完整记录", "最近更新来自团子的皮肤观察，可直接筛到对应宠物继续补记录。", "08", "诊断记录", "11", "日常观察", "05", "复查提醒"]
+    },
+    {
+      "key": "records_card",
+      "type": "health_record_list_card",
+      "sourceNodeId": "wcG2M",
+      "copy": ["完整记录", "最新优先", "团子 · 日常观察", "03/24 21:15", "皮肤瘙痒第 3 天，晚上抓挠次数明显减少", "已补充洗护后变化和饮食情况，建议明晚继续拍同角度照片，方便和前两次诊断做对照。", "下次建议观察：03/27", "编辑", "元宝 · AI 诊断", "03/20 09:40", "咳嗽伴轻微流鼻涕，初步建议先观察精神状态", "本条记录来自 AI 诊断结果，后续如果已经线下就诊，建议补上医院名称和医生建议。", "待补：线下资料", "继续记录", "奶盖 · 线下就诊", "03/12 14:20", "肠胃不适复诊，医生建议继续低敏粮观察 5 天", "这类记录会直接影响后续提醒判断，建议把复查日期也一起补全。", "复查日期：03/29", "查看详情"]
+    },
+    {
+      "key": "bottom_primary_action",
+      "type": "primary_button",
+      "sourceNodeId": "0sDWC",
+      "copy": ["新增健康记录"]
+    },
+    {
+      "key": "bottom_secondary_action",
+      "type": "secondary_button",
+      "sourceNodeId": "gjvlg",
+      "copy": ["健康提醒"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "filter_block",
+      "api": "GET /api/pets/list",
+      "fields": ["pets[].id", "pets[].name", "selectedPetId", "dateRangeLabel"]
+    },
+    {
+      "sectionKey": "summary_card",
+      "api": "GET /api/health/list",
+      "fields": ["summary.scopeLabel", "summary.followUpCount", "summary.totalCount", "summary.latestHint", "summary.metrics.diagnosisCount", "summary.metrics.observationCount", "summary.metrics.reviewCount"]
+    },
+    {
+      "sectionKey": "records_card",
+      "api": "GET /api/health/list | GET /api/health/pet/{petId}",
+      "fields": ["records[].id", "records[].petName", "records[].recordTypeLabel", "records[].recordDateTime", "records[].title", "records[].summary", "records[].nextActionLabel", "records[].ctaLabel"]
+    }
+  ],
+  "actions": [
+    { "name": "filterRecordsByPet", "target": "health-record-filter-flow", "sectionKey": "filter_block" },
+    { "name": "openHealthRecordCreate", "target": "/pages/health/edit", "sectionKey": "bottom_primary_action" },
+    { "name": "openHealthReminderPage", "target": "/pages/health/reminder/index", "sectionKey": "bottom_secondary_action" },
+    { "name": "editHealthRecord", "target": "/pages/health/edit?id={recordId}", "sectionKey": "records_card" },
+    { "name": "openHealthRecordDetailFlow", "target": "health-record-detail-flow", "sectionKey": "records_card" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "2fI4W",
+    "criticalCheckpoints": [
+      "page reads as a curated archive list rather than a plain CRUD table",
+      "summary metrics sit above the archive cards and use soft editorial card styling",
+      "record cards visually distinguish observation, diagnosis and offline visit types",
+      "bottom action row keeps a strong create action and a quieter reminder entry"
+    ]
+  }
+}

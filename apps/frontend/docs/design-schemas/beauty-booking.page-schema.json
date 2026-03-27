@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "pageKey": "beauty-booking",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "ex1sD",
+    "frameName": "附近机构搜索页 Beauty Nearby Search"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#F7F3FF",
+      "surfaceWarm": "#FFF9F1",
+      "accentPrimary": "#6D4BEF",
+      "accentWarm": "#D88428",
+      "textPrimary": "#2F2347",
+      "textSecondary": "#7E7395",
+      "textMuted": "#B1A9C2",
+      "borderSoft": "#EFE9F8"
+    },
+    "radius": {
+      "search": 16,
+      "card": 22,
+      "pill": 999,
+      "button": 16
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "sectionTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "lineHeight": 1.5 },
+      "chip": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "600" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "jV05M",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "page_header",
+      "type": "page_title",
+      "sourceNodeId": "N6cls",
+      "copy": ["附近找机构"]
+    },
+    {
+      "key": "search_entry",
+      "type": "search_input_card",
+      "sourceNodeId": "A8Aya",
+      "copy": [
+        "搜索机构名、商圈或小区",
+        "支持直接输入机构名，也可以按附近商圈搜索。"
+      ],
+      "layout": { "height": 46, "cornerRadius": 16, "gap": 10 }
+    },
+    {
+      "key": "location_card",
+      "type": "location_summary_card",
+      "sourceNodeId": "BRK0y",
+      "copy": [
+        "可切换",
+        "当前位置",
+        "上海市浦东新区 · 附近 3 公里"
+      ],
+      "layout": { "padding": 14, "gap": 10, "cornerRadius": 18 }
+    },
+    {
+      "key": "search_tip",
+      "type": "inline_tip_bar",
+      "sourceNodeId": "kEk69",
+      "copy": [
+        "建议先电话确认是否接诊皮肤毛发问题，再决定是否前往。"
+      ],
+      "layout": { "padding": 10, "gap": 10, "cornerRadius": 16 }
+    },
+    {
+      "key": "poi_results",
+      "type": "map_style_poi_result_list",
+      "sourceNodeId": "eNl2r",
+      "copy": [
+        "附近结果",
+        "像地图搜索一样直接看地址",
+        "浦东康牧宠物医院 · 张江店",
+        "680m",
+        "上海市浦东新区碧波路 118 号 1 层",
+        "宠物医院 · 021-5080 2219",
+        "毛球生活馆 · 花木店",
+        "1.2km",
+        "上海市浦东新区梅花路 216 号临街",
+        "洗护护理 · 021-6876 9011",
+        "安宠综合门诊部 · 联洋店",
+        "2.4km",
+        "上海市浦东新区丁香路 889 号社区底商",
+        "综合门诊 · 021-5098 7716",
+        "仁宠门诊 · 金桥店",
+        "3.0km",
+        "上海市浦东新区金藏路 58 号沿街",
+        "综合门诊 · 021-5011 2238"
+      ],
+      "layout": { "padding": 16, "gap": 0, "cornerRadius": 22 }
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "search_entry",
+      "api": "GET /api/map/search/suggest",
+      "fields": ["poiId", "name", "type", "address", "cityCode", "latitude", "longitude"]
+    },
+    {
+      "sectionKey": "location_card",
+      "api": "wx.getLocation + POST /api/map/reverse-geocode",
+      "fields": ["latitude", "longitude", "province", "city", "district", "formattedAddress"]
+    },
+    {
+      "sectionKey": "poi_results",
+      "api": "GET /api/map/poi/nearby",
+      "fields": ["poiId", "name", "type", "address", "tel", "latitude", "longitude", "distanceMeter"]
+    }
+  ],
+  "actions": [
+    { "name": "searchSuggest", "target": "/api/map/search/suggest", "sectionKey": "search_entry" },
+    { "name": "selectSuggestion", "target": "local-state", "sectionKey": "search_entry" },
+    { "name": "refreshLocation", "target": "wx.getLocation", "sectionKey": "location_card" },
+    { "name": "searchNearbyPoi", "target": "/api/map/poi/nearby", "sectionKey": "poi_results" },
+    { "name": "callPoi", "target": "wx.makePhoneCall", "sectionKey": "poi_results" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "ex1sD",
+    "criticalCheckpoints": [
+      "page looks like one concise search-and-results screen rather than a booking flow",
+      "top card contains only a single search input and one short helper line",
+      "results appear in-place as thin map-style rows with address visible at a glance",
+      "no separate list page or detail page affordance remains in the visual hierarchy"
+    ]
+  }
+}

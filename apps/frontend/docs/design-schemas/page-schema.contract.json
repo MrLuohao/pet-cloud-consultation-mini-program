@@ -21,7 +21,11 @@
         "platform": { "type": "string", "enum": ["wechat-miniprogram"] },
         "penFile": { "type": "string" },
         "frameId": { "type": "string" },
-        "frameName": { "type": "string" }
+        "frameName": { "type": "string" },
+        "variantFrameIds": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
       },
       "additionalProperties": false
     },

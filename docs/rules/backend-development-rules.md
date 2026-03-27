@@ -16,7 +16,7 @@
 
 ## BaseEntity 规则
 
-- 继承 `BaseEntity` 的实体默认需要：
+- `BaseEntity` 默认只承接通用审计字段：
   - `id`
   - `creator_id`
   - `creator_name`
@@ -24,13 +24,16 @@
   - `modifier_id`
   - `modifier_name`
   - `modify_time`
-- `is_deleted` 是否保留必须按业务表类型判断，不能盲加。
+- `BaseEntity` 默认不再携带 `is_deleted`。
+- 是否需要软删除，由具体实体按业务语义自行声明，不能把软删除当默认字段。
 
 ## is_deleted 判断
 
-- 主表、配置表、可撤销业务表通常保留 `is_deleted`。
-- 流水表、事实记录表、审计日志表通常不保留 `is_deleted`。
-- 如果实体继承了 `BaseEntity` 但实际表不含 `is_deleted`，需在实体层显式排除。
+- 主内容表、可撤销业务表、需要误删恢复或审核下架的表，才考虑保留 `is_deleted`。
+- 流水表、事实记录表、审计日志表、关系表、中间表通常不保留 `is_deleted`。
+- 双边共享数据不得用单个 `is_deleted` 表达“某一方删除”。
+- 私信会话、群会话成员状态、收藏夹展示状态这类按参与人可见性变化的数据，应优先使用“按用户维度状态字段”，例如隐藏时间、归档状态、置顶状态。
+- 当前项目内，`community_post`、`community_comment` 保留软删除；`private_conversation` 不再使用全局软删除。
 
 ## 鉴权规则
 

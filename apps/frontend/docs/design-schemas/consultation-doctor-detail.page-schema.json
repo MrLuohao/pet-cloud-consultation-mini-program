@@ -1,0 +1,102 @@
+{
+  "meta": {
+    "pageKey": "consultation-doctor-detail",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "0akq8",
+    "frameName": "医生详情页 Consultation Doctor Detail"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFF7F1",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "textWarm": "#C47C36",
+      "accentPrimary": "#5C35D6",
+      "accentWarm": "#C47C36",
+      "borderSoft": "#F3EEF9",
+      "borderWarm": "#F0E1D6"
+    },
+    "radius": {
+      "heroCard": 22,
+      "card": 18,
+      "metricCard": 16,
+      "pill": 999,
+      "button": 18
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 18, "fontWeight": "700" },
+      "metricValue": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "700" },
+      "sectionTitle": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "bodyStrong": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "700" },
+      "button": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "GlU4t", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_header", "type": "page_title", "sourceNodeId": "7m2Tj", "copy": ["医生详情"] },
+    {
+      "key": "doctor_hero",
+      "type": "consultation_doctor_detail_hero",
+      "sourceNodeId": "202k6",
+      "copy": ["李医生", "皮肤专科 · 伴宠中心医院 · 犬猫通诊", "从业 12 年 · 已接 1820 单 · 执业认证", "2 分钟回复", "擅长皮肤过敏、反复抓挠、耳道问题与慢性皮肤炎症随访。", "执业认证", "犬猫皮肤", "支持复诊", "4.9 分", "综合评分", "98%", "近 30 天好评", "¥39 起", "图文咨询起"]
+    },
+    {
+      "key": "consult_mode_card",
+      "type": "consultation_doctor_mode_card",
+      "sourceNodeId": "f7CS5",
+      "copy": ["选择咨询方式", "普通咨询", "¥39 起 · 预计 10 分钟内接诊，适合完整描述症状后等待医生回复", "加急问诊", "¥69 起 · 预计 2 分钟内优先处理，适合精神差或持续恶化时快速判断"]
+    },
+    {
+      "key": "reviews_card",
+      "type": "consultation_doctor_reviews_card",
+      "sourceNodeId": "mgUQT",
+      "copy": ["用户反馈", "最近 32 条真实反馈", "“对皮肤问题判断很稳，给的观察路径也清楚。”", "团子妈妈 · 03/18", "如未添加宠物，下一步会先引导补充宠物信息后再发起咨询。", "已了解"]
+    },
+    { "key": "bottom_secondary_action", "type": "secondary_button", "sourceNodeId": "NZALw", "copy": ["加急问诊"] },
+    { "key": "bottom_primary_action", "type": "primary_button", "sourceNodeId": "CkvAb", "copy": ["立即咨询"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "doctor_hero",
+      "api": "GET /api/doctor/{id}",
+      "fields": ["id", "name", "department", "hospitalName", "experienceYears", "consultationCount", "certificationLabel", "avgResponseLabel", "description", "tags[]", "rating", "goodReviewRate", "consultationFeeLabel"]
+    },
+    {
+      "sectionKey": "consult_mode_card",
+      "api": "GET /api/doctor/{id}",
+      "fields": ["consultModes[].type", "consultModes[].priceLabel", "consultModes[].description"]
+    },
+    {
+      "sectionKey": "reviews_card",
+      "api": "GET /api/consultation/doctor/{doctorId}/reviews",
+      "fields": ["reviews[].content", "reviews[].authorName", "reviews[].createdAt", "reviewsSummary.totalCount", "petGateHint"]
+    }
+  ],
+  "actions": [
+    { "name": "selectConsultMode", "target": "consultation-doctor-mode-select", "sectionKey": "consult_mode_card" },
+    { "name": "startNormalConsultation", "target": "/pages/consultation/create?doctorId={doctorId}&type=1&fee={consultationFee}", "sectionKey": "bottom_primary_action" },
+    { "name": "startUrgentConsultation", "target": "/pages/consultation/urgent/index?doctorId={doctorId}", "sectionKey": "bottom_secondary_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "0akq8",
+    "criticalCheckpoints": [
+      "doctor hero combines credibility, metrics and specialties before any mode selection",
+      "normal and urgent consultation options are presented as two contrastive cards rather than small radio controls",
+      "review card stays lightweight and trust-building instead of turning into a dense review feed",
+      "bottom actions clearly separate urgent and normal consultation starts"
+    ]
+  }
+}

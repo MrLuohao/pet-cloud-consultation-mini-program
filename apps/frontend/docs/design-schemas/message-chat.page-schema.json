@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "pageKey": "message-chat",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "hHmNO",
+    "frameName": "私信聊天页 Message Chat"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 18, 16],
+    "sectionGap": 10,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FAFAFC",
+      "surfaceWarm": "#FFF7F1",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "textWarm": "#8A6F54",
+      "accentPrimary": "#5C35D6",
+      "accentWarm": "#C47C36",
+      "borderSoft": "#ECE7F4",
+      "borderInput": "#EEEAF5",
+      "borderWarm": "#F0E1D6"
+    },
+    "radius": {
+      "bubble": 18,
+      "imageBubble": 14,
+      "notice": 16,
+      "input": 22,
+      "button": 22
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+      "meta": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "600" },
+      "notice": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "600" },
+      "button": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "pEPef", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_header", "type": "page_title", "sourceNodeId": "L0laX", "copy": ["私信聊天"] },
+    {
+      "key": "message_stream",
+      "type": "message_chat_stream",
+      "sourceNodeId": "tqun4",
+      "copy": [
+        "你好呀，团子最近状态怎么样？",
+        "萌宠日记 · 09:32",
+        "这两天好很多了，准备周末带它出去晒太阳。",
+        "我 · 09:34",
+        "太好了，耳后那块还会继续抓吗？",
+        "萌宠日记 · 09:35",
+        "偶尔会，晚上明显一点。",
+        "我 · 09:36",
+        "我 · 09:37 · 已读",
+        "收到，这张比昨天清楚。先别频繁清洗，观察 48 小时。",
+        "萌宠日记 · 09:38"
+      ]
+    },
+    {
+      "key": "inline_notice",
+      "type": "message_chat_inline_notice",
+      "sourceNodeId": "hilAc",
+      "copy": ["如果今晚继续抓耳，明天白天再补一张自然光近照。", "了解"]
+    },
+    {
+      "key": "input_bar",
+      "type": "message_chat_input_bar",
+      "sourceNodeId": "GS7wb",
+      "copy": ["+", "继续输入消息...", "发送"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "message_stream",
+      "api": "GET /api/messages/conversations/{conversationId}",
+      "fields": ["conversation.id", "conversation.title", "messages[].id", "messages[].senderType", "messages[].content", "messages[].imageUrl", "messages[].timeLabel", "messages[].readStatusLabel"]
+    }
+  ],
+  "actions": [
+    { "name": "pickMessageAttachment", "target": "message-chat-attachment-picker", "sectionKey": "input_bar" },
+    { "name": "sendMessageReply", "target": "message-chat-send", "sectionKey": "input_bar" },
+    { "name": "acknowledgeInlineNotice", "target": "message-chat-inline-notice-ack", "sectionKey": "inline_notice" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "hHmNO",
+    "criticalCheckpoints": [
+      "chat keeps alternating left white bubbles and right purple bubbles with generous vertical rhythm",
+      "image message stays inside a purple outgoing bubble shell rather than becoming a plain image tile",
+      "inline warm notice appears as a lightweight advisory strip above the composer",
+      "composer stays docked with plus button, soft input pill and compact send button"
+    ]
+  }
+}

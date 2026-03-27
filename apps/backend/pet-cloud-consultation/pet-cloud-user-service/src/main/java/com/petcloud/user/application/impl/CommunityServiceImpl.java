@@ -207,8 +207,7 @@ public class CommunityServiceImpl implements CommunityService {
     public PageVO<CommunityPostVO> getFollowingPosts(Long userId, int page, int pageSize) {
         // 获取关注用户列表
         LambdaQueryWrapper<UserFollow> followQuery = new LambdaQueryWrapper<>();
-        followQuery.eq(UserFollow::getFollowerId, userId)
-                .eq(UserFollow::getIsDeleted, 0);
+        followQuery.eq(UserFollow::getFollowerId, userId);
         List<UserFollow> follows = userFollowMapper.selectList(followQuery);
 
         if (follows == null || follows.isEmpty()) {
@@ -691,7 +690,6 @@ public class CommunityServiceImpl implements CommunityService {
     public List<CommunityTopicVO> getHotTopics() {
         LambdaQueryWrapper<CommunityTopic> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(CommunityTopic::getIsHot, 1)
-                .eq(CommunityTopic::getIsDeleted, 0)
                 .orderByDesc(CommunityTopic::getPostCount)
                 .last("LIMIT 20");
         List<CommunityTopic> topics = communityTopicMapper.selectList(queryWrapper);
@@ -705,8 +703,7 @@ public class CommunityServiceImpl implements CommunityService {
         }
 
         LambdaQueryWrapper<CommunityTopic> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(CommunityTopic::getIsDeleted, 0)
-                .like(CommunityTopic::getName, keyword)
+        queryWrapper.like(CommunityTopic::getName, keyword)
                 .orderByDesc(CommunityTopic::getPostCount)
                 .last("LIMIT 20");
         List<CommunityTopic> topics = communityTopicMapper.selectList(queryWrapper);
@@ -716,7 +713,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public CommunityTopicVO getTopicDetail(Long topicId) {
         CommunityTopic topic = communityTopicMapper.selectById(topicId);
-        if (topic == null || topic.getIsDeleted() == 1) {
+        if (topic == null) {
             throw new BusinessException(UserRespType.COMMUNITY_TOPIC_NOT_FOUND);
         }
         return convertTopicToVO(topic);

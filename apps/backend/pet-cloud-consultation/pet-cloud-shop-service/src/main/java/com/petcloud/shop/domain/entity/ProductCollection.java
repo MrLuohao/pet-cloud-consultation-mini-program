@@ -48,11 +48,4 @@ public class ProductCollection extends BaseEntity {
      */
     @TableField("product_price")
     private BigDecimal productPrice;
-
-    /**
-     * 覆盖父类的逻辑删除字段，不使用 @TableLogic 注解
-     * 收藏删除时直接物理删除，不做软删除
-     */
-    @TableField(value = "is_deleted", exist = false)
-    private Integer isDeleted;
 }

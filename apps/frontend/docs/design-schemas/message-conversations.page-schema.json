@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "pageKey": "message-conversations",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "dtmAQ",
+    "frameName": "私信会话页 Message Conversations"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 10,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surfaceSoft": "#FCFBFF",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "accentPrimary": "#5C35D6",
+      "accentSecondary": "#6D32FF",
+      "borderSoft": "#F0EAFE",
+      "dividerSoft": "#F2EDF8"
+    },
+    "radius": {
+      "heroCard": 20,
+      "avatar": 26,
+      "badge": 11,
+      "pill": 999
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 18, "fontWeight": "700" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "meta": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "600" },
+      "badge": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "rEjgR", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_header", "type": "page_title", "sourceNodeId": "rpMRF", "copy": ["私信会话"] },
+    {
+      "key": "conversation_hero",
+      "type": "message_conversation_hero",
+      "sourceNodeId": "Kc9Ru",
+      "copy": ["5 条未读", "最近更新", "今天有 4 个会话在更新"]
+    },
+    {
+      "key": "conversation_list",
+      "type": "message_conversation_list",
+      "sourceNodeId": "AnnYk",
+      "copy": [
+        "萌宠日记",
+        "你家团子最近状态怎么样？",
+        "2",
+        "周医生",
+        "今晚补一张耳后照片，我再帮你看。",
+        "09:45",
+        "林医生",
+        "我看了你昨晚发的照片，红点已经淡一些了。",
+        "1",
+        "团子妈妈",
+        "我补了两张近照，你看还要继续用喷雾吗？",
+        "周三",
+        "宠物营养师",
+        "换粮后便便稳定多了，也没前几天那么稀了。",
+        "昨天"
+      ]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "conversation_hero",
+      "api": "GET /api/messages/conversations/summary",
+      "fields": ["summary.unreadCount", "summary.sortLabel", "summary.updatingCount"]
+    },
+    {
+      "sectionKey": "conversation_list",
+      "api": "GET /api/messages/conversations",
+      "fields": [
+        "conversations[].id",
+        "conversations[].title",
+        "conversations[].avatarUrl",
+        "conversations[].lastMessagePreview",
+        "conversations[].unreadCount",
+        "conversations[].timeLabel"
+      ]
+    }
+  ],
+  "actions": [
+    { "name": "openMessageConversation", "target": "/pages/message/chat?id={conversationId}", "sectionKey": "conversation_list" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "dtmAQ",
+    "criticalCheckpoints": [
+      "conversation page opens with a quiet unread summary hero before the list",
+      "list rows keep large avatars, compact two-line text blocks and sparse right-side badge or time",
+      "purple unread badges only appear on rows that still have pending messages",
+      "dividers remain hairline and visually subordinate"
+    ]
+  }
+}

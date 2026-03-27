@@ -18,6 +18,7 @@
 - schema 同步必须通过 Pencil MCP / pencli 直接读取节点结构完成。
 - 截图只用于最终校验，不得把视觉识别当成 schema 生成依据。
 - 如果 MCP 当前读到的 `.pen` 与旧摘要、旧 schema、旧截图不一致，必须立即以当前 `.pen` 为准校正相关文档，而不是反向把 `.pen` 改回旧状态。
+- 本文件只定义画布事实源与设计阶段约束；前端代码层面的实现细则统一以下沉到 `docs/rules/frontend-implementation-rules.md` 为准。
 
 ## 三、画布修改边界
 

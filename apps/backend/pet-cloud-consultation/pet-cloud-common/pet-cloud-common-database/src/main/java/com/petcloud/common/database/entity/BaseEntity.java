@@ -11,11 +11,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 基础实体类 - 包含通用字段
+ * 基础实体类 - 仅包含通用审计字段
  *
- * 注意：isDeleted 字段不再使用 @TableLogic 注解，
- * 如果需要逻辑删除功能，请在具体实体类中单独声明并添加 @TableLogic 注解。
- * 这样可以避免关联表（如点赞、收藏、购物车等）在删除后再次添加时的唯一约束冲突问题。
+ * 软删除字段是否存在由具体实体按业务需要自行声明，
+ * BaseEntity 默认不再携带 isDeleted。
  *
  * @author luohao
  */
@@ -38,7 +37,7 @@ public abstract class BaseEntity implements Serializable {
     private Long creatorId;
 
     /**
-     * 创建人姓名
+     * 创建人名称
      */
     @TableField(value = "creator_name", fill = FieldFill.INSERT)
     private String creatorName;
@@ -58,7 +57,7 @@ public abstract class BaseEntity implements Serializable {
     private Long modifierId;
 
     /**
-     * 修改人姓名
+     * 修改人名称
      */
     @TableField(value = "modifier_name", fill = FieldFill.INSERT_UPDATE)
     private String modifierName;
@@ -70,10 +69,4 @@ public abstract class BaseEntity implements Serializable {
     @TableField(value = "modify_time", fill = FieldFill.INSERT_UPDATE)
     private Date modifyTime;
 
-    /**
-     * 删除标识（0-正常，1-已删除）
-     * 注意：此字段不自动启用逻辑删除，需要在具体实体中添加 @TableLogic 注解才会生效
-     */
-    @TableField("is_deleted")
-    private Integer isDeleted;
 }

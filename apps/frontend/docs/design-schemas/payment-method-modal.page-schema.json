@@ -2,7 +2,7 @@
   "meta": {
     "pageKey": "payment-method-modal",
     "platform": "wechat-miniprogram",
-    "penFile": "/Users/luohao/Desktop/WeChat_MiniProgramDev/desgin/frontendMobileScreens.pen",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
     "frameId": "Dff1y",
     "frameName": "支付方式弹窗 Payment Method Modal"
   },

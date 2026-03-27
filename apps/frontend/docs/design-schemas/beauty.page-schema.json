@@ -1,0 +1,127 @@
+{
+  "meta": {
+    "pageKey": "beauty",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "Mpxrb",
+    "frameName": "护理首页 Beauty Care Home"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [10, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceSoft": "#FCFBFF",
+      "surfaceWarm": "#FFF7F1",
+      "accentPrimary": "#5D2FE5",
+      "accentWarm": "#D88428",
+      "textPrimary": "#2F2347",
+      "textSecondary": "#7E7395",
+      "textMuted": "#8B839F",
+      "borderSoft": "#F0EAF8"
+    },
+    "radius": {
+      "heroCard": 24,
+      "card": 22,
+      "pill": 999,
+      "button": 16
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 24, "fontWeight": "700", "lineHeight": 1.25 },
+      "sectionTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "lineHeight": 1.5 },
+      "chip": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "600" },
+      "button": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "EVI3D",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "page_header",
+      "type": "page_title",
+      "sourceNodeId": "Whknv",
+      "copy": ["皮毛护理"]
+    },
+    {
+      "key": "hero",
+      "type": "editorial_hero_card",
+      "sourceNodeId": "btfMN",
+      "copy": [
+        "皮肤毛发护理",
+        "后台可配",
+        "把护理知识做成每天都能看懂的轻内容",
+        "首页只保留高频、可读、可配置的护理热点内容。用户先理解护理判断，再决定是否去附近找机构。",
+        "掉毛异常",
+        "耳后发红",
+        "频繁抓挠"
+      ],
+      "layout": { "padding": 18, "gap": 12, "cornerRadius": 24 }
+    },
+    {
+      "key": "hotspot_feed",
+      "type": "editorial_article_stack",
+      "sourceNodeId": "GSLfS",
+      "title": "护理热点",
+      "copy": [
+        "按后台配置更新",
+        "换季掉毛明显增多，先别急着频繁洗护",
+        "先停最近新增的洗护产品，连续两天记录掉毛量和抓挠频率，再看是否持续异常。",
+        "护理判断",
+        "耳后轻度发红，48 小时内重点看什么",
+        "如果只是轻度泛红，先减少刺激、补自然光近照；只有持续扩大或伴随异味时才需要更快线下确认。",
+        "观察建议",
+        "频繁抓挠时，去机构前建议先准备哪些信息",
+        "把近 3 天的照片、抓挠时间段、近期洗护与饮食变化记下来，到店沟通会更高效。",
+        "到店准备"
+      ],
+      "layout": { "padding": 16, "gap": 12, "cornerRadius": 22 }
+    },
+    {
+      "key": "cta_card",
+      "type": "cta_guidance_card",
+      "sourceNodeId": "HS7lK",
+      "copy": [
+        "需要线下确认时，再去附近找机构",
+        "只保留一个搜索入口，避免多层跳转。后续页面直接按地图搜索结果样式展示机构与地址。",
+        "附近找机构"
+      ],
+      "layout": { "padding": 16, "gap": 12, "cornerRadius": 22 }
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "hero",
+      "api": "GET /api/content/featured?category=beauty-care",
+      "fields": ["featuredTopic.title", "featuredTopic.summary", "featuredTopic.tags[]", "featuredTopic.badge"]
+    },
+    {
+      "sectionKey": "hotspot_feed",
+      "api": "GET /api/content/articles?category=beauty-care",
+      "fields": ["articles[].id", "articles[].title", "articles[].summary", "articles[].tag", "articles[].sortOrder"]
+    }
+  ],
+  "actions": [
+    { "name": "openArticle", "target": "article-detail-or-inline-reader", "sectionKey": "hotspot_feed" },
+    { "name": "openNearbySearch", "target": "/pages/beauty/booking/index?scene=beauty-care", "sectionKey": "cta_card" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "Mpxrb",
+    "criticalCheckpoints": [
+      "page feels like a lightweight editorial home rather than a service marketplace",
+      "hero card remains warm, spacious and concise with only one line of chips",
+      "hotspot area reads like three configurable article cards in one elegant stack",
+      "the page ends with a single nearby-search CTA instead of multi-step flow blocks"
+    ]
+  }
+}

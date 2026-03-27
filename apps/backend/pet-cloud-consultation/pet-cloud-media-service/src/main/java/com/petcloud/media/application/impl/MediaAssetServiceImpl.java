@@ -62,7 +62,6 @@ public class MediaAssetServiceImpl implements MediaAssetService {
         asset.setModerationStatus(moderationStatus.getCode());
         asset.setRiskTagsJson(writeJsonSafe(riskTags));
         asset.setReason(reason);
-        asset.setIsDeleted(0);
         mediaAssetMapper.insert(asset);
         return toVO(asset, riskTags, moderationStatus);
     }
@@ -77,8 +76,7 @@ public class MediaAssetServiceImpl implements MediaAssetService {
             return List.of();
         }
         return mediaAssetMapper.selectList(new LambdaQueryWrapper<MediaAsset>()
-                        .in(MediaAsset::getId, assetIds)
-                        .eq(MediaAsset::getIsDeleted, 0))
+                        .in(MediaAsset::getId, assetIds))
                 .stream()
                 .map(this::toVO)
                 .toList();

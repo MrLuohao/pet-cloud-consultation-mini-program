@@ -1,7 +1,6 @@
 package com.petcloud.user.application.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.petcloud.common.core.exception.BusinessException;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -73,20 +71,23 @@ public class PrivateMessageServiceImpl implements PrivateMessageService {
             conversation.setUser2Id(user2Id);
             conversation.setLastMessage(dto.getContent());
             conversation.setLastTime(new java.util.Date());
-            conversation.setUnread1(0);
-            conversation.setUnread2(0);
+            conversation.setUnread1(senderId.equals(user2Id) ? 1 : 0);
+            conversation.setUnread2(senderId.equals(user1Id) ? 1 : 0);
             conversationMapper.insert(conversation);
         } else {
-            // 更新会话最后消息
-            conversation.setLastMessage(dto.getContent());
-            conversation.setLastTime(new java.util.Date());
             // 增加接收者未读数
             if (senderId.equals(user1Id)) {
                 conversation.setUnread2(conversation.getUnread2() + 1);
             } else {
                 conversation.setUnread1(conversation.getUnread1() + 1);
             }
-            conversationMapper.updateById(conversation);
+
+            conversationMapper.updateAfterSend(
+                    conversation.getId(),
+                    dto.getContent(),
+                    conversation.getUnread1(),
+                    conversation.getUnread2()
+            );
         }
 
         // 创建消息
@@ -107,9 +108,11 @@ public class PrivateMessageServiceImpl implements PrivateMessageService {
     public PageVO<PrivateConversationVO> getConversations(Long userId, int page, int pageSize) {
         IPage<PrivateConversation> pageObj = new Page<>(page, pageSize);
         LambdaQueryWrapper<PrivateConversation> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.and(w -> w.eq(PrivateConversation::getUser1Id, userId)
-                        .or().eq(PrivateConversation::getUser2Id, userId))
-                .eq(PrivateConversation::getIsDeleted, 0)
+        queryWrapper.and(w -> w.nested(n -> n.eq(PrivateConversation::getUser1Id, userId)
+                        .isNull(PrivateConversation::getUser1HiddenTime))
+                .or()
+                .nested(n -> n.eq(PrivateConversation::getUser2Id, userId)
+                        .isNull(PrivateConversation::getUser2HiddenTime)))
                 .orderByDesc(PrivateConversation::getLastTime);
 
         IPage<PrivateConversation> result = conversationMapper.selectPage(pageObj, queryWrapper);
@@ -149,7 +152,6 @@ public class PrivateMessageServiceImpl implements PrivateMessageService {
         IPage<PrivateMessage> pageObj = new Page<>(page, pageSize);
         LambdaQueryWrapper<PrivateMessage> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(PrivateMessage::getConversationId, conversationId)
-                .eq(PrivateMessage::getIsDeleted, 0)
                 .orderByDesc(PrivateMessage::getCreateTime);
 
         IPage<PrivateMessage> result = messageMapper.selectPage(pageObj, queryWrapper);
@@ -226,10 +228,14 @@ public class PrivateMessageServiceImpl implements PrivateMessageService {
             throw new BusinessException(UserRespType.PRIVATE_CONVERSATION_DELETE_DENIED);
         }
 
-        conversation.setIsDeleted(1);
-        conversationMapper.updateById(conversation);
+        if (conversation.getUser1Id().equals(userId)) {
+            conversationMapper.hideByUser1(conversationId);
+        } else {
+            conversationMapper.hideByUser2(conversationId);
+        }
+        messageMapper.markAsReadByConversation(conversationId, userId);
 
-        log.debug("删除会话，userId: {}, conversationId: {}", userId, conversationId);
+        log.debug("隐藏会话，userId: {}, conversationId: {}", userId, conversationId);
     }
 
     // ========================= 私有辅助方法 =========================

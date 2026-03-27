@@ -86,7 +86,6 @@ public class AiTaskServiceImpl implements AiTaskService {
         task.setStatus(AiTaskStatus.PROCESSING.getCode());
         task.setTraceId(UUID.randomUUID().toString());
         task.setInputSnapshot(writeJsonSafe(request));
-        task.setIsDeleted(0);
         aiTaskMapper.insert(task);
         try {
             DiagnosisTaskVO result = buildDiagnosisResult(request);
@@ -107,7 +106,6 @@ public class AiTaskServiceImpl implements AiTaskService {
             record.setShouldConsultDoctor(resolveRiskLevel(result.getRiskLevel()).requiresDoctor() ? 1 : 0);
             record.setStatus(DiagnosisRecordStatus.OBSERVING.getCode());
             record.setDiagnosisTime(new Date());
-            record.setIsDeleted(0);
             diagnosisRecordMapper.insert(record);
 
             DiagnosisExtractedInfo extractedInfo = new DiagnosisExtractedInfo();
@@ -119,7 +117,6 @@ public class AiTaskServiceImpl implements AiTaskService {
             extractedInfo.setAffectedPartsJson(writeJsonSafe(result.getKeyInfo().getAffectedParts()));
             extractedInfo.setFollowUpFocusJson(writeJsonSafe(result.getKeyInfo().getFollowUpFocus()));
             extractedInfo.setExtractVersion("extract.v1");
-            extractedInfo.setIsDeleted(0);
             diagnosisExtractedInfoMapper.insert(extractedInfo);
 
             result = DiagnosisTaskVO.builder()
@@ -212,7 +209,6 @@ public class AiTaskServiceImpl implements AiTaskService {
         asset.setModerationStatus(moderationStatus.getCode());
         asset.setRiskTagsJson(writeJsonSafe(riskTags));
         asset.setReason(reason);
-        asset.setIsDeleted(0);
         mediaAssetMapper.insert(asset);
 
         return MediaAssetVO.builder()
@@ -238,7 +234,6 @@ public class AiTaskServiceImpl implements AiTaskService {
             return List.of();
         }
         return mediaAssetMapper.selectBatchIds(assetIds).stream()
-                .filter(asset -> asset.getIsDeleted() == null || asset.getIsDeleted() == 0)
                 .map(this::toMediaAssetVO)
                 .toList();
     }

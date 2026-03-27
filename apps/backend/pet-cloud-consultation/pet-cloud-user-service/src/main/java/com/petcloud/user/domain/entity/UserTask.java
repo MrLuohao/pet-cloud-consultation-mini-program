@@ -13,8 +13,6 @@ import java.util.Date;
 /**
  * 用户任务记录实体类
  *
- * 注意：此表为事实记录表，不支持软删除，因此显式排除 is_deleted 字段
- *
  * @author luohao
  */
 @Data
@@ -64,14 +62,6 @@ public class UserTask extends BaseEntity {
      */
     @TableField("task_date")
     private LocalDate taskDate;
-
-    /**
-     * 此表为事实记录表，不需要软删除功能
-     * 显式设置为 false，MyBatis-Plus 将不会查询此字段
-     */
-    @TableField(exist = false)
-    private Integer isDeleted;
-
     /**
      * 状态枚举
      */

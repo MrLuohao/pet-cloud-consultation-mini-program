@@ -2,127 +2,129 @@
   "meta": {
     "pageKey": "pet-timeline",
     "platform": "wechat-miniprogram",
-    "penFile": "/Users/luohao/Desktop/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
-    "frameId": "cAZG0",
-    "frameName": "宠物成长档案页 Pet Growth Timeline"
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "zqXpi",
+    "frameName": "单宠物成长档案页 Pet Growth Profile"
   },
   "layout": {
-    "background": "#F8F8F8",
+    "background": "#F5F4F1",
     "contentPadding": [8, 16, 24, 16],
-    "sectionGap": 14,
+    "sectionGap": 20,
     "safeAreaTop": true
   },
   "tokens": {
     "colors": {
-      "pageBackground": "#F8F8F8",
+      "pageBackground": "#F5F4F1",
       "surface": "#FFFFFF",
-      "surfaceSoft": "#FFFEFC",
-      "surfaceMemory": "#FCFAFF",
-      "surfaceWarm": "#FFF6F0",
-      "textPrimary": "#2B2438",
-      "textSecondary": "#857B94",
-      "textMuted": "#746C86",
+      "surfaceSoft": "#F7F4FC",
+      "textPrimary": "#1A1918",
+      "textSecondary": "#6D6C6A",
+      "textMuted": "#9C9B99",
       "accentPrimary": "#5C35D6",
-      "accentWarm": "#C56F53",
-      "accentSoft": "#B77434",
-      "borderSoft": "#F0EBF8",
-      "borderWarm": "#F3E8DE"
+      "accentWarm": "#D89575",
+      "borderSoft": "#E5E4E1",
+      "borderPurple": "#E8E0F4"
     },
     "radius": {
-      "coverCard": 24,
+      "heroImage": 28,
       "card": 20,
-      "memoryCard": 18,
-      "button": 20,
-      "pill": 999
+      "button": 18
     },
     "typography": {
-      "pageTitle": { "fontFamily": "Inter", "fontSize": 24, "fontWeight": "700" },
-      "cardTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
-      "petName": { "fontFamily": "Inter", "fontSize": 26, "fontWeight": "700" },
-      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
-      "bodyStrong": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600" },
-      "button": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" }
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
+      "storyTitle": { "fontFamily": "Inter", "fontSize": 26, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "500" },
+      "bodyStrong": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "600" },
+      "caption": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "700" },
+      "button": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" }
     }
   },
   "sections": [
-    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "GmySn", "copy": ["9:41", "5G   100%"] },
-    { "key": "page_title", "type": "page_title", "sourceNodeId": "sNBeW", "copy": ["成长档案"] },
     {
-      "key": "cover_story_card",
-      "type": "growth_cover_story_card",
-      "sourceNodeId": "O2Ymo",
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "Fzwht",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "page_header",
+      "type": "page_title",
+      "sourceNodeId": "ZH1b1",
+      "copy": ["成长档案"]
+    },
+    {
+      "key": "hero_photo",
+      "type": "growth_hero_photo",
+      "sourceNodeId": "LfhEE"
+    },
+    {
+      "key": "story_block_primary",
+      "type": "growth_story_block_primary",
+      "sourceNodeId": "sU52Q",
       "copy": [
-        "成长回忆相册",
-        "来家第 823 天",
-        "封面故事",
-        "团子",
-        "成长中",
-        "今天是和团子一起的第 823 天，最近越来越爱在窗边晒太阳。",
-        "从刚到家时的拘谨，到现在会主动蹭手撒娇，那些慢慢靠近的瞬间都值得被记住。"
+        "03/24",
+        "这是最近最像团子的一天。",
+        "它在沙发边待了很久，眼神安静，动作也慢下来。那种放松不是靠一条数据得来的，而是镜头里一下就能看见的。"
       ]
     },
     {
-      "key": "milestones_card",
-      "type": "growth_milestones_card",
-      "sourceNodeId": "FxCYT",
-      "copy": [
-        "成长节点",
-        "2024/03",
-        "到家第一天",
-        "2024/06",
-        "第一次洗澡",
-        "2025/03",
-        "学会等门"
-      ]
+      "key": "story_photo_secondary",
+      "type": "growth_story_photo_secondary",
+      "sourceNodeId": "T56HI"
     },
     {
-      "key": "recent_memories_card",
-      "type": "growth_recent_memories_card",
-      "sourceNodeId": "safqP",
+      "key": "story_block_secondary",
+      "type": "growth_story_block_secondary",
+      "sourceNodeId": "NXqF9",
       "copy": [
-        "最近回忆",
-        "查看更多",
-        "第一次和牵引绳和平相处",
-        "2026.03.18",
-        "学会在窗边等日落",
-        "2026.03.10"
+        "03/20",
+        "它开始更愿意主动靠近人。",
+        "最近会主动走过来，也更愿意在身边停留。这种变化很轻，但很真切，很适合写成一句以后还想回看的小记。",
+        "今天最值得留下来的，不是它做了什么，而是它看起来很安心。",
+        "把这一刻写下来，以后再看会很珍贵。"
       ]
     },
     {
       "key": "bottom_action",
-      "type": "growth_timeline_bottom_action",
-      "sourceNodeId": "piUX5",
-      "copy": ["新增成长记录"]
+      "type": "growth_profile_bottom_action",
+      "sourceNodeId": "xZTph",
+      "copy": ["上传照片", "写成长小记"]
     }
   ],
   "dataBindings": [
     {
-      "sectionKey": "cover_story_card",
-      "api": "GET /api/pets/{petId}",
-      "fields": ["id", "name", "avatarUrl", "photoUrls", "daysWithUser", "growthStage", "storyHeadline", "storySummary"]
+      "sectionKey": "hero_photo",
+      "api": "GET /api/pets/{petId}/growth-profile",
+      "fields": ["coverImageUrl"]
     },
     {
-      "sectionKey": "milestones_card",
-      "api": "GET /api/pets/{petId}/growth-milestones",
-      "fields": ["milestones[].dateLabel", "milestones[].title", "milestones[].summary", "milestones[].type"]
+      "sectionKey": "story_block_primary",
+      "api": "GET /api/pets/{petId}/growth-profile",
+      "fields": ["featuredStory.dateLabel", "featuredStory.title", "featuredStory.summary"]
     },
     {
-      "sectionKey": "recent_memories_card",
-      "api": "GET /api/pets/{petId}/growth-records",
-      "fields": ["records[].id", "records[].title", "records[].summary", "records[].date", "records[].photoUrls"]
+      "sectionKey": "story_photo_secondary",
+      "api": "GET /api/pets/{petId}/growth-profile",
+      "fields": ["secondaryStory.imageUrl"]
+    },
+    {
+      "sectionKey": "story_block_secondary",
+      "api": "GET /api/pets/{petId}/growth-profile",
+      "fields": ["secondaryStory.dateLabel", "secondaryStory.title", "secondaryStory.summary", "secondaryStory.quote", "secondaryStory.quoteHint"]
     }
   ],
   "actions": [
-    { "name": "openGrowthMemoriesList", "target": "growth-memory-list-flow", "sectionKey": "recent_memories_card" },
-    { "name": "addGrowthRecord", "target": "growth-record-create-flow", "sectionKey": "bottom_action" }
+    { "name": "uploadGrowthPhoto", "target": "growth-photo-upload-flow", "sectionKey": "bottom_action" },
+    { "name": "writeGrowthNote", "target": "growth-note-create-flow", "sectionKey": "bottom_action" }
   ],
   "verification": {
-    "sourceScreenshotNodeId": "cAZG0",
+    "sourceScreenshotNodeId": "zqXpi",
     "criticalCheckpoints": [
-      "page reads as a growth archive or memory album rather than a health management screen",
-      "cover story card is the first visual focus, followed by growth milestones and recent memories",
-      "recent memories header keeps a subtle see-more entry instead of adding another heavy action block",
-      "bottom primary action only promotes adding a growth record and does not reintroduce medical CTAs"
+      "page reads as a calm visual growth journal instead of a health management or timeline dashboard",
+      "the first hero photo and large editorial headline dominate the page before any action area",
+      "secondary story content stays image-led and quote-led, without reintroducing cards full of metrics",
+      "bottom actions split into two equal options: upload a photo and write a short growth note"
     ]
   }
 }

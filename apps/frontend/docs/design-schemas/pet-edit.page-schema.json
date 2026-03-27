@@ -2,9 +2,13 @@
   "meta": {
     "pageKey": "pet-edit",
     "platform": "wechat-miniprogram",
-    "penFile": "/Users/luohao/Desktop/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
-    "frameId": "FLS1j",
-    "frameName": "宠物编辑页 Pet Edit"
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "11vrw",
+    "frameName": "编辑宠物页 Pet Edit",
+    "variantFrameIds": {
+      "edit": "11vrw",
+      "create": "WA7xQ"
+    }
   },
   "layout": {
     "background": "#F8F8F8",
@@ -17,134 +21,168 @@
       "pageBackground": "#F8F8F8",
       "surface": "#FFFFFF",
       "surfaceSoft": "#FCFBFF",
-      "surfaceWarm": "#FFFEFC",
-      "surfaceNote": "#FFFEFD",
-      "surfaceDanger": "#FFF7F5",
+      "surfaceWarm": "#FFFEFD",
       "fieldBackground": "#F8F5FC",
+      "fieldBackgroundWarm": "#FFFEFD",
       "textPrimary": "#2B2438",
       "textSecondary": "#8A81A0",
       "textMuted": "#746C86",
-      "textWarm": "#8A8175",
+      "textSubtle": "#A095B6",
       "accentPrimary": "#5C35D6",
-      "accentSecondary": "#7C6DB0",
-      "accentSoft": "#F2ECFF",
-      "dangerText": "#9D5E53",
-      "dangerSubtle": "#A68179",
-      "borderSoft": "#F3EEF9",
+      "accentSecondary": "#6D32FF",
+      "accentWarm": "#C47C36",
+      "borderSoft": "#ECE7F4",
+      "borderPurple": "#E7DBFF",
       "borderWarm": "#F6F0E8",
-      "borderDanger": "#F3E2DE"
+      "borderCard": "#F4F0FA"
     },
     "radius": {
       "identityCard": 22,
       "card": 18,
+      "field": 16,
       "button": 20,
       "pill": 999,
-      "avatar": 28
+      "avatarEdit": 36,
+      "avatarCreate": 32
     },
     "typography": {
-      "pageTitle": { "fontFamily": "Inter", "fontSize": 24, "fontWeight": "700" },
-      "cardTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
       "identityTitle": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "700" },
-      "fieldValue": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "600" },
-      "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "500" },
-      "caption": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "600" },
-      "button": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" }
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" },
+      "fieldLabel": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "600" },
+      "fieldValue": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "500" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+      "bodyStrong": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "700" },
+      "button": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" }
     }
   },
   "sections": [
     {
       "key": "status_bar",
       "type": "status_bar",
-      "sourceNodeId": "q77kU",
+      "sourceNodeId": "R9RS7",
       "copy": ["9:41", "5G   100%"],
       "modes": ["edit", "create"],
       "modeSourceNodeIds": {
-        "edit": "q77kU",
-        "create": "4KJED"
+        "edit": "R9RS7",
+        "create": "Ko2Dh"
       }
     },
     {
       "key": "page_header",
-      "type": "pet_edit_header",
-      "sourceNodeId": "FG53I",
-      "copy": ["编辑资料", "更新宠物基础信息，方便档案、提醒与健康记录持续关联。"],
+      "type": "page_title",
+      "sourceNodeId": "rgMcE",
+      "copy": ["编辑宠物"],
       "modes": ["edit", "create"],
       "modeSourceNodeIds": {
-        "edit": "FG53I",
-        "create": "DrAsU"
+        "edit": "rgMcE",
+        "create": "70log"
       },
       "modeCopy": {
-        "edit": ["编辑资料", "更新宠物基础信息，方便档案、提醒与健康记录持续关联。"],
-        "create": ["添加宠物", "第一次为 TA 建档，从品种和基础资料开始。"]
+        "edit": ["编辑宠物"],
+        "create": ["新增宠物"]
       }
     },
     {
       "key": "identity_preview_card",
       "type": "pet_identity_preview_card",
-      "sourceNodeId": "Z8Eni",
-      "copy": ["团子", "英短蓝猫 · 2岁3个月", "当前展示在宠物列表与诊断档案中的基础资料。", "更换头像", "女孩", "2岁3个月", "4.3 kg"],
+      "sourceNodeId": "mbD3C",
+      "copy": ["团子", "英短蓝猫 · 女孩 · 4.3 kg", "编辑头像", "已建档", "女孩", "4.3 kg"],
       "modes": ["edit", "create"],
       "modeSourceNodeIds": {
-        "edit": "Z8Eni",
-        "create": "zghmW"
+        "edit": "mbD3C",
+        "create": "ItVfZ"
       },
       "modeCopy": {
-        "edit": ["团子", "英短蓝猫 · 2岁3个月", "当前展示在宠物列表与诊断档案中的基础资料。", "更换头像", "女孩", "2岁3个月", "4.3 kg"],
-        "create": ["第一次添加宠物", "先补基础资料，完成后 TA 会出现在宠物列表与档案页", "首次建档后，可继续补成长记录和健康信息。", "添加头像", "猫咪", "待填写", "首次建档"]
+        "edit": ["团子", "英短蓝猫 · 女孩 · 4.3 kg", "编辑头像", "已建档", "女孩", "4.3 kg"],
+        "create": ["先为 TA 建立档案", "选好类型和品种后，再补基础资料和头像。", "添加头像", "猫咪", "建档中"]
       }
     },
     {
-      "key": "basic_info_card",
-      "type": "pet_basic_info_form_card",
-      "sourceNodeId": "xPiSy",
-      "copy": ["基础信息", "宠物名称", "团子", "宠物类型", "狗狗", "猫咪", "其他", "品种", "英短蓝猫", "支持直接输入自由品种名称，不需要按推荐项选择。", "性别", "男孩", "女孩", "保密"],
-      "modes": ["edit", "create"],
-      "modeSourceNodeIds": {
-        "edit": "xPiSy",
-        "create": "kH3W1"
-      },
-      "modeCopy": {
-        "edit": ["基础信息", "宠物名称", "团子", "宠物类型", "狗狗", "猫咪", "其他", "品种", "英短蓝猫", "支持直接输入自由品种名称，不需要按推荐项选择。", "性别", "男孩", "女孩", "保密"],
-        "create": ["基础信息", "宠物名称", "给 TA 起个名字", "宠物类型", "狗狗", "猫咪", "其他", "品种", "英短、美短、布偶...", "先挑一个最接近的品种，再继续补充资料。", "性别", "男孩", "女孩", "保密"]
-      }
+      "key": "pet_type_card",
+      "type": "pet_type_selection_card",
+      "sourceNodeId": "3x2ES",
+      "copy": ["宠物类型", "狗狗", "猫咪", "其他"],
+      "modes": ["create"]
     },
     {
-      "key": "breed_gallery_panel",
-      "type": "pet_breed_gallery_panel",
-      "sourceNodeId": "QAnHs",
-      "copy": ["常见品种", "左右轻滑，先选一个最接近的", "英短", "美短", "布偶系"],
+      "key": "edit_basic_info_card",
+      "type": "pet_edit_basic_info_card",
+      "sourceNodeId": "V05b6",
+      "copy": [
+        "基础信息",
+        "宠物名称",
+        "给 TA 起个名字",
+        "宠物类型",
+        "狗狗",
+        "猫咪",
+        "其他",
+        "选择品种",
+        "搜索品种",
+        "英短蓝猫",
+        "英短",
+        "美短",
+        "布偶系",
+        "性别",
+        "男孩",
+        "女孩",
+        "保密"
+      ],
+      "modes": ["edit"]
+    },
+    {
+      "key": "create_breed_panel",
+      "type": "pet_breed_suggestion_panel",
+      "sourceNodeId": "no2wD",
+      "copy": ["选择品种", "搜索品种", "英短", "温和安静", "美短", "活泼亲人", "布偶", "毛发蓬松"],
       "modes": ["create"],
       "layout": {
-        "presentation": "horizontal-image-recommendations",
-        "cardCount": 3,
-        "selectedCard": "美短"
+        "presentation": "horizontal-image-cards",
+        "cardCount": 3
       }
     },
     {
-      "key": "life_info_card",
-      "type": "pet_life_info_form_card",
-      "sourceNodeId": "dtta1",
-      "copy": ["成长信息", "生日", "2023-03-18", "2岁3个月", "体重", "4.3 kg"]
+      "key": "create_basic_info_card",
+      "type": "pet_create_basic_info_card",
+      "sourceNodeId": "NoODH",
+      "copy": ["基础信息", "宠物名称", "给 TA 起个名字", "男孩", "女孩", "保密", "生日", "待设置", "体重", "待填写"],
+      "modes": ["create"]
     },
     {
-      "key": "profile_info_card",
-      "type": "pet_profile_info_form_card",
-      "sourceNodeId": "daSGu",
-      "copy": ["个性与照护备注", "当前状态", "今日稳定", "恢复观察", "敏感期留意", "性格标签", "黏人", "温顺", "活泼", "安静", "聪明", "贪吃", "简介 / 备注", "会主动找人陪玩，换季时皮肤比较敏感，洗护后要多留意抓挠情况。"]
+      "key": "edit_growth_info_card",
+      "type": "pet_growth_info_card",
+      "sourceNodeId": "sUNXC",
+      "copy": ["成长信息", "生日", "选择生日", "系统会自动换算年龄", "体重", "4.3 kg", "后续可持续更新"],
+      "modes": ["edit"]
+    },
+    {
+      "key": "profile_note_card",
+      "type": "pet_profile_note_card",
+      "sourceNodeId": "D48hX",
+      "copy": ["个性与照护备注", "当前状态", "今日稳定", "恢复观察", "敏感期留意", "性格标签", "黏人", "温顺", "活泼", "安静", "聪明", "贪吃", "简介 / 备注", "记录喜欢的互动方式、饮食习惯或需要留意的小细节。"],
+      "modes": ["edit", "create"],
+      "modeSourceNodeIds": {
+        "edit": "D48hX",
+        "create": "PMOmr"
+      },
+      "modeCopy": {
+        "edit": ["个性与照护备注", "当前状态", "今日稳定", "恢复观察", "敏感期留意", "性格标签", "黏人", "温顺", "活泼", "安静", "聪明", "贪吃", "简介 / 备注", "记录喜欢的互动方式、饮食习惯或需要留意的小细节。"],
+        "create": ["个性与照护备注", "当前状态", "今日稳定", "敏感期留意", "食欲正常", "性格标签", "黏人", "温顺", "活泼", "好奇心强", "爱晒太阳", "怕陌生人", "照护偏好", "喜欢逗猫棒", "爱吃冻干", "洗护后留意抓挠", "简介 / 备注", "记录喜欢的互动方式、饮食习惯或需要留意的小细节，例如洗护后容易抓挠、晚上更爱靠近人、换粮时需要慢慢适应。"]
+      }
     },
     {
       "key": "bottom_action",
-      "type": "pet_edit_actions",
-      "sourceNodeId": "Wu1xK",
-      "copy": ["保存资料", "保存后会同步更新宠物列表、诊断档案与后续健康记录展示。", "删除宠物", "删除后将不再在宠物列表中保留，相关健康记录也无法继续从当前宠物入口查看。", "删除当前宠物"],
+      "type": "pet_edit_bottom_action",
+      "sourceNodeId": "69RHA",
+      "copy": ["保存资料"],
       "modes": ["edit", "create"],
       "modeSourceNodeIds": {
-        "edit": "Wu1xK",
-        "create": "x15Gb"
+        "edit": "69RHA",
+        "create": "wjqg0"
       },
       "modeCopy": {
-        "edit": ["保存资料", "保存后会同步更新宠物列表、诊断档案与后续健康记录展示。", "删除宠物", "删除后将不再在宠物列表中保留，相关健康记录也无法继续从当前宠物入口查看。", "删除当前宠物"],
-        "create": ["创建宠物", "首次保存后，TA 会出现在宠物列表，并自动接入档案链路。"]
+        "edit": ["保存资料"],
+        "create": ["创建宠物", "保存后会出现在宠物列表，并自动接入档案链路。"]
       }
     }
   ],
@@ -152,45 +190,58 @@
     {
       "sectionKey": "identity_preview_card",
       "api": "GET /api/pet/{id}",
-      "fields": ["id", "name", "avatarUrl", "breed", "gender", "birthday", "weight"]
+      "fields": ["id", "name", "avatarUrl", "breed", "gender", "weight", "statusTags[]"]
     },
     {
-      "sectionKey": "basic_info_card",
+      "sectionKey": "pet_type_card",
+      "fields": ["type"]
+    },
+    {
+      "sectionKey": "edit_basic_info_card",
       "api": "GET /api/pet/{id}",
       "fields": ["name", "type", "breed", "gender"]
     },
     {
-      "sectionKey": "life_info_card",
+      "sectionKey": "create_breed_panel",
+      "fields": ["type", "breed", "suggestedBreeds[]"]
+    },
+    {
+      "sectionKey": "create_basic_info_card",
+      "fields": ["name", "gender", "birthday", "weight"]
+    },
+    {
+      "sectionKey": "edit_growth_info_card",
       "api": "GET /api/pet/{id}",
       "fields": ["birthday", "weight"]
     },
     {
-      "sectionKey": "profile_info_card",
+      "sectionKey": "profile_note_card",
       "api": "GET /api/pet/{id}",
-      "fields": ["healthStatus", "personality", "motto"]
-    },
-    {
-      "sectionKey": "breed_gallery_panel",
-      "fields": ["type", "breed"]
+      "fields": ["healthStatusTags[]", "personalityTags[]", "careTags[]", "note"]
     }
   ],
   "actions": [
     { "name": "changeAvatar", "target": "AIAPI.uploadImage", "sectionKey": "identity_preview_card" },
-    { "name": "editBasicFields", "target": "local-form-state", "sectionKey": "basic_info_card" },
-    { "name": "browseSuggestedBreeds", "target": "local-horizontal-picker", "sectionKey": "breed_gallery_panel" },
-    { "name": "pickBirthdayAndWeight", "target": "wechat-picker-and-input", "sectionKey": "life_info_card" },
-    { "name": "editHealthPersonalityAndNote", "target": "local-form-state", "sectionKey": "profile_info_card" },
-    { "name": "createPet", "target": "POST /api/pet/create", "sectionKey": "bottom_action" },
-    { "name": "submitPetForm", "target": "PUT /api/pet/update", "sectionKey": "bottom_action" },
-    { "name": "deletePet", "target": "DELETE /api/pet/delete", "sectionKey": "bottom_action" }
+    { "name": "selectPetType", "target": "local-form-state", "sectionKey": "pet_type_card" },
+    { "name": "editBasicFields", "target": "local-form-state", "sectionKey": "edit_basic_info_card" },
+    { "name": "chooseSuggestedBreed", "target": "local-form-state", "sectionKey": "create_breed_panel" },
+    { "name": "editCreateFields", "target": "local-form-state", "sectionKey": "create_basic_info_card" },
+    { "name": "editGrowthFields", "target": "local-form-state", "sectionKey": "edit_growth_info_card" },
+    { "name": "editTraitsAndNote", "target": "local-form-state", "sectionKey": "profile_note_card" },
+    { "name": "savePet", "target": "PUT /api/pet/update", "sectionKey": "bottom_action" },
+    { "name": "createPet", "target": "POST /api/pet/create", "sectionKey": "bottom_action" }
   ],
   "verification": {
-    "sourceScreenshotNodeId": "FLS1j",
+    "sourceScreenshotNodeId": "11vrw",
+    "modeSourceScreenshotNodeIds": {
+      "edit": "11vrw",
+      "create": "WA7xQ"
+    },
     "criticalCheckpoints": [
-      "the page reads as an edit-first profile maintenance screen rather than a step-by-step onboarding wizard",
-      "the create-state variant on CiXLc keeps the same card language but expands breed selection into a light horizontal image gallery instead of a heavy carousel",
-      "identity preview remains the first emotional focus while all editable blocks are simplified into light stacked cards",
-      "the purple save CTA clearly dominates and the delete affordance stays visually weaker in a separate bottom danger zone for edit mode only"
+      "edit mode reads as a single long-form profile maintenance page instead of a step wizard",
+      "create mode keeps the same calm card language but splits pet type selection and breed suggestion into separate early-decision cards",
+      "edit mode keeps breed selection embedded in the basic info card, while create mode elevates breed suggestions into a dedicated image-first panel",
+      "bottom CTA stays as the strongest purple action and create mode does not introduce a secondary destructive area"
     ]
   }
 }

@@ -96,7 +96,6 @@ public class FollowServiceImpl implements FollowService {
         IPage<UserFollow> pageObj = new Page<>(page, pageSize);
         LambdaQueryWrapper<UserFollow> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserFollow::getFollowingId, userId)
-                .eq(UserFollow::getIsDeleted, 0)
                 .orderByDesc(UserFollow::getCreateTime);
 
         IPage<UserFollow> result = userFollowMapper.selectPage(pageObj, queryWrapper);
@@ -144,7 +143,6 @@ public class FollowServiceImpl implements FollowService {
         IPage<UserFollow> pageObj = new Page<>(page, pageSize);
         LambdaQueryWrapper<UserFollow> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserFollow::getFollowerId, userId)
-                .eq(UserFollow::getIsDeleted, 0)
                 .orderByDesc(UserFollow::getCreateTime);
 
         IPage<UserFollow> result = userFollowMapper.selectPage(pageObj, queryWrapper);

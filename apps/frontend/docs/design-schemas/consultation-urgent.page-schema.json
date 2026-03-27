@@ -1,0 +1,108 @@
+{
+  "meta": {
+    "pageKey": "consultation-urgent",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "WP23x",
+    "frameName": "紧急问诊页 Urgent Consultation"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [8, 16, 24, 16],
+    "sectionGap": 14,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "surface": "#FFFFFF",
+      "surfaceWarm": "#FFF7F1",
+      "surfaceDanger": "#FFF4EA",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#B4ABC8",
+      "textWarm": "#C47C36",
+      "accentWarm": "#C47C36",
+      "borderWarm": "#F0E1D6"
+    },
+    "radius": {
+      "heroCard": 22,
+      "card": 18,
+      "field": 16,
+      "button": 18,
+      "pill": 999
+    },
+    "typography": {
+      "navTitle": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+      "heroTitle": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "700" },
+      "cardTitle": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "bodyStrong": { "fontFamily": "Inter", "fontSize": 10, "fontWeight": "700" },
+      "button": { "fontFamily": "Inter", "fontSize": 15, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    { "key": "status_bar", "type": "status_bar", "sourceNodeId": "AhUJs", "copy": ["9:41", "5G   100%"] },
+    { "key": "page_header", "type": "page_title", "sourceNodeId": "3cmmK", "copy": ["紧急问诊"] },
+    {
+      "key": "urgent_hero",
+      "type": "consultation_urgent_hero",
+      "sourceNodeId": "pMVjy",
+      "copy": ["加急派单", "预计 3 分钟内响应", "先标记最危险的症状", "持续呕吐、抽搐、呼吸异常、无法站立或大量出血时，请同步准备线下就医。"]
+    },
+    {
+      "key": "urgent_pet_row",
+      "type": "consultation_urgent_pet_row",
+      "sourceNodeId": "TI6jw",
+      "copy": ["团子", "元宝"]
+    },
+    {
+      "key": "urgent_symptom_chips",
+      "type": "consultation_urgent_symptom_chips",
+      "sourceNodeId": "fKQ68",
+      "copy": ["持续呕吐", "精神变差", "呼吸快", "抽搐"]
+    },
+    {
+      "key": "urgent_description_card",
+      "type": "consultation_urgent_description_card",
+      "sourceNodeId": "ny8tA",
+      "copy": ["紧急情况描述", "请先写清症状开始时间、频率、是否喝水进食、精神状态，以及是否已经线下处理。", "已填 116 / 300", "现场图片", "+", "补充呕吐物、患处、检查单或用药照片"]
+    },
+    { "key": "bottom_primary_action", "type": "primary_button_warm", "sourceNodeId": "LjTIM", "copy": ["提交加急问诊"] },
+    { "key": "bottom_action_note", "type": "button_note", "sourceNodeId": "FZQeh", "copy": ["会优先进入派单队列，同时请做好线下就医准备。"] }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "urgent_hero",
+      "fields": ["dispatchLabel", "responseEtaLabel", "title", "dangerHint"]
+    },
+    {
+      "sectionKey": "urgent_pet_row",
+      "api": "GET /api/pets/list",
+      "fields": ["pets[].id", "pets[].name", "selectedPetId"]
+    },
+    {
+      "sectionKey": "urgent_symptom_chips",
+      "fields": ["symptomHints[]", "selectedHints[]"]
+    },
+    {
+      "sectionKey": "urgent_description_card",
+      "fields": ["description", "descriptionCount", "images[]", "imageHint"]
+    }
+  ],
+  "actions": [
+    { "name": "selectUrgentPet", "target": "consultation-urgent-pet-select", "sectionKey": "urgent_pet_row" },
+    { "name": "appendUrgentSymptomHint", "target": "consultation-urgent-symptom-append", "sectionKey": "urgent_symptom_chips" },
+    { "name": "uploadUrgentImages", "target": "consultation-urgent-image-picker", "sectionKey": "urgent_description_card" },
+    { "name": "submitUrgentConsultation", "target": "consultation-urgent-submit", "sectionKey": "bottom_primary_action" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "WP23x",
+    "criticalCheckpoints": [
+      "page communicates urgency through warm emphasis and response-time hero before any form entry",
+      "danger symptom chips are visible quick-add actions rather than buried helpers",
+      "description card remains short, focused and optimized for triage context",
+      "submit CTA is warm-toned and clearly framed as urgent dispatch rather than normal consultation"
+    ]
+  }
+}

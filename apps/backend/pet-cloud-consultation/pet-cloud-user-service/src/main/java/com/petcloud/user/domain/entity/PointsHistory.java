@@ -9,8 +9,6 @@ import lombok.EqualsAndHashCode;
 /**
  * 积分流水实体类
  *
- * 注意：此表为流水记录表，不支持软删除，因此显式排除 is_deleted 字段
- *
  * @author luohao
  */
 @Data
@@ -53,14 +51,6 @@ public class PointsHistory extends BaseEntity {
      */
     @TableField("remark")
     private String remark;
-
-    /**
-     * 此表为流水记录表，不需要软删除功能
-     * 显式设置为 false，MyBatis-Plus 将不会查询此字段
-     */
-    @TableField(exist = false)
-    private Integer isDeleted;
-
     /**
      * 类型枚举
      */

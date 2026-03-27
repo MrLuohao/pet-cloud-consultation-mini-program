@@ -21,7 +21,7 @@ public interface PrivateMessageMapper extends BaseMapper<PrivateMessage> {
      * @param userId 用户ID
      * @return 未读消息数
      */
-    @Select("SELECT COUNT(*) FROM private_message WHERE receiver_id = #{userId} AND is_read = 0 AND is_deleted = 0")
+    @Select("SELECT COUNT(*) FROM private_message WHERE receiver_id = #{userId} AND is_read = 0")
     int countUnreadByReceiver(@Param("userId") Long userId);
 
     /**

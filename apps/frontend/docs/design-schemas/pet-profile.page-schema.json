@@ -2,7 +2,7 @@
   "meta": {
     "pageKey": "pet-profile",
     "platform": "wechat-miniprogram",
-    "penFile": "/Users/luohao/Desktop/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
     "frameId": "H6Xma",
     "frameName": "单宠物健康档案页 Pet Health Profile"
   },
@@ -75,9 +75,9 @@
   ],
   "actions": [
     { "name": "editPetProfile", "target": "/pages/pet/edit", "sectionKey": "identity_card" },
-    { "name": "openDiagnosisDetail", "target": "/pages/diagnosis/detail", "sectionKey": "featured_diagnosis_card" },
+    { "name": "openFeaturedDiagnosisFlow", "target": "featured-diagnosis-detail-flow", "sectionKey": "featured_diagnosis_card" },
     { "name": "openDiagnosisHistoryList", "target": "diagnosis-history-list-flow", "sectionKey": "history_card" },
-    { "name": "restartDiagnosis", "target": "/pages/diagnosis/index", "sectionKey": "bottom_action" },
+    { "name": "restartDiagnosis", "target": "/pages/diagnosis/diagnosis", "sectionKey": "bottom_action" },
     { "name": "openGrowthTimeline", "target": "/pages/pet/timeline/index", "sectionKey": "bottom_action" },
     { "name": "addOfflineRecord", "target": "/pages/health/edit", "sectionKey": "bottom_action" }
   ],
