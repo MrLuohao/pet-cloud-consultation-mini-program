@@ -49,7 +49,7 @@
       "key": "doctor_card",
       "type": "consultation_create_doctor_card",
       "sourceNodeId": "Hd4nd",
-      "copy": ["李医生", "皮肤专科 · 图文 ¥39 起 · 已接 1820 单", "2 分钟回复", "如未指定医生，将按症状优先分配对应专科医生。"]
+      "copy": ["李医生", "皮肤专科 · 图文 ¥39 起 · 已接 1820 单", "2 分钟回复", "若未指定医生，我们会优先匹配同专科医生。"]
     },
     {
       "key": "pet_row",

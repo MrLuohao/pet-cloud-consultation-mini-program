@@ -50,7 +50,7 @@
       "key": "doctor_hero",
       "type": "consultation_doctor_list_hero",
       "sourceNodeId": "r6auV",
-      "copy": ["16 位在线", "紧急通道可用", "优先看响应速度和擅长方向", "症状急、精神差或持续呕吐腹泻，直接走加急问诊。"]
+      "copy": ["16 位在线", "加急可直达", "优先看响应速度、擅长方向和复诊经验", "症状急、精神差或持续呕吐腹泻，优先走加急问诊。"]
     },
     {
       "key": "filter_area",
@@ -62,7 +62,7 @@
       "key": "doctor_cards",
       "type": "consultation_doctor_cards",
       "sourceNodeId": "xU9hd",
-      "copy": ["李医生", "皮肤专科 · 伴宠中心医院", "皮肤过敏 · 反复抓挠 · 耳道问题", "2 分钟内", "图文 ¥39 · 已接 1820 单", "去咨询", "周医生", "肠胃专科 · 城市宠物医院", "软便呕吐 · 饮食不耐受 · 慢性肠胃", "10 分钟内", "图文 ¥29 · 已接 960 单", "去咨询"]
+      "copy": ["李医生", "皮肤专科 · 伴宠中心医院", "皮肤过敏 · 反复抓挠 · 耳道问题", "2 分钟响应", "图文 ¥39 · 已接 1820 单", "看详情", "周医生", "肠胃专科 · 城市宠物医院", "软便呕吐 · 饮食不耐受 · 慢性肠胃", "10 分钟响应", "图文 ¥29 · 已接 960 单", "看详情"]
     },
     { "key": "bottom_primary_action", "type": "primary_button", "sourceNodeId": "It7k0", "copy": ["我的咨询"] },
     { "key": "bottom_secondary_action", "type": "secondary_button", "sourceNodeId": "zLLRK", "copy": ["紧急问诊"] }

@@ -1,0 +1,145 @@
+{
+  "meta": {
+    "pageKey": "order-list",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "DiQRw",
+    "frameName": "订单列表页 Order List"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 16, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "surface": "#FFFEFD",
+      "surfaceAlt": "#FFFFFF",
+      "surfaceSoft": "#F6F2EC",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#767C87",
+      "accent": "#3A3D45",
+      "linkAccent": "#4A7EC5",
+      "borderSoft": "#EEE7DD",
+      "borderInteractive": "#E8E0F4"
+    },
+    "radius": {
+      "card": 22,
+      "chip": 999,
+      "button": 16
+    },
+    "typography": {
+      "headline": {"fontFamily": "Inter", "fontSize": 16, "fontWeight": "600"},
+      "body": {"fontFamily": "Inter", "fontSize": 13, "fontWeight": "500"},
+      "caption": {"fontFamily": "Inter", "fontSize": 11, "fontWeight": "500"}
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "vKO4v",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "page_header",
+      "type": "page_header",
+      "sourceNodeId": "XziSf",
+      "copy": ["我的订单"]
+    },
+    {
+      "key": "tabs",
+      "type": "order_filter_tabs",
+      "sourceNodeId": "lvegw",
+      "copy": ["全部", "待支付", "待收货", "已完成"]
+    },
+    {
+      "key": "pending_card",
+      "type": "order_list_card",
+      "sourceNodeId": "OhWqc",
+      "copy": [
+        "待支付",
+        "剩余 29 分钟",
+        "冻干鸡肉主粮 1 件",
+        "订单尾号 0124 · 03-26 15:14 创建",
+        "待支付 ¥434"
+      ]
+    },
+    {
+      "key": "shipping_card",
+      "type": "order_list_card",
+      "sourceNodeId": "zjnzL",
+      "copy": [
+        "待收货",
+        "预计今天送达",
+        "修护喷雾护理喷雾 2 件",
+        "最新物流：已到达浦东配送站",
+        "联系客服",
+        "查看物流"
+      ]
+    },
+    {
+      "key": "completed_card",
+      "type": "order_list_card",
+      "sourceNodeId": "da95P",
+      "copy": ["已完成", "昨天收货", "主粮加餐组合 1 套", "申请售后", "去评价"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "pending_card",
+      "api": "GET /api/order/list?status=pending",
+      "fields": [
+        "items[].orderStatusLabel",
+        "items[].remainingTimeText",
+        "items[].productName",
+        "items[].productMeta",
+        "items[].orderSuffix",
+        "items[].amount",
+        "items[].actionButtons[]"
+      ]
+    },
+    {
+      "sectionKey": "shipping_card",
+      "api": "GET /api/order/list?status=shipped",
+      "fields": [
+        "items[].orderStatusLabel",
+        "items[].etaText",
+        "items[].productName",
+        "items[].logisticsPreview",
+        "items[].amount",
+        "items[].actionButtons[]"
+      ]
+    },
+    {
+      "sectionKey": "completed_card",
+      "api": "GET /api/order/list?status=completed",
+      "fields": [
+        "items[].orderStatusLabel",
+        "items[].completionTime",
+        "items[].productName",
+        "items[].afterSalesAvailable",
+        "items[].reviewAvailable",
+        "items[].actionButtons[]"
+      ]
+    }
+  ],
+  "actions": [
+    {"name": "switchOrderTab", "target": "local-state", "sectionKey": "tabs"},
+    {"name": "viewOrderDetail", "target": "/pages/order/detail", "sectionKey": "pending_card"},
+    {"name": "trackLogistics", "target": "logistics-detail-open", "sectionKey": "shipping_card"},
+    {"name": "startAfterSales", "target": "after-sales-apply-open", "sectionKey": "completed_card"},
+    {"name": "leaveReview", "target": "/pages/order/review", "sectionKey": "completed_card"}
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "DiQRw",
+    "criticalCheckpoints": [
+      "The status bar plus nav remain fixed across the top with pill tabs below.",
+      "Order cards are distinct 22px-radius white surfaces with aligned chips, descriptions, and action chips.",
+      "Action chips pair neutral (#F6F2EC) and dark (#3A3D45) fills for services and never use purple."
+    ]
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "meta": {
+    "pageKey": "after-sales-order-detail",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "2FO7j",
+    "frameName": "订单详情页 After-Sales State"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 16, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "surface": "#FFFEFD",
+      "surfaceCard": "#FFFFFF",
+      "borderSoft": "#EEE7DD",
+      "statusChip": "#FFF3E8",
+      "statusChipText": "#C47C36",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#767C87",
+      "buttonPrimary": "#3A3D45",
+      "buttonSecondary": "#F6F2EC"
+    },
+    "radius": {
+      "card": 22,
+      "badge": 999,
+      "button": 16
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "600" },
+      "caption": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "eazrs",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "nav",
+      "type": "page_header",
+      "sourceNodeId": "sbYAq",
+      "copy": ["订单详情"]
+    },
+    {
+      "key": "hero_card",
+      "type": "after_sales_status_card",
+      "sourceNodeId": "psILF",
+      "copy": [
+        "售后处理中",
+        "已申请售后",
+        "订单已进入售后流程，当前等待平台审核",
+        "售后单号 AS202603280014 · 若资料不足，会通过消息中心提醒补充。"
+      ]
+    },
+    {
+      "key": "address_card",
+      "type": "address_card",
+      "sourceNodeId": "ZBKwl",
+      "copy": [
+        "收货信息",
+        "林如夏  138 0013 8000",
+        "上海市浦东新区龙阳路 2879 号 2 栋 903 室"
+      ]
+    },
+    {
+      "key": "goods_card",
+      "type": "goods_listing_card",
+      "sourceNodeId": "6nX9a",
+      "copy": [
+        "主粮加餐组合 1 套",
+        "实付 ¥268 · 昨天收货",
+        "当前订单已挂售后处理中"
+      ]
+    },
+    {
+      "key": "amount_card",
+      "type": "order_amount_card",
+      "sourceNodeId": "xt7UK",
+      "copy": [
+        "金额明细",
+        "商品总额  ¥446",
+        "运费  ¥12",
+        "优惠  -¥24",
+        "实付金额 ¥434"
+      ]
+    },
+    {
+      "key": "order_info_card",
+      "type": "order_info_card",
+      "sourceNodeId": "9kO4g",
+      "copy": [
+        "订单信息",
+        "订单编号 PC20260315000124",
+        "创建时间 2026-03-15 14:28",
+        "支付时间 2026-03-15 14:32",
+        "售后单号 AS202603280014",
+        "售后原因 收到商品破损"
+      ]
+    },
+    {
+      "key": "actions",
+      "type": "bottom_actions",
+      "sourceNodeId": "oQpsj",
+      "copy": ["联系客服", "查看售后"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "hero_card",
+      "api": "GET /api/order/{id}/after-sales-status",
+      "fields": [
+        "statusLabel",
+        "statusHint",
+        "heroTitle",
+        "heroSub",
+        "afterSalesNo"
+      ]
+    },
+    {
+      "sectionKey": "address_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["receiverName", "receiverPhone", "receiverAddress"]
+    },
+    {
+      "sectionKey": "goods_card",
+      "api": "GET /api/order/{id}",
+      "fields": [
+        "items[].productName",
+        "items[].price",
+        "items[].statusHint",
+        "items[].afterSalesTag"
+      ]
+    },
+    {
+      "sectionKey": "amount_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["totalAmount", "freight", "couponDiscount", "payAmount"]
+    },
+    {
+      "sectionKey": "order_info_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["orderNo", "createTime", "paymentTime", "afterSalesOrderNo", "afterSalesReason"]
+    }
+  ],
+  "actions": [
+    {
+      "name": "contactSupport",
+      "target": "customer-service-entry",
+      "sectionKey": "actions"
+    },
+    {
+      "name": "viewAfterSalesStatus",
+      "target": "after-sales-progress-open",
+      "sectionKey": "actions"
+    }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "2FO7j",
+    "criticalCheckpoints": [
+      "Hero card clearly states '售后处理中' with chip and subtexts.",
+      "Amount card groups price details and highlights final payment with accent badge.",
+      "Bottom actions keep dual pills, with primary '查看售后' dark and secondary '联系客服' grey."
+    ]
+  }
+}

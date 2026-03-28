@@ -29,6 +29,28 @@
 - schema 必须基于 Pencil MCP / pencli 结构化读取
 - 画布阶段的产品设计判断标准
 
+### 管理后台设计规则
+
+- `docs/rules/backend-management-design-rules.md`
+
+负责：
+
+- 管理后台定位与角色边界
+- 后台信息架构与页面优先级
+- 后台视觉基调与交互结构
+- 配置型 / 审核型 / 工作台型页面的画法约束
+
+### 管理后台产品规则
+
+- `docs/rules/backend-management-product-rules.md`
+
+负责：
+
+- 管理后台模块职责与页面内容语义
+- 宏观看板与专题工作台的产品拆分
+- 对象详情结构与处理闭环
+- 视图、导出、跳转等后台产品行为
+
 ### 前端实现规则
 
 - `docs/rules/frontend-implementation-rules.md`
@@ -50,7 +72,8 @@
 - Java / 数据库规范
 - 后端接口协同边界
 - 结构化字段契约
-- 交易链与业务字段口径
+- 指标口径、阈值、SLA
+- 审计日志、导出与权限边界
 
 ## 2. 执行与进度文件分工
 
@@ -98,11 +121,13 @@
 1. `design/frontendMobileScreens.pen`
 2. `docs/rules/global-project-rules.md`
 3. `docs/rules/design-source-rules.md`
-4. `docs/rules/frontend-implementation-rules.md`
-5. `docs/rules/backend-development-rules.md`
-6. `docs/plans/frontend-page-status-matrix.md`
-7. `apps/frontend/docs/design-schemas/README.md`
-8. `memory/project-context-handoff.md`
+4. `docs/rules/backend-management-design-rules.md`
+5. `docs/rules/backend-management-product-rules.md`
+6. `docs/rules/frontend-implementation-rules.md`
+7. `docs/rules/backend-development-rules.md`
+8. `docs/plans/frontend-page-status-matrix.md`
+9. `apps/frontend/docs/design-schemas/README.md`
+10. `memory/project-context-handoff.md`
 
 说明：
 

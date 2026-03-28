@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "pageKey": "collection",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "gM8gn",
+    "frameName": "我的收藏页 My Collection"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [12, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "cardBackground": "#FFFFFF",
+      "summaryGradientStart": "#F7F3FF",
+      "summaryGradientEnd": "#FDFCFB",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#8B879A",
+      "accent": "#6D32FF"
+    },
+    "radius": {
+      "card": 22,
+      "pill": 999,
+      "image": 18
+    },
+    "typography": {
+      "title": {"fontFamily": "Inter", "fontSize": 20, "fontWeight": "700"},
+      "subtitle": {"fontFamily": "Inter", "fontSize": 16, "fontWeight": "700"},
+      "body": {"fontFamily": "Inter", "fontSize": 12, "fontWeight": "500"},
+      "label": {"fontFamily": "Inter", "fontSize": 11, "fontWeight": "600"}
+    }
+  },
+  "sections": [
+    {
+      "key": "statusBar",
+      "type": "status_bar",
+      "sourceNodeId": "9IPWA",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "pageHeader",
+      "type": "page_header",
+      "sourceNodeId": "V95I7",
+      "title": "我的收藏",
+      "layout": {"align": "center", "gap": 8}
+    },
+    {
+      "key": "summaryCard",
+      "type": "summary_card",
+      "sourceNodeId": "SqFP5",
+      "title": "你收藏了 8 个内容",
+      "copy": ["今日新增 1 个", "把商品、护理机构和有用内容统一收在这里。"],
+      "layout": {"padding": 18, "gap": 12, "cornerRadius": 24}
+    },
+    {
+      "key": "filters",
+      "type": "filter_row",
+      "sourceNodeId": "AWTkr",
+      "options": ["全部", "商品", "内容"],
+      "layout": {"gap": 8}
+    },
+    {
+      "key": "collectionList",
+      "type": "collection_list",
+      "sourceNodeId": "vsylC",
+      "title": "收藏内容",
+      "copy": [
+        "低温烘焙鸡肉主粮 · 收藏于商品详情页",
+        "新手喂养指南 · 收藏于社区精选内容"
+      ],
+      "layout": {"gap": 12}
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "summaryCard",
+      "api": "GET /api/collections/summary",
+      "fields": [
+        "totalCount",
+        "todayAddedCount",
+        "description"
+      ]
+    },
+    {
+      "sectionKey": "filters",
+      "api": "GET /api/collections/filters",
+      "fields": ["filters[].label", "filters[].key", "filters[].isActive"]
+    },
+    {
+      "sectionKey": "collectionList",
+      "api": "GET /api/collections",
+      "fields": [
+        "items[].title",
+        "items[].description",
+        "items[].category",
+        "items[].addedAt",
+        "items[].imageUrl"
+      ]
+    }
+  ],
+  "actions": [
+    {"name": "navBack", "target": "wx.navigateBack", "sectionKey": "pageHeader"},
+    {"name": "switchFilter", "target": "local-state", "sectionKey": "filters"},
+    {"name": "openCollectionItem", "target": "collection-item-open", "sectionKey": "collectionList"}
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "gM8gn",
+    "criticalCheckpoints": [
+      "状态栏、标题和安全边距与 frame 保持一致。",
+      "summary 卡片展示总数与今日新增标签，渐变背景保持视觉一致。",
+      "筛选 pills 以“全部”为默认激活态。",
+      "单卡内容保持左图右文、标签、日期等 meta 结构。"
+    ]
+  }
+}

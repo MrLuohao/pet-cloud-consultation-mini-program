@@ -1,0 +1,201 @@
+{
+  "meta": {
+    "pageKey": "all-messages",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "R5qEl",
+    "frameName": "全部消息页 All Messages"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [12, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "cardBackground": "#FFFFFF",
+      "brandPrimary": "#6D32FF",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#7D748B",
+      "textMuted": "#B2A9C2",
+      "accentWarning": "#C47C36",
+      "accentInfo": "#4A7EC5",
+      "lightBorder": "#EEEAE3"
+    },
+    "radius": {
+      "card": 24,
+      "pill": 999,
+      "chip": 16,
+      "badge": 12
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "hero": { "fontFamily": "Inter", "fontSize": 20, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "lineHeight": 1.45 },
+      "chip": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "600" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "bAImT",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "page_header",
+      "type": "title_header",
+      "sourceNodeId": "qa256",
+      "copy": ["全部消息"]
+    },
+    {
+      "key": "summary_card",
+      "type": "info_summary",
+      "sourceNodeId": "2pE3A",
+      "copy": [
+        "今天有 13 条消息",
+        "把订单通知、会话消息和系统消息统一收口，优先处理未读会话和高影响通知。"
+      ],
+      "layout": { "padding": 18, "gap": 12, "cornerRadius": 24 }
+    },
+    {
+      "key": "summary_stats",
+      "type": "stat_grid",
+      "sourceNodeId": "O734I",
+      "copy": ["5 未读消息", "2 需尽快处理"],
+      "layout": { "gap": 10 }
+    },
+    {
+      "key": "filters",
+      "type": "pill_group",
+      "sourceNodeId": "XrESo",
+      "copy": ["全部", "会话", "订单", "活动", "系统"],
+      "layout": { "gap": 8 }
+    },
+    {
+      "key": "priority_bar",
+      "type": "priority_banner",
+      "sourceNodeId": "QAjzv",
+      "copy": [
+        "优先处理 2 条重要通知",
+        "一条支付结果未确认，一条订单发货提醒待查看。",
+        "去查看"
+      ],
+      "layout": { "cornerRadius": 18, "padding": [12, 14] }
+    },
+    {
+      "key": "chat_card",
+      "type": "chat_card",
+      "sourceNodeId": "hhA8L",
+      "copy": [
+        "团子妈妈发来新消息",
+        "医生您好，团子昨晚一直抓耳朵，我补了两张近照，想请您帮忙看下是否还需要继续观察。",
+        "今天 12:10",
+        "会话消息",
+        "继续回复"
+      ],
+      "layout": { "padding": 18, "cornerRadius": 24 }
+    },
+    {
+      "key": "message_card_1",
+      "type": "notification_card",
+      "sourceNodeId": "T87iW",
+      "copy": [
+        "支付结果待确认",
+        "你的订单已提交支付，但系统仍在确认回执，建议先查看支付结果页。",
+        "10 分钟前",
+        "订单通知",
+        "查看详情"
+      ],
+      "layout": { "padding": 18, "cornerRadius": 22 }
+    },
+    {
+      "key": "message_card_2",
+      "type": "notification_card",
+      "sourceNodeId": "cAcKZ",
+      "copy": [
+        "订单已发货，请注意签收",
+        "您的订单已由仓库发出，建议留意物流更新，并提前安排家中签收。",
+        "今天 11:40",
+        "订单通知",
+        "查看物流"
+      ],
+      "layout": { "padding": 18, "cornerRadius": 24 }
+    },
+    {
+      "key": "message_card_3",
+      "type": "notification_card",
+      "sourceNodeId": "NN56g",
+      "copy": [
+        "问诊预约提醒，请准时进入会话",
+        "您预约的宠物视频问诊将在今晚 19:30 开始，建议提前 10 分钟检查网络与设备。",
+        "今天 08:20",
+        "系统消息",
+        "查看安排"
+      ],
+      "layout": { "padding": 18, "cornerRadius": 24 }
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "summary_card",
+      "api": "GET /api/messages/summary",
+      "fields": ["totalCount", "todayCount", "description", "urgentCount"]
+    },
+    {
+      "sectionKey": "summary_stats",
+      "api": "GET /api/messages/summary",
+      "fields": ["unreadCount", "priorityCount"]
+    },
+    {
+      "sectionKey": "filters",
+      "api": "GET /api/messages/categories",
+      "fields": ["categories[].key", "categories[].label", "categories[].count", "categories[].selected"]
+    },
+    {
+      "sectionKey": "priority_bar",
+      "api": "GET /api/messages/priority",
+      "fields": ["prioritySummary.title", "prioritySummary.items[].text", "prioritySummary.cta"]
+    },
+    {
+      "sectionKey": "chat_card",
+      "api": "GET /api/messages/chats",
+      "fields": ["chats[].id", "chats[].title", "chats[].preview", "chats[].timestamp", "chats[].tag"]
+    },
+    {
+      "sectionKey": "message_card_1",
+      "api": "GET /api/messages/notifications",
+      "fields": ["notifications[].id", "notifications[].title", "notifications[].body", "notifications[].timestamp", "notifications[].tag"]
+    },
+    {
+      "sectionKey": "message_card_2",
+      "api": "GET /api/messages/orders",
+      "fields": ["orders[].id", "orders[].status", "orders[].summary", "orders[].eta", "orders[].ctaLabel"]
+    },
+    {
+      "sectionKey": "message_card_3",
+      "api": "GET /api/messages/appointments",
+      "fields": ["appointments[].id", "appointments[].title", "appointments[].details", "appointments[].time", "appointments[].cta"]
+    }
+  ],
+  "actions": [
+    { "name": "goBack", "target": "wx.navigateBack", "sectionKey": "page_header" },
+    { "name": "applyFilter", "target": "client/select-message-filter", "sectionKey": "filters" },
+    { "name": "openPriority", "target": "priority-message-open", "sectionKey": "priority_bar" },
+    { "name": "openChat", "target": "/pages/message/chat", "sectionKey": "chat_card" },
+    { "name": "viewNotification", "target": "/pages/order/pay-result/index", "sectionKey": "message_card_1" },
+    { "name": "trackShipment", "target": "logistics-detail-open", "sectionKey": "message_card_2" },
+    { "name": "viewAppointment", "target": "/pages/consultation/chat", "sectionKey": "message_card_3" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "R5qEl",
+    "criticalCheckpoints": [
+      "Summary area retains the gradient background, headline, and two stat tiles before filters.",
+      "Filters stay as a scrollable pill row with brand-primary active chip and neutral chips for other categories.",
+      "Priority banner keeps the yellow background, text stack, and a chip-style CTA on the right.",
+      "Message cards preserve the mix of chat bubble, textual preview, and action buttons for each type."
+    ]
+  }
+}

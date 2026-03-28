@@ -48,7 +48,7 @@
       "key": "urgent_hero",
       "type": "consultation_urgent_hero",
       "sourceNodeId": "pMVjy",
-      "copy": ["加急派单", "预计 3 分钟内响应", "先标记最危险的症状", "持续呕吐、抽搐、呼吸异常、无法站立或大量出血时，请同步准备线下就医。"]
+      "copy": ["加急问诊", "预计 3 分钟内响应", "先标记最紧急的症状", "持续呕吐、抽搐、呼吸异常、无法站立或大量出血时，请同步准备线下就医。"]
     },
     {
       "key": "urgent_pet_row",
@@ -69,7 +69,7 @@
       "copy": ["紧急情况描述", "请先写清症状开始时间、频率、是否喝水进食、精神状态，以及是否已经线下处理。", "已填 116 / 300", "现场图片", "+", "补充呕吐物、患处、检查单或用药照片"]
     },
     { "key": "bottom_primary_action", "type": "primary_button_warm", "sourceNodeId": "LjTIM", "copy": ["提交加急问诊"] },
-    { "key": "bottom_action_note", "type": "button_note", "sourceNodeId": "FZQeh", "copy": ["会优先进入派单队列，同时请做好线下就医准备。"] }
+    { "key": "bottom_action_note", "type": "button_note", "sourceNodeId": "FZQeh", "copy": ["会优先通知值班医生接入，同时请做好线下就医准备。"] }
   ],
   "dataBindings": [
     {
@@ -102,7 +102,7 @@
       "page communicates urgency through warm emphasis and response-time hero before any form entry",
       "danger symptom chips are visible quick-add actions rather than buried helpers",
       "description card remains short, focused and optimized for triage context",
-      "submit CTA is warm-toned and clearly framed as urgent dispatch rather than normal consultation"
+      "submit CTA is warm-toned and clearly framed as urgent consultation rather than normal consultation"
     ]
   }
 }

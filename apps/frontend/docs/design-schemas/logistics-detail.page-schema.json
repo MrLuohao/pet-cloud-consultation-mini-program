@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "pageKey": "logistics-detail",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "fFNx6",
+    "frameName": "物流详情页 Logistics Detail"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 16, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "surface": "#FFFEFD",
+      "surfaceAccent": "#F7FAFF",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#767C87",
+      "accent": "#4EA772",
+      "borderSoft": "#EEE7DD",
+      "borderStrong": "#E8EEF8",
+      "buttonPrimary": "#3A3D45",
+      "buttonSecondary": "#F6F2EC"
+    },
+    "radius": {
+      "card": 22,
+      "badge": 999,
+      "button": 16
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "600" },
+      "caption": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "NREDV",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "nav",
+      "type": "page_header",
+      "sourceNodeId": "b9d8A",
+      "copy": ["物流详情"]
+    },
+    {
+      "key": "hero",
+      "type": "logistics_hero_card",
+      "sourceNodeId": "BLUPc",
+      "copy": [
+        "派送中",
+        "预计 18:30 前送达",
+        "包裹已到达浦东配送站，正在安排派送",
+        "顺丰速运 · 运单号 SF1520305842190"
+      ]
+    },
+    {
+      "key": "address_card",
+      "type": "address_card",
+      "sourceNodeId": "ZT973",
+      "copy": ["收货信息", "林如夏  138 0013 8000", "上海市浦东新区龙阳路 2879 号 2 栋 903 室"]
+    },
+    {
+      "key": "track_list",
+      "type": "logistics_timeline",
+      "sourceNodeId": "9dnyB",
+      "copy": [
+        "物流轨迹",
+        "快递员已接单，正在前往配送地址",
+        "今天 14:08 · 上海浦东新区花木站",
+        "包裹已到达浦东配送站，待安排派送",
+        "今天 11:36 · 上海浦东新区分拨中心"
+      ]
+    },
+    {
+      "key": "goods_card",
+      "type": "goods_listing_card",
+      "sourceNodeId": "AwIOe",
+      "copy": ["修护喷雾护理喷雾", "120ml × 2 · 上海仓发出", "包裹内共 2 件商品"]
+    },
+    {
+      "key": "bottom_actions",
+      "type": "logistics_action_bar",
+      "sourceNodeId": "E5CWS",
+      "copy": ["复制单号", "联系快递"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "hero",
+      "api": "GET /api/order/{id}/logistics",
+      "fields": [
+        "logisticsStatus.label",
+        "logisticsStatus.etaText",
+        "logisticsStatus.title",
+        "logisticsStatus.description",
+        "logisticsStatus.trackingNumber"
+      ]
+    },
+    {
+      "sectionKey": "address_card",
+      "api": "GET /api/order/{id}/logistics",
+      "fields": ["recipient.name", "recipient.phone", "recipient.address"]
+    },
+    {
+      "sectionKey": "track_list",
+      "api": "GET /api/order/{id}/logistics/traces",
+      "fields": ["traces[].statusText", "traces[].timestamp", "traces[].location"]
+    },
+    {
+      "sectionKey": "goods_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["items[].productName", "items[].sku", "items[].quantity"]
+    }
+  ],
+  "actions": [
+    {
+      "name": "copyTrackingNumber",
+      "target": "wx.setClipboardData",
+      "sectionKey": "bottom_actions"
+    },
+    {
+      "name": "contactCourier",
+      "target": "express-contact-entry",
+      "sectionKey": "bottom_actions"
+    }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "fFNx6",
+    "criticalCheckpoints": [
+      "Hero card must show logistics status badge, ETA text, and full tracking number in a warm white surface.",
+      "Timeline rows remain in a rounded vertical stack with active dot highlighted (#4EA772).",
+      "Bottom actions hold lower border and present '复制单号' plus '联系快递' within light and dark capsules."
+    ]
+  }
+}

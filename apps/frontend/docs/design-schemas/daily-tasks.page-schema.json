@@ -1,0 +1,132 @@
+{
+  "meta": {
+    "pageKey": "daily-tasks",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "bVCp2",
+    "frameName": "每日任务页 Daily Tasks"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [12, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "cardBackground": "#FFFFFF",
+      "heroGradientStart": "#F4F0FF",
+      "heroGradientEnd": "#FDFCFB",
+      "rewardBackground": "#FFF7ED",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#8B879A",
+      "accent": "#6D32FF"
+    },
+    "radius": {
+      "card": 22,
+      "pill": 999,
+      "stat": 16
+    },
+    "typography": {
+      "title": {"fontFamily": "Inter", "fontSize": 20, "fontWeight": "700"},
+      "subtitle": {"fontFamily": "Inter", "fontSize": 16, "fontWeight": "700"},
+      "body": {"fontFamily": "Inter", "fontSize": 12, "fontWeight": "500"},
+      "badge": {"fontFamily": "Inter", "fontSize": 11, "fontWeight": "600"}
+    }
+  },
+  "sections": [
+    {
+      "key": "statusBar",
+      "type": "status_bar",
+      "sourceNodeId": "cZJxn",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "pageHeader",
+      "type": "page_header",
+      "sourceNodeId": "PNiot",
+      "title": "每日任务",
+      "layout": {"align": "center", "gap": 8}
+    },
+    {
+      "key": "dailyHero",
+      "type": "hero_summary_card",
+      "sourceNodeId": "F8xKL",
+      "title": "连续打卡第 6 天",
+      "copy": [
+        "今日可得 40 积分",
+        "把喂养记录、健康打卡和社区互动做成轻量日常。"
+      ],
+      "meta": ["本周积分 240", "今日已完成 2 / 4"],
+      "layout": {"padding": 18, "gap": 12, "cornerRadius": 24}
+    },
+    {
+      "key": "rewardBar",
+      "type": "alert_bar",
+      "sourceNodeId": "3jzql",
+      "title": "再完成 1 项，解锁额外 20 积分",
+      "copy": ["优先去做健康提醒任务，完成后今天总收益提升到 60 积分。"],
+      "layout": {"padding": [14, 16], "cornerRadius": 18}
+    },
+    {
+      "key": "taskList",
+      "type": "task_cards",
+      "sourceNodeId": "37BTL",
+      "title": "今日任务",
+      "copy": [
+        "记录今日喂养 · 已同步",
+        "完成一次健康提醒 · 待完成"
+      ],
+      "layout": {"gap": 12}
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "dailyHero",
+      "api": "GET /api/tasks/daily/summary",
+      "fields": [
+        "currentStreak",
+        "todaysRewardPoints",
+        "weeklyTotalPoints",
+        "completedCount",
+        "totalCount"
+      ]
+    },
+    {
+      "sectionKey": "rewardBar",
+      "api": "GET /api/tasks/daily/reward",
+      "fields": [
+        "nextReward.title",
+        "nextReward.description",
+        "nextReward.points"
+      ]
+    },
+    {
+      "sectionKey": "taskList",
+      "api": "GET /api/tasks/daily/list",
+      "fields": [
+        "tasks[].title",
+        "tasks[].description",
+        "tasks[].status",
+        "tasks[].hint",
+        "tasks[].actionLabel"
+      ]
+    }
+  ],
+  "actions": [
+    {"name": "navBack", "target": "wx.navigateBack", "sectionKey": "pageHeader"},
+    {"name": "openReward", "target": "daily-task-reward-open", "sectionKey": "rewardBar"},
+    {"name": "openTask", "target": "daily-task-detail-open", "sectionKey": "taskList"},
+    {"name": "completeTask", "target": "daily-task-complete-flow", "sectionKey": "taskList"}
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "bVCp2",
+    "criticalCheckpoints": [
+      "状态栏、标题与安全边距保持一致。",
+      "Hero 卡包含打卡天数、今日积分奖励与两栏统计。",
+      "奖励提示条使用橘色背景与 pill 按钮样式。",
+      "任务卡保持圆角白底，状态 Action 区与内容分离。"
+    ]
+  }
+}

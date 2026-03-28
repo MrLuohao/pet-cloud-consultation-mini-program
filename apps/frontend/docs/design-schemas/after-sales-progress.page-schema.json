@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "pageKey": "after-sales-progress",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "FuYbt",
+    "frameName": "售后进度页 After-Sales Progress"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 16, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "surface": "#FFFEFD",
+      "surfaceSecondary": "#FFFFFF",
+      "badgeNeutral": "#FFF3E8",
+      "badgeActive": "#C47C36",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textAlt": "#767C87",
+      "borderSoft": "#EEE7DD",
+      "buttonPrimary": "#3A3D45",
+      "buttonSecondary": "#F6F2EC"
+    },
+    "radius": {
+      "card": 22,
+      "badge": 999,
+      "button": 16
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "600" },
+      "caption": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "GgWfk",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "nav",
+      "type": "page_header",
+      "sourceNodeId": "mZebh",
+      "copy": ["售后进度"]
+    },
+    {
+      "key": "hero",
+      "type": "after_sales_status_card",
+      "sourceNodeId": "iCIXA",
+      "copy": [
+        "审核中",
+        "提交后 8 分钟",
+        "售后申请已提交，平台正在核验商品问题",
+        "售后单号 AS202603280014 · 默认 1 个工作日内完成初审"
+      ]
+    },
+    {
+      "key": "timeline",
+      "type": "progress_timeline",
+      "sourceNodeId": "aXclU",
+      "copy": [
+        "处理进度",
+        "平台已收到你的售后申请，等待客服初审",
+        "今天 09:33",
+        "如资料不足，客服会通过消息中心联系你补充说明",
+        "预计今天 18:00 前"
+      ]
+    },
+    {
+      "key": "refund_card",
+      "type": "refund_info_card",
+      "sourceNodeId": "wLBx9",
+      "copy": [
+        "退款去向",
+        "原路退回至微信支付",
+        "预计退款 ¥268，审核通过后会原路退回。"
+      ]
+    },
+    {
+      "key": "material_card",
+      "type": "info_card",
+      "sourceNodeId": "OVd4c",
+      "copy": [
+        "补充材料",
+        "若客服需要更多照片或外包装信息，会通过消息中心通知你继续补充。",
+        "去消息中心查看"
+      ]
+    },
+    {
+      "key": "bottom_actions",
+      "type": "bottom_actions",
+      "sourceNodeId": "27bVx",
+      "copy": ["查看订单", "联系客服"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "hero",
+      "api": "GET /api/order/{id}/after-sales-status",
+      "fields": [
+        "statusLabel",
+        "subStatusText",
+        "heroTitle",
+        "heroHint",
+        "afterSalesNo"
+      ]
+    },
+    {
+      "sectionKey": "timeline",
+      "api": "GET /api/order/{id}/after-sales-trace",
+      "fields": ["traces[].title", "traces[].detail", "traces[].timestamp"]
+    },
+    {
+      "sectionKey": "refund_card",
+      "api": "GET /api/order/{id}/after-sales-status",
+      "fields": ["refundMethod", "refundAmount", "refundHint"]
+    },
+    {
+      "sectionKey": "material_card",
+      "api": "GET /api/order/{id}/after-sales-materials",
+      "fields": ["materialHint", "actionText"]
+    }
+  ],
+  "actions": [
+    {
+      "name": "openMessages",
+      "target": "/pages/news/all-messages/index",
+      "sectionKey": "material_card"
+    },
+    {
+      "name": "viewOrder",
+      "target": "order-detail-after-sales-open",
+      "sectionKey": "bottom_actions"
+    },
+    {
+      "name": "contactSupport",
+      "target": "customer-service-entry",
+      "sectionKey": "bottom_actions"
+    }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "FuYbt",
+    "criticalCheckpoints": [
+      "Timeline rows are stacked with the first item highlighted (badge #C47C36) and later rows greyed (#E8E0F4).",
+      "Refund and materials cards remain separate white cards with 22px radius.",
+      "Bottom action bar keeps the gray border and two capsules (light secondary and dark primary)."
+    ]
+  }
+}

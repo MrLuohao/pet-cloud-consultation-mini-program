@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "pageKey": "coupon-hub",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "ROr8Y",
+    "frameName": "优惠券页 Coupon Hub"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [12, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "cardBackground": "#FFFFFF",
+      "summaryGradientStart": "#FFF8EE",
+      "summaryGradientEnd": "#F7EFE4",
+      "urgentBackground": "#FFF7ED",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#8B879A",
+      "accent": "#6D32FF"
+    },
+    "radius": {
+      "card": 22,
+      "pill": 999,
+      "badge": 16
+    },
+    "typography": {
+      "title": {"fontFamily": "Inter", "fontSize": 16, "fontWeight": "700"},
+      "heroTitle": {"fontFamily": "Inter", "fontSize": 20, "fontWeight": "700"},
+      "subtitle": {"fontFamily": "Inter", "fontSize": 12, "fontWeight": "500"},
+      "chip": {"fontFamily": "Inter", "fontSize": 11, "fontWeight": "600"}
+    }
+  },
+  "sections": [
+    {
+      "key": "statusBar",
+      "type": "status_bar",
+      "sourceNodeId": "niDa9",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "pageHeader",
+      "type": "page_header",
+      "sourceNodeId": "mymUN",
+      "title": "优惠券",
+      "layout": {"align": "center", "gap": 8}
+    },
+    {
+      "key": "summaryCard",
+      "type": "summary_card",
+      "sourceNodeId": "OzLlh",
+      "title": "3 张可用优惠券",
+      "copy": [
+        "待领取 6 张",
+        "把可用券、即将过期和可领取券放在同一页统一管理。",
+        "当前 3 张可用 · 1 张 48 小时内过期"
+      ],
+      "layout": {"padding": 18, "gap": 12, "cornerRadius": 24}
+    },
+    {
+      "key": "filters",
+      "type": "filter_row",
+      "sourceNodeId": "TJI7Q",
+      "options": ["优惠概览", "可用券", "快过期"],
+      "layout": {"gap": 8}
+    },
+    {
+      "key": "urgentBar",
+      "type": "alert_bar",
+      "sourceNodeId": "qqRK4",
+      "title": "优先使用即将过期优惠券",
+      "copy": ["当前有 1 张券将在 48 小时内过期，建议优先完成预约或下单。"],
+      "layout": {"padding": [12, 14], "cornerRadius": 18}
+    },
+    {
+      "key": "ownedCoupon",
+      "type": "coupon_card",
+      "sourceNodeId": "gDLKG",
+      "title": "护理预约 85 折",
+      "copy": ["适用于推荐机构，预约周末洗护与基础护理均可使用。"],
+      "meta": ["2026.03.30 到期"],
+      "tags": ["48 小时内过期", "建议优先使用"],
+      "layout": {"padding": 18, "gap": 10}
+    },
+    {
+      "key": "claimCoupon",
+      "type": "coupon_card",
+      "sourceNodeId": "KoL3u",
+      "title": "主粮满 199 减 40",
+      "copy": ["适用于低温烘焙主粮与日常零食，今晚 24:00 前可领取。"],
+      "meta": ["领取后 7 天有效"],
+      "tags": ["新人可领", "立即领取"],
+      "layout": {"padding": 18, "gap": 10}
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "summaryCard",
+      "api": "GET /api/coupons/summary",
+      "fields": [
+        "availableCount",
+        "expiringSoonCount",
+        "totalClaimable",
+        "summaryMessage"
+      ]
+    },
+    {
+      "sectionKey": "filters",
+      "api": "GET /api/coupons/filters",
+      "fields": ["filters[].label", "filters[].isActive", "filters[].key"]
+    },
+    {
+      "sectionKey": "ownedCoupon",
+      "api": "GET /api/coupons/owned",
+      "fields": [
+        "coupons[].title",
+        "coupons[].description",
+        "coupons[].tag",
+        "coupons[].expiryText",
+        "coupons[].priorityHint"
+      ]
+    },
+    {
+      "sectionKey": "claimCoupon",
+      "api": "GET /api/coupons/claim",
+      "fields": [
+        "claimable[].title",
+        "claimable[].description",
+        "claimable[].expiryText",
+        "claimable[].badge"
+      ]
+    }
+  ],
+  "actions": [
+    {"name": "navBack", "target": "wx.navigateBack", "sectionKey": "pageHeader"},
+    {"name": "applyUrgentCard", "target": "coupon-expiring-prioritize", "sectionKey": "urgentBar"},
+    {"name": "useOwnedCoupon", "target": "coupon-use-flow", "sectionKey": "ownedCoupon"},
+    {"name": "claimCoupon", "target": "POST /api/coupon/claim", "sectionKey": "claimCoupon"},
+    {"name": "switchFilter", "target": "local-state", "sectionKey": "filters"}
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "ROr8Y",
+    "criticalCheckpoints": [
+      "状态栏与标题栏留白保持一致。",
+      "顶部 summary 卡采用渐变背景并包含可用/到期数据。",
+      "筛选 pills 保持“优惠概览”标记为选中状态。",
+      "即将过期提醒条高度、字体与原型一致。",
+      "已领取与可领取优惠券卡片均为白底圆角，内容、meta 结构准确。"
+    ]
+  }
+}

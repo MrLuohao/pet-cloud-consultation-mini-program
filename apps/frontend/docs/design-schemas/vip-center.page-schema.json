@@ -1,0 +1,145 @@
+{
+  "meta": {
+    "pageKey": "vip-center",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "meeAN",
+    "frameName": "会员中心页 VIP Center"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [12, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "cardBackground": "#FFFFFF",
+      "heroGradientStart": "#23202E",
+      "heroGradientEnd": "#4F3B73",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#8B879A",
+      "mutedBorder": "#E8DFFF",
+      "accent": "#6D32FF"
+    },
+    "radius": {
+      "card": 22,
+      "hero": 24,
+      "stat": 16,
+      "pill": 999
+    },
+    "typography": {
+      "title": {"fontFamily": "Inter", "fontSize": 16, "fontWeight": "700"},
+      "heroTitle": {"fontFamily": "Inter", "fontSize": 20, "fontWeight": "700"},
+      "body": {"fontFamily": "Inter", "fontSize": 12, "fontWeight": "500"},
+      "label": {"fontFamily": "Inter", "fontSize": 11, "fontWeight": "600"}
+    }
+  },
+  "sections": [
+    {
+      "key": "statusBar",
+      "type": "status_bar",
+      "sourceNodeId": "492V1",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "pageHeader",
+      "type": "page_header",
+      "sourceNodeId": "XuDqq",
+      "title": "会员中心",
+      "layout": {"align": "center", "gap": 8}
+    },
+    {
+      "key": "vipHero",
+      "type": "hero_summary_card",
+      "sourceNodeId": "HhsCG",
+      "title": "PetCare Premium",
+      "copy": [
+        "服务有效期至 2027.01.08，当前未开启自动续费。",
+        "286 天 剩余",
+        "自动续费：未开启",
+        "连续守护 2 年"
+      ],
+      "layout": {"padding": 18, "gap": 14, "cornerRadius": 24}
+    },
+    {
+      "key": "benefits",
+      "type": "benefit_grid",
+      "sourceNodeId": "DTRv3",
+      "title": "核心权益",
+      "copy": [
+        "在线问诊折扣：专家 + AI 联动，自动享会员价。",
+        "护理优先约：锁定热门时段，支持快改。",
+        "成长礼包：周期内领取成长记录模板与小礼包。",
+        "专属客服：订单、护理与会员问题优先响应。"
+      ],
+      "layout": {"padding": 18, "gap": 10}
+    },
+    {
+      "key": "renewalPlan",
+      "type": "plan_selector",
+      "sourceNodeId": "peiqd",
+      "title": "续费方案",
+      "copy": [
+        "立即续费年卡 · 预计每月约 CNY 16",
+        "推荐优先续年卡，权益不断档，按月拆算更省。",
+        "年卡：CNY 198 · 默认推荐",
+        "季卡：CNY 68 · 适合短期体验"
+      ],
+      "layout": {"padding": 18, "gap": 12}
+    },
+    {
+      "key": "rules",
+      "type": "info_card",
+      "sourceNodeId": "tIXrO",
+      "title": "开通说明",
+      "copy": ["开通后权益立即生效；到期未续费时，问诊折扣和护理优先约自动结束。"],
+      "layout": {"padding": 16}
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "vipHero",
+      "api": "GET /api/vip/status",
+      "fields": [
+        "tierName",
+        "validUntil",
+        "autoRenewEnabled",
+        "remainingDays",
+        "continuousYears"
+      ]
+    },
+    {
+      "sectionKey": "benefits",
+      "api": "GET /api/vip/benefits",
+      "fields": ["benefits[].title", "benefits[].description", "benefits[].badgeColor"]
+    },
+    {
+      "sectionKey": "renewalPlan",
+      "api": "GET /api/vip/plans",
+      "fields": ["plans[].name", "plans[].price", "plans[].hint", "plans[].isRecommended"]
+    },
+    {
+      "sectionKey": "rules",
+      "api": "GET /api/vip/rules",
+      "fields": ["rules[].title", "rules[].detail"]
+    }
+  ],
+  "actions": [
+    {"name": "navBack", "target": "wx.navigateBack", "sectionKey": "pageHeader"},
+    {"name": "viewBenefits", "target": "vip-benefits-explain", "sectionKey": "benefits"},
+    {"name": "renewNow", "target": "POST /api/vip/renew", "sectionKey": "renewalPlan"},
+    {"name": "manageAutoRenew", "target": "vip-auto-renew-manage", "sectionKey": "vipHero"}
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "meeAN",
+    "criticalCheckpoints": [
+      "状态栏、安全边距与标题整体保持和 frame 一致。",
+      "亮色渐变 hero 卡保持四项核心文本与三列统计块。",
+      "核心权益区展示四个视觉卡片，双色字体明确区分。",
+      "续费方案模块保持年卡/季卡并列，年卡强调推荐状态。",
+      "开通说明卡片底部留白与整体一致。"
+    ]
+  }
+}

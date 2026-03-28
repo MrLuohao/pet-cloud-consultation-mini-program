@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "pageKey": "settings",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "tPmtP",
+    "frameName": "设置页 Settings"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [12, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "cardBackground": "#FFFFFF",
+      "highlight": "#F4F0FF",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#8B879A",
+      "accent": "#6D32FF",
+      "border": "#F0EAFE"
+    },
+    "radius": {
+      "card": 22,
+      "pill": 999,
+      "avatar": 32
+    },
+    "typography": {
+      "title": {"fontFamily": "Inter", "fontSize": 16, "fontWeight": "700"},
+      "subtitle": {"fontFamily": "Inter", "fontSize": 14, "fontWeight": "600"},
+      "body": {"fontFamily": "Inter", "fontSize": 12, "fontWeight": "500"},
+      "hint": {"fontFamily": "Inter", "fontSize": 11, "fontWeight": "500"}
+    }
+  },
+  "sections": [
+    {
+      "key": "statusBar",
+      "type": "status_bar",
+      "sourceNodeId": "Y35Dn",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "pageHeader",
+      "type": "page_header",
+      "sourceNodeId": "MG2WQ",
+      "title": "设置",
+      "layout": {"align": "center", "gap": 8}
+    },
+    {
+      "key": "profileHero",
+      "type": "profile_card",
+      "sourceNodeId": "NkMDy",
+      "title": "宠物达人",
+      "copy": ["头像、昵称和城市同步影响社区与服务页", "资料修改会实时生效"],
+      "layout": {"padding": 18, "gap": 12, "cornerRadius": 22}
+    },
+    {
+      "key": "accountCard",
+      "type": "detail_list",
+      "sourceNodeId": "h1ljO",
+      "title": "资料设置",
+      "items": [
+        "头像 · 点击上方头像卡修改",
+        "昵称 · 宠物达人",
+        "城市 · 上海 · 徐汇",
+        "个性签名 · 把喂养和健康记录都过成有仪式感的小事。"
+      ],
+      "layout": {"padding": 18, "gap": 10}
+    },
+    {
+      "key": "securityCard",
+      "type": "detail_list",
+      "sourceNodeId": "WavR8",
+      "title": "账号与安全",
+      "items": [
+        "手机号 · 138 0000 8888",
+        "账号安全 · 密码管理与设备登录",
+        "微信绑定 · 已绑定当前微信"
+      ],
+      "layout": {"padding": 18, "gap": 10}
+    },
+    {
+      "key": "notificationCard",
+      "type": "alert_card",
+      "sourceNodeId": "q6tug",
+      "title": "消息提醒",
+      "copy": [
+        "问诊、订单和健康提醒默认开启，避免错过关键更新。",
+        "重要提醒通知 · 已开启"
+      ],
+      "layout": {"padding": 18, "gap": 10, "cornerRadius": 22}
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "profileHero",
+      "api": "GET /api/user/profile",
+      "fields": [
+        "nickname",
+        "avatarUrl",
+        "location",
+        "description",
+        "tipMessage"
+      ]
+    },
+    {
+      "sectionKey": "accountCard",
+      "api": "GET /api/user/account-settings",
+      "fields": [
+        "avatarPrompt",
+        "nickname",
+        "location",
+        "signature"
+      ]
+    },
+    {
+      "sectionKey": "securityCard",
+      "api": "GET /api/user/security",
+      "fields": [
+        "phoneNumber",
+        "securityHint",
+        "linkedAccounts[].name",
+        "linkedAccounts[].status"
+      ]
+    },
+    {
+      "sectionKey": "notificationCard",
+      "api": "GET /api/user/notification-settings",
+      "fields": [
+        "defaultEnabled",
+        "importantReminderEnabled",
+        "descriptions"
+      ]
+    }
+  ],
+  "actions": [
+    {"name": "navBack", "target": "wx.navigateBack", "sectionKey": "pageHeader"},
+    {"name": "changeAvatar", "target": "AIAPI.uploadImage", "sectionKey": "profileHero"},
+    {"name": "editProfileField", "target": "settings-profile-edit-flow", "sectionKey": "accountCard"},
+    {"name": "manageSecurity", "target": "account-security-manage-flow", "sectionKey": "securityCard"},
+    {"name": "toggleNotifications", "target": "local-state", "sectionKey": "notificationCard"}
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "tPmtP",
+    "criticalCheckpoints": [
+      "状态栏、标题和安全边距与 Pen frame 保持一致。",
+      "资料卡保留头像左侧形象与说明文字。",
+      "‘资料设置’ 与 ‘账号与安全’ 两个白卡语义清晰、分割线一致。",
+      "重要提醒通知块保持黄色背景与 pill 状态。"
+    ]
+  }
+}

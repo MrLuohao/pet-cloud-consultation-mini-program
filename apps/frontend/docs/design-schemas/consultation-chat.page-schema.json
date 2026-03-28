@@ -62,7 +62,7 @@
       "key": "urgent_switch_notice",
       "type": "consultation_chat_urgent_switch_notice",
       "sourceNodeId": "czQOd",
-      "copy": ["如症状明显加重，可直接结束普通咨询并改走加急通道。", "去加急"]
+      "copy": ["如症状明显加重，可立即升级加急并同步准备线下就诊。", "升级加急"]
     },
     {
       "key": "input_bar",

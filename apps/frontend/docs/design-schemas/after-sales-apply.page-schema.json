@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "pageKey": "after-sales-apply",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "WlVEd",
+    "frameName": "申请售后页 After-Sales Apply"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 16, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "surface": "#FFFEFD",
+      "surfaceElevated": "#FFFFFF",
+      "cardBorder": "#EEE7DD",
+      "chipFilled": "#3A3D45",
+      "chipStroke": "#E5DED3",
+      "hintText": "#8A81A0",
+      "primaryAction": "#3A3D45",
+      "secondaryAction": "#F6F2EC"
+    },
+    "radius": {
+      "card": 22,
+      "chip": 999,
+      "input": 18,
+      "button": 16
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "500" },
+      "hint": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "SERDi",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "nav",
+      "type": "page_header",
+      "sourceNodeId": "3sNUV",
+      "copy": ["申请售后"]
+    },
+    {
+      "key": "order_summary",
+      "type": "order_summary_card",
+      "sourceNodeId": "jP8nH",
+      "copy": [
+        "主粮加餐组合 1 套",
+        "实付 ¥268 · 昨天收货",
+        "仅支持本单商品申请售后"
+      ]
+    },
+    {
+      "key": "service_type",
+      "type": "chip_selection_card",
+      "sourceNodeId": "kDQhi",
+      "copy": ["服务类型", "仅退款", "退货退款", "补发商品"]
+    },
+    {
+      "key": "reason_selection",
+      "type": "chip_selection_card",
+      "sourceNodeId": "E1LLD",
+      "copy": ["售后原因", "收到商品破损", "错发漏发", "质量问题"]
+    },
+    {
+      "key": "description",
+      "type": "text_area_card",
+      "sourceNodeId": "ulcuL",
+      "copy": [
+        "问题说明",
+        "请补充商品问题位置、外包装状态以及你希望处理的方式。"
+      ]
+    },
+    {
+      "key": "attachments",
+      "type": "attachments_row",
+      "sourceNodeId": "p2xmy",
+      "copy": ["上传凭证图片，最多 3 张", "继续添加"]
+    },
+    {
+      "key": "refund_info",
+      "type": "refund_info_card",
+      "sourceNodeId": "5Zpn4",
+      "copy": [
+        "退款去向",
+        "原路退回至微信支付",
+        "预计退款金额 ¥268，审核通过后原路返还。"
+      ]
+    },
+    {
+      "key": "reminder",
+      "type": "info_card",
+      "sourceNodeId": "iLunx",
+      "copy": [
+        "售后提醒",
+        "提交后会在 1 个工作日内完成审核。若资料不足，客服会通过消息中心继续联系你补充说明。"
+      ]
+    },
+    {
+      "key": "submit_action",
+      "type": "bottom_actions",
+      "sourceNodeId": "M9iid",
+      "copy": ["提交售后申请"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "order_summary",
+      "api": "GET /api/order/{id}/after-sales-preview",
+      "fields": [
+        "order.items[].name",
+        "order.items[].price",
+        "order.deliveryDate",
+        "order.allowAfterSalesReason"
+      ]
+    },
+    {
+      "sectionKey": "service_type",
+      "api": "GET /api/order/{id}/after-sales-options",
+      "fields": ["serviceOptions[].label", "serviceOptions[].value"]
+    },
+    {
+      "sectionKey": "reason_selection",
+      "api": "GET /api/order/{id}/after-sales-options",
+      "fields": ["reasonOptions[].label", "reasonOptions[].value"]
+    },
+    {
+      "sectionKey": "refund_info",
+      "api": "GET /api/order/{id}/after-sales-preview",
+      "fields": ["refundMethod", "refundAmountText", "refundHint"]
+    }
+  ],
+  "actions": [
+    {
+      "name": "chooseServiceType",
+      "target": "local-state",
+      "sectionKey": "service_type"
+    },
+    {
+      "name": "chooseReason",
+      "target": "local-state",
+      "sectionKey": "reason_selection"
+    },
+    {
+      "name": "updateDescription",
+      "target": "local-state",
+      "sectionKey": "description"
+    },
+    {
+      "name": "chooseImage",
+      "target": "wx.chooseMedia",
+      "sectionKey": "attachments"
+    },
+    {
+      "name": "submitAfterSales",
+      "target": "POST /api/order/{id}/after-sales",
+      "sectionKey": "submit_action"
+    }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "WlVEd",
+    "criticalCheckpoints": [
+      "Sectioned cards remain rounded and separated with 22px corner radius.",
+      "Service and reason chips reflect current selection state, with active being dark fill (#3A3D45).",
+      "Submit bar is pinned at the bottom with a single dark CTA spanning full width."
+    ]
+  }
+}

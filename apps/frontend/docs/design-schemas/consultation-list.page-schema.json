@@ -49,7 +49,7 @@
       "key": "consult_list_hero",
       "type": "consultation_list_hero",
       "sourceNodeId": "6bGy1",
-      "copy": ["2 条待回复", "1 条加急", "优先处理 2 条咨询", "先处理待补充和待回复，再回看已结束记录。"]
+      "copy": ["2 条进行中", "1 条加急", "最近 2 条咨询", "先看待医生回复和待你补充，再回看已结束记录。"]
     },
     {
       "key": "consult_tabs",
@@ -61,7 +61,7 @@
       "key": "consult_cards",
       "type": "consultation_list_cards",
       "sourceNodeId": "h9WV4",
-      "copy": ["加急问诊", "待你补充", "团子 · 持续腹泻伴精神变差", "周医生 · 城市宠物医院 · 03/26 09:20", "医生预计 5 分钟内查看", "继续补充", "普通咨询", "进行中", "奶盖 · 皮肤瘙痒反复，想确认洗护方案", "李医生 · 伴宠中心医院 · 12 分钟前回复", "费用 ¥39", "继续会话"]
+      "copy": ["加急问诊", "待你补充资料", "团子 · 持续腹泻伴精神变差", "周医生 · 城市宠物医院 · 03/26 09:20", "先补充症状变化、频次和最新照片", "去补充", "普通咨询", "待你查看", "奶盖 · 皮肤瘙痒反复，想确认洗护方案", "李医生 · 伴宠中心医院 · 12 分钟前回复", "费用 ¥39", "查看回复"]
     },
     { "key": "bottom_primary_action", "type": "primary_button", "sourceNodeId": "g4fZH", "copy": ["发起问诊"] },
     { "key": "bottom_secondary_action", "type": "secondary_button", "sourceNodeId": "9FAdv", "copy": ["加急通道"] }

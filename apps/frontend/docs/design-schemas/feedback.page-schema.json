@@ -1,0 +1,149 @@
+{
+  "meta": {
+    "pageKey": "feedback",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "orfEX",
+    "frameName": "意见反馈页 Feedback"
+  },
+  "layout": {
+    "background": "#F8F8F8",
+    "contentPadding": [12, 16, 24, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F8F8",
+      "cardBackground": "#FFFFFF",
+      "brandPrimary": "#6D32FF",
+      "textPrimary": "#1F2937",
+      "textSecondary": "#8B879A",
+      "borderSoft": "#E8E3F5",
+      "surfaceSubtle": "#F9F8FC",
+      "gradientStart": "#F7F3FF",
+      "gradientEnd": "#FDFCFB"
+    },
+    "radius": {
+      "card": 22,
+      "pill": 999,
+      "button": 18,
+      "chip": 16
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "lineHeight": 1.45 },
+      "hint": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" },
+      "label": { "fontFamily": "Inter", "fontSize": 14, "fontWeight": "700" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "SpKAF",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "page_header",
+      "type": "title_header",
+      "sourceNodeId": "lzAgW",
+      "copy": ["意见反馈"]
+    },
+    {
+      "key": "intro_card",
+      "type": "info_callout",
+      "sourceNodeId": "28vEF",
+      "copy": [
+        "遇到问题，告诉我们",
+        "从页面异常、支付问题到建议想法，都可以在这里统一反馈，我们会优先处理关键问题。"
+      ],
+      "layout": { "padding": 18, "gap": 10, "cornerRadius": 24 }
+    },
+    {
+      "key": "feedback_types",
+      "type": "pill_selector",
+      "sourceNodeId": "Z23zU",
+      "copy": ["问题类型", "页面异常", "支付问题", "功能建议"],
+      "layout": { "padding": 18, "gap": 10, "cornerRadius": 22 }
+    },
+    {
+      "key": "feedback_form",
+      "type": "text_input_panel",
+      "sourceNodeId": "jf9Kw",
+      "copy": [
+        "反馈内容",
+        "请尽量描述发生时间、操作步骤、异常表现，以及你原本想完成的操作"
+      ],
+      "layout": { "padding": 18, "cornerRadius": 22, "gap": 12 }
+    },
+    {
+      "key": "feedback_page_hint",
+      "type": "helper_hint",
+      "sourceNodeId": "NL5qG",
+      "copy": ["如果方便，也可以补充“问题发生在哪个页面”"]
+    },
+    {
+      "key": "contact_section",
+      "type": "contact_optional",
+      "sourceNodeId": "OhQFt",
+      "copy": [
+        "联系方式（选填）",
+        "微信 / 手机号，方便我们回访你（选填）"
+      ],
+      "layout": { "padding": [14, 16], "cornerRadius": 18 }
+    },
+    {
+      "key": "submit",
+      "type": "primary_action",
+      "sourceNodeId": "ht0FA",
+      "copy": ["提交反馈"],
+      "layout": { "cornerRadius": 18 }
+    },
+    {
+      "key": "upload_card",
+      "type": "upload_hint",
+      "sourceNodeId": "zBOi8",
+      "copy": [
+        "上传截图",
+        "上传页面异常、支付结果或订单问题截图",
+        "最多 3 张，建议包含关键报错或异常状态。"
+      ],
+      "layout": { "padding": 18, "cornerRadius": 22, "gap": 10 }
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "feedback_types",
+      "api": "GET /api/feedback/types",
+      "fields": ["types[].id", "types[].label", "types[].priority"]
+    },
+    {
+      "sectionKey": "feedback_form",
+      "api": "GET /api/feedback/template",
+      "fields": ["template.bodyPlaceholder", "template.tip"]
+    },
+    {
+      "sectionKey": "contact_section",
+      "api": "GET /api/user/profile",
+      "fields": ["user.contact.wechat", "user.contact.phone"]
+    }
+  ],
+  "actions": [
+    { "name": "goBack", "target": "wx.navigateBack", "sectionKey": "page_header" },
+    { "name": "selectFeedbackType", "target": "client/select-feedback-type", "sectionKey": "feedback_types" },
+    { "name": "fillFeedback", "target": "client/update-text-input", "sectionKey": "feedback_form" },
+    { "name": "fillContact", "target": "client/auto-fill-contact", "sectionKey": "contact_section" },
+    { "name": "attachScreenshot", "target": "client/multi-image-picker", "sectionKey": "upload_card" },
+    { "name": "submitFeedback", "target": "POST /api/feedback", "sectionKey": "submit" }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "orfEX",
+    "criticalCheckpoints": [
+      "Status bar and header share the same vertical rhythm and spacing as the frame.",
+      "Intro and form cards stay gradient and white with rounded corners, chips, and generous padding.",
+      "Submit button remains the full-width purple CTA above the upload hint to keep the action prominent.",
+      "Upload section keeps the guidance copy and pill-style button for attaching up to three screenshots."
+    ]
+  }
+}

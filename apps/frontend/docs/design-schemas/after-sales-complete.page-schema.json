@@ -1,0 +1,141 @@
+{
+  "meta": {
+    "pageKey": "after-sales-complete",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "vkfUd",
+    "frameName": "售后完成页 After-Sales Complete"
+  },
+  "layout": {
+    "background": "#F8F7F4",
+    "contentPadding": [8, 16, 16, 16],
+    "sectionGap": 12,
+    "safeAreaTop": true
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#F8F7F4",
+      "surface": "#FFFEFD",
+      "surfaceNeutral": "#FFFFFF",
+      "borderSoft": "#EEE7DD",
+      "badgeSuccess": "#ECF7EF",
+      "textPrimary": "#2B2438",
+      "textSecondary": "#8A81A0",
+      "textMuted": "#767C87",
+      "buttonPrimary": "#3A3D45",
+      "buttonSecondary": "#F6F2EC"
+    },
+    "radius": {
+      "card": 22,
+      "badge": 999,
+      "button": 16
+    },
+    "typography": {
+      "title": { "fontFamily": "Inter", "fontSize": 16, "fontWeight": "700" },
+      "body": { "fontFamily": "Inter", "fontSize": 13, "fontWeight": "600" },
+      "caption": { "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500" }
+    }
+  },
+  "sections": [
+    {
+      "key": "status_bar",
+      "type": "status_bar",
+      "sourceNodeId": "r82vA",
+      "copy": ["9:41", "5G   100%"]
+    },
+    {
+      "key": "nav",
+      "type": "page_header",
+      "sourceNodeId": "sYOHk",
+      "copy": ["售后完成"]
+    },
+    {
+      "key": "hero_card",
+      "type": "after_sales_completed_card",
+      "sourceNodeId": "aRMxI",
+      "copy": [
+        "已完成",
+        "今天 11:12 完成",
+        "售后已处理完成，退款已原路退回",
+        "退款预计 1-3 个工作日到账，处理结果可在订单详情继续查看。"
+      ]
+    },
+    {
+      "key": "refund_result",
+      "type": "refund_info_card",
+      "sourceNodeId": "qxgUN",
+      "copy": [
+        "退款结果",
+        "退款金额 ¥268 已提交原路退款",
+        "原支付账户为微信支付，若到账略有延迟，请以支付渠道通知为准。"
+      ]
+    },
+    {
+      "key": "goods_card",
+      "type": "goods_listing_card",
+      "sourceNodeId": "NujZT",
+      "copy": [
+        "主粮加餐组合 1 套",
+        "订单 ¥268 · 售后原因：收到商品破损",
+        "售后单号 AS202603280014"
+      ]
+    },
+    {
+      "key": "summary_card",
+      "type": "info_card",
+      "sourceNodeId": "Gd9g0",
+      "copy": [
+        "处理结果",
+        "本次售后已完结，若后续仍有问题，可继续联系客服说明。"
+      ]
+    },
+    {
+      "key": "actions",
+      "type": "bottom_actions",
+      "sourceNodeId": "iqJkx",
+      "copy": ["联系客服", "返回订单"]
+    }
+  ],
+  "dataBindings": [
+    {
+      "sectionKey": "hero_card",
+      "api": "GET /api/order/{id}/after-sales-status",
+      "fields": ["statusLabel", "completionTimeText", "heroTitle", "heroSub"]
+    },
+    {
+      "sectionKey": "refund_result",
+      "api": "GET /api/order/{id}/after-sales-status",
+      "fields": ["refundAmountText", "refundStatus", "refundHint"]
+    },
+    {
+      "sectionKey": "goods_card",
+      "api": "GET /api/order/{id}",
+      "fields": ["items[].productName", "items[].price", "items[].quantity", "afterSalesReason"]
+    },
+    {
+      "sectionKey": "summary_card",
+      "api": "GET /api/order/{id}/after-sales-status",
+      "fields": ["summaryTitle", "summaryText"]
+    }
+  ],
+  "actions": [
+    {
+      "name": "contactSupport",
+      "target": "customer-service-entry",
+      "sectionKey": "actions"
+    },
+    {
+      "name": "returnToOrder",
+      "target": "/pages/order/detail",
+      "sectionKey": "actions"
+    }
+  ],
+  "verification": {
+    "sourceScreenshotNodeId": "vkfUd",
+    "criticalCheckpoints": [
+      "Hero and refund cards keep a soft cream stroke and 22px rounded corners.",
+      "Goods card uses product thumbnail left, text details aligned right.",
+      "Bottom actions maintain divider stroke over white background plus light/dark capsules."
+    ]
+  }
+}

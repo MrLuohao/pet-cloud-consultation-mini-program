@@ -77,10 +77,12 @@
 1. `design/frontendMobileScreens.pen`
 2. `docs/project-rules.md`
 3. `docs/rules/design-source-rules.md`
-4. `docs/rules/frontend-implementation-rules.md`
-5. `docs/rules/backend-development-rules.md`
-6. `apps/frontend/docs/design-schemas/README.md`
-7. `memory/project-context-handoff.md`
+4. `docs/rules/backend-management-design-rules.md`
+5. `docs/rules/backend-management-product-rules.md`
+6. `docs/rules/frontend-implementation-rules.md`
+7. `docs/rules/backend-development-rules.md`
+8. `apps/frontend/docs/design-schemas/README.md`
+9. `memory/project-context-handoff.md`
 
 如果你要做前端页面：
 
@@ -93,6 +95,14 @@
 - 先确认当前页面交互和字段语义
 - 再判断接口、VO、数据库是否需要配合
 
+如果你要做管理后台画布：
+
+- 先读 `design/backendManagement.pen`
+- 再读 `docs/rules/design-source-rules.md`
+- 再读 `docs/rules/backend-management-design-rules.md`
+- 再读 `docs/rules/backend-management-product-rules.md`
+- 确认后台定位、导航分组、首页形态后再继续补画
+
 ## 规则入口
 
 根级 README 只负责介绍项目，不承担详细规则正文。  
@@ -102,6 +112,10 @@
   项目总规则入口与优先级定义
 - `docs/rules/design-source-rules.md`
   设计源、画布、商品图与设计协作规则
+- `docs/rules/backend-management-design-rules.md`
+  管理后台画布定位、信息架构、视觉基调与配置化设计规则
+- `docs/rules/backend-management-product-rules.md`
+  管理后台模块职责、看板语义、对象详情与工作台产品规则
 - `docs/rules/frontend-implementation-rules.md`
   前端实现、视觉还原、小程序约束规则
 - `docs/rules/backend-development-rules.md`

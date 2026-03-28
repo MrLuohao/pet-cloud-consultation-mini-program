@@ -57,13 +57,13 @@
       "key": "consult_mode_card",
       "type": "consultation_doctor_mode_card",
       "sourceNodeId": "f7CS5",
-      "copy": ["选择咨询方式", "普通咨询", "¥39 起 · 预计 10 分钟内接诊，适合完整描述症状后等待医生回复", "加急问诊", "¥69 起 · 预计 2 分钟内优先处理，适合精神差或持续恶化时快速判断"]
+      "copy": ["选择咨询方式", "普通图文", "¥39 起 · 预计 10 分钟内接诊，适合完整描述症状后等待医生回复", "加急优先", "¥69 起 · 预计 2 分钟内优先处理，适合精神差或持续恶化时快速判断"]
     },
     {
       "key": "reviews_card",
       "type": "consultation_doctor_reviews_card",
       "sourceNodeId": "mgUQT",
-      "copy": ["用户反馈", "最近 32 条真实反馈", "“对皮肤问题判断很稳，给的观察路径也清楚。”", "团子妈妈 · 03/18", "如未添加宠物，下一步会先引导补充宠物信息后再发起咨询。", "已了解"]
+      "copy": ["问诊反馈", "近 32 条真实问诊评价", "“对皮肤问题判断很稳，会先告诉我观察顺序，再决定要不要线下复查。”", "团子妈妈 · 03/18", "如未添加宠物，系统会先引导补全宠物信息，再进入症状填写。", "我知道了"]
     },
     { "key": "bottom_secondary_action", "type": "secondary_button", "sourceNodeId": "NZALw", "copy": ["加急问诊"] },
     { "key": "bottom_primary_action", "type": "primary_button", "sourceNodeId": "CkvAb", "copy": ["立即咨询"] }

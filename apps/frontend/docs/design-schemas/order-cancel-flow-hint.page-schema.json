@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "pageKey": "order-cancel-flow-hint",
+    "platform": "wechat-miniprogram",
+    "penFile": "/Volumes/Beelink/software/pet-cloud-consultation-mini-program/design/frontendMobileScreens.pen",
+    "frameId": "X6bge",
+    "frameName": "订单取消流程提示"
+  },
+  "layout": {
+    "background": "#FFF8EE",
+    "contentPadding": [12, 14, 12, 14],
+    "sectionGap": 6,
+    "safeAreaTop": false
+  },
+  "tokens": {
+    "colors": {
+      "pageBackground": "#FFF8EE",
+      "borderSoft": "#F0DEC8",
+      "textHint": "#8A6F54"
+    },
+    "radius": {
+      "card": 16
+    },
+    "typography": {
+      "hint": {
+        "fontFamily": "Inter",
+        "fontSize": 12,
+        "fontWeight": "600",
+        "lineHeight": 1.45
+      }
+    }
+  },
+  "sections": [
+    {
+      "key": "flow_hint_card",
+      "type": "order_cancel_flow_hint",
+      "sourceNodeId": "X6bge",
+      "copy": [
+        "确认取消后",
+        "关闭原因弹层 -> 轻提示 -> 已取消详情页"
+      ]
+    }
+  ],
+  "dataBindings": [],
+  "actions": [],
+  "verification": {
+    "sourceScreenshotNodeId": "X6bge",
+    "criticalCheckpoints": [
+      "the helper remains a compact warm hint card instead of being interpreted as a full standalone page",
+      "the copy explicitly preserves the two-step close-sheet to toast to cancelled-detail flow reminder",
+      "the card keeps warm cream background, soft border and brown text so it reads as secondary process guidance"
+    ]
+  }
+}
