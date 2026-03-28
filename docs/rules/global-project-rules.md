@@ -6,19 +6,21 @@
 
 后续所有判断统一按下面顺序执行：
 
-1. `.pen` 最新正式画布
+1. 相关正式 `.pen` 的最新版本
 2. `docs/rules/global-project-rules.md`
 3. `docs/rules/design-source-rules.md`
-4. `docs/rules/backend-management-design-rules.md`
-5. `docs/rules/backend-management-product-rules.md`
-6. `docs/rules/frontend-implementation-rules.md`
-7. `docs/rules/backend-development-rules.md`
-8. `apps/frontend/docs/design-schemas/README.md`
-9. 现有代码
+4. `docs/rules/frontend-mobile-design-rules.md`
+5. `docs/rules/backend-management-design-rules.md`
+6. `docs/rules/backend-management-product-rules.md`
+7. `docs/rules/frontend-implementation-rules.md`
+8. `docs/rules/backend-development-rules.md`
+9. `apps/frontend/docs/design-schemas/README.md`
+10. 现有代码
 
 说明：
 
 - `docs/project-rules.md` 是规则导航页，不作为业务事实源参与冲突仲裁。
+- 只在与当前任务相关的规则文件之间比较优先级，不把无关规则文件强行并入同一层判断。
 
 ## 全局协作铁律
 
@@ -35,15 +37,17 @@
 - `docs/rules/global-project-rules.md`
   - 只放全局协作规则、同步规则、交接边界。
 - `docs/rules/design-source-rules.md`
-  - 只放 `.pen` / 画布阶段规则。
+  - 只放 `.pen` 作为事实源的协作规则。
+- `docs/rules/frontend-mobile-design-rules.md`
+  - 只放消费端页面设计规则。
 - `docs/rules/backend-management-design-rules.md`
-  - 只放管理后台画布定位、信息架构与视觉规则。
+  - 只放后台页面形态、视觉系统与设计协作规则。
 - `docs/rules/backend-management-product-rules.md`
-  - 只放管理后台页面内容语义、模块职责、对象详情与工作台产品规则。
+  - 只放后台信息架构、模块职责与页面语义规则。
 - `docs/rules/frontend-implementation-rules.md`
   - 只放前端实现规则。
 - `docs/rules/backend-development-rules.md`
-  - 只放后端开发规则。
+  - 只放后端开发规则与稳定实现契约。
 - `docs/plans/*.md`
   - 只放计划、状态矩阵、执行进度。
 - `memory/project-context-handoff.md`
@@ -63,11 +67,13 @@
 
 - 全局规则体系变化：更新 `docs/project-rules.md` 与 `docs/rules/global-project-rules.md`
 - 如果只是某一类规则正文调整，优先更新对应细则文件；只有入口、分工或阅读顺序变化时才同步修改 `docs/project-rules.md`
-- 设计规则变化：更新 `docs/rules/design-source-rules.md`
+- 设计源协作规则变化：更新 `docs/rules/design-source-rules.md`
+- 消费端设计规则变化：更新 `docs/rules/frontend-mobile-design-rules.md`
 - 管理后台设计规则变化：更新 `docs/rules/backend-management-design-rules.md`
 - 管理后台产品规则变化：更新 `docs/rules/backend-management-product-rules.md`
-- 前端规则变化：更新 `docs/rules/frontend-implementation-rules.md`
-- 后端规则变化：更新 `docs/rules/backend-development-rules.md`
+- 前端实现规则变化：更新 `docs/rules/frontend-implementation-rules.md`
+- 后端开发规则变化：更新 `docs/rules/backend-development-rules.md`
+- 后台页面执行状态变化：更新 `docs/plans/backend-management-page-status-matrix.md`
 - 前端页面执行状态变化：更新 `docs/plans/frontend-page-status-matrix.md`
 - 如果本轮变更会影响下次接手判断：同步更新 `memory/project-context-handoff.md`
 

@@ -1,6 +1,6 @@
 # Project Context Handoff
 
-更新时间：2026-03-28
+更新时间：2026-03-29
 
 ## 项目
 - 名称：PetCloud Consultation
@@ -20,14 +20,16 @@
 - 总规则入口：`docs/project-rules.md`
 - 全局项目规则：`docs/rules/global-project-rules.md`
 - 设计源规则：`docs/rules/design-source-rules.md`
+- 消费端设计规则：`docs/rules/frontend-mobile-design-rules.md`
 - 管理后台设计规则：`docs/rules/backend-management-design-rules.md`
 - 管理后台产品规则：`docs/rules/backend-management-product-rules.md`
 - 前端实现规则：`docs/rules/frontend-implementation-rules.md`
 - 后端开发规则：`docs/rules/backend-development-rules.md`
+- 管理后台页面状态矩阵：`docs/plans/backend-management-page-status-matrix.md`
 - 消费端正式设计源：`design/frontendMobileScreens.pen`
 - 管理后台正式设计源：`design/backendManagement.pen`
 - schema 规则入口：`apps/frontend/docs/design-schemas/README.md`
-- 页面状态矩阵：`docs/plans/frontend-page-status-matrix.md`
+- 消费端页面状态矩阵：`docs/plans/frontend-page-status-matrix.md`
 
 ## 当前设计事实
 - 消费端设计源 `design/frontendMobileScreens.pen`
@@ -37,13 +39,10 @@
     - 1 个辅助流程提示画板：`X6bge / 订单取消流程提示`
   - 宠物档案链、问诊链、社区详情链、私信链、beauty 链、订单售后链等新版页面都已进入正式画板范围
 - 管理后台设计源 `design/backendManagement.pen`
-  - 当前已有 6 个顶层正式后台页面：
-    - `运营总览 Dashboard`
-    - `商品内容配置中心 Product Content Config`
-    - `社区审核中心 Community Moderation`
-    - `订单履约中心`
-    - `用户 360 运营台`
-    - `首页精选配置 / 发布排期`
+  - 当前顶层正式后台页面画板共 1 个：
+    - `JCVX7 / 运营总览 Dashboard`
+  - 顶层 `f:vtHps / halo: design system components` 为设计系统组件区，不纳入后台页面进度
+  - 后台页面执行状态现统一以下沉到 `docs/plans/backend-management-page-status-matrix.md` 为准
   - 当前仍属于后台原型设计阶段，不应据此判断后台实现已开始
 
 ## Schema 与路由现状
@@ -72,12 +71,17 @@
   - `apps/frontend/docs/design-schemas/*.page-schema.json`
   - `docs/project-rules.md`
   - `docs/rules/*.md`
+  - `docs/plans/backend-management-page-status-matrix.md`
   - `docs/plans/frontend-page-status-matrix.md`
   - `memory/project-context-handoff.md`
-- 管理后台规则已拆分为三层：
-  - 画布 / 视觉 / 结构：`docs/rules/backend-management-design-rules.md`
-  - 页面内容语义 / 模块职责：`docs/rules/backend-management-product-rules.md`
+- 当前规则体系已完成分层：
+  - 设计源协作：`docs/rules/design-source-rules.md`
+  - 消费端页面设计：`docs/rules/frontend-mobile-design-rules.md`
+  - 后台画布 / 视觉 / 结构：`docs/rules/backend-management-design-rules.md`
+  - 后台页面内容语义 / 模块职责：`docs/rules/backend-management-product-rules.md`
+  - 前端实现：`docs/rules/frontend-implementation-rules.md`
   - 后端实现契约：`docs/rules/backend-development-rules.md`
+- 原后台 blueprint 已完成职责拆分，其长期有效内容已分别吸收到后台设计规则、后台产品规则与后端开发规则中
 - 当前仍存在 `.DS_Store` 等无关未跟踪文件
 - 后端目录、Maven 工程、SQL 文件虽然存在，但当前阶段不以这些文件判断“后端已实现”
 
@@ -97,7 +101,8 @@
   - `pages/order/logistics-detail`
   - `pages/order/after-sales/*`
 - 如果继续做页面复核，优先判断“已有路由但还是旧实现”的页面是否需要进入下一轮 schema 对齐，而不是重复补画
-- 如果继续推进后台原型，应先按最新三层规则继续补 `design/backendManagement.pen`
+- 如果继续推进后台原型，应先按最新规则体系继续补 `design/backendManagement.pen`
+- 后续后台补画顺序与页面状态，统一先看 `docs/plans/backend-management-page-status-matrix.md`
 - 等用户明确确认原型冻结后，再进入前端正式落代码与后端接口/数据契约实现阶段
 
 ## 显式过期上下文说明
@@ -109,10 +114,12 @@
 1. `docs/project-rules.md`
 2. `docs/rules/global-project-rules.md`
 3. `docs/rules/design-source-rules.md`
-4. `docs/rules/backend-management-design-rules.md`
-5. `docs/rules/backend-management-product-rules.md`
-6. `docs/rules/frontend-implementation-rules.md`
-7. `docs/rules/backend-development-rules.md`
-8. `docs/plans/frontend-page-status-matrix.md`
-9. `apps/frontend/docs/design-schemas/README.md`
-10. `memory/project-context-handoff.md`
+4. `docs/rules/frontend-mobile-design-rules.md`
+5. `docs/rules/backend-management-design-rules.md`
+6. `docs/rules/backend-management-product-rules.md`
+7. `docs/rules/frontend-implementation-rules.md`
+8. `docs/rules/backend-development-rules.md`
+9. `docs/plans/backend-management-page-status-matrix.md`
+10. `docs/plans/frontend-page-status-matrix.md`
+11. `apps/frontend/docs/design-schemas/README.md`
+12. `memory/project-context-handoff.md`

@@ -17,17 +17,27 @@
 - 文档同步规则
 - handoff 职责边界
 
-### 画布 / `.pen` 规则
+### 设计源协作规则
 
 - `docs/rules/design-source-rules.md`
 
 负责：
 
-- `.pen` 设计阶段的行为约束
-- 画布修改优先级
-- 最新 `.pen` 覆盖旧内容的铁律
-- schema 必须基于 Pencil MCP / pencli 结构化读取
-- 画布阶段的产品设计判断标准
+- `.pen` 作为事实源的优先级
+- `.pen -> schema -> code` 的顺序
+- 画布协作边界
+- 结构化读取要求
+
+### 消费端设计规则
+
+- `docs/rules/frontend-mobile-design-rules.md`
+
+负责：
+
+- 消费端页面视觉基调
+- 场景色调与图片规则
+- 小程序导航栏设计约定
+- 消费端页面结构与交互风格
 
 ### 管理后台设计规则
 
@@ -35,10 +45,10 @@
 
 负责：
 
-- 管理后台定位与角色边界
-- 后台信息架构与页面优先级
-- 后台视觉基调与交互结构
-- 配置型 / 审核型 / 工作台型页面的画法约束
+- 后台 Web 页面骨架
+- 工作台 / 列表 / 抽屉 / 图表的设计约束
+- 后台视觉系统与组件系统
+- 后台设计与实现协作边界
 
 ### 管理后台产品规则
 
@@ -46,9 +56,9 @@
 
 负责：
 
-- 管理后台模块职责与页面内容语义
-- 宏观看板与专题工作台的产品拆分
-- 对象详情结构与处理闭环
+- 管理后台 V1 信息架构
+- 模块职责与页面语义
+- 宏观看板与对象处理闭环
 - 视图、导出、跳转等后台产品行为
 
 ### 前端实现规则
@@ -61,7 +71,6 @@
 - schema -> code 的约束
 - 小程序平台限制
 - 验收标准
-- 前端视觉与交互落地边界
 
 ### 后端开发规则
 
@@ -77,7 +86,7 @@
 
 ## 2. 执行与进度文件分工
 
-### 页面状态与执行进度
+### 消费端页面状态与执行进度
 
 - `docs/plans/frontend-page-status-matrix.md`
 
@@ -86,6 +95,18 @@
 - 页面优先级
 - 完成度
 - 前端接入状态
+- 页面执行顺序
+
+### 管理后台页面状态与执行进度
+
+- `docs/plans/backend-management-page-status-matrix.md`
+
+负责：
+
+- 后台页面优先级
+- 补画进度
+- 规则对齐状态
+- 实现准备状态
 - 页面执行顺序
 
 ### 前端 schema 规则
@@ -118,16 +139,20 @@
 
 ## 3. 建议阅读顺序
 
-1. `design/frontendMobileScreens.pen`
+1. 按任务读取对应正式 `.pen`
+   - 消费端：`design/frontendMobileScreens.pen`
+   - 后台：`design/backendManagement.pen`
 2. `docs/rules/global-project-rules.md`
 3. `docs/rules/design-source-rules.md`
-4. `docs/rules/backend-management-design-rules.md`
-5. `docs/rules/backend-management-product-rules.md`
-6. `docs/rules/frontend-implementation-rules.md`
-7. `docs/rules/backend-development-rules.md`
-8. `docs/plans/frontend-page-status-matrix.md`
-9. `apps/frontend/docs/design-schemas/README.md`
-10. `memory/project-context-handoff.md`
+4. `docs/rules/frontend-mobile-design-rules.md`
+5. `docs/rules/backend-management-design-rules.md`
+6. `docs/rules/backend-management-product-rules.md`
+7. `docs/rules/frontend-implementation-rules.md`
+8. `docs/rules/backend-development-rules.md`
+9. `docs/plans/backend-management-page-status-matrix.md`
+10. `docs/plans/frontend-page-status-matrix.md`
+11. `apps/frontend/docs/design-schemas/README.md`
+12. `memory/project-context-handoff.md`
 
 说明：
 
